@@ -5,7 +5,7 @@ import io.github.xpakx.alingo.user.dto.AuthenticationRequest;
 import io.github.xpakx.alingo.user.dto.AuthenticationResponse;
 import io.github.xpakx.alingo.user.dto.RegistrationRequest;
 import io.github.xpakx.alingo.user.error.AuthenticationException;
-import lombok.AllArgsConstructor;
+import io.github.xpakx.alingo.user.error.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthenticationResponse register(RegistrationRequest request) {
+        testRequest(request);
         Account userToAdd = createNewUser(request);
         authenticate(request.getUsername(), request.getPassword());
         final String token = jwtUtils.generateToken(userService.userAccountToUserDetails(userToAdd));
@@ -53,6 +54,15 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthenticationException("User " +username+" disabled!");
         } catch (BadCredentialsException e) {
             throw new AuthenticationException("Invalid password!");
+        }
+    }
+
+    private void testRequest(RegistrationRequest request) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            throw new ValidationException("Username exists!");
+        }
+        if (!request.getPassword().equals(request.getPasswordRe())) {
+            throw new ValidationException("Passwords don't match!");
         }
     }
 
