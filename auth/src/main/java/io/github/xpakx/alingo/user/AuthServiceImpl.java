@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.user;
 
+import io.github.xpakx.alingo.clients.AccountPublisher;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.github.xpakx.alingo.user.dto.AuthenticationRequest;
 import io.github.xpakx.alingo.user.dto.AuthenticationResponse;
@@ -27,15 +28,18 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+    private final AccountPublisher publisher;
+
     @Override
     public AuthenticationResponse register(RegistrationRequest request) {
         testRequest(request);
-        Account userToAdd = createNewUser(request);
+        Account user = createNewUser(request);
+        publisher.sendNewAccount(user);
         authenticate(request.getUsername(), request.getPassword());
-        final String token = jwtUtils.generateToken(userService.userAccountToUserDetails(userToAdd));
+        final String token = jwtUtils.generateToken(userService.userAccountToUserDetails(user));
         return AuthenticationResponse.builder()
                 .token(token)
-                .username(userToAdd.getUsername())
+                .username(user.getUsername())
                 .build();
     }
 
