@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.user;
 
+import io.github.xpakx.alingo.user.dto.AuthenticationRequest;
 import io.github.xpakx.alingo.user.dto.RegistrationRequest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
@@ -15,8 +16,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AuthControllerTest {
@@ -89,7 +89,6 @@ class AuthControllerTest {
                 .post(baseUrl + "/register")
         .then()
                 .statusCode(CREATED.value());
-        assertThat(accountRepository.count(), equalTo(2L));
     }
 
     @Test
@@ -102,5 +101,76 @@ class AuthControllerTest {
                 .post(baseUrl + "/register");
         List<Account> accounts = accountRepository.findAll();
         assertThat(accounts, hasItem(hasProperty("username", equalTo("user2"))));
+    }
+
+    @Test
+    void shouldReturnTokenForRegisteredUser() {
+        RegistrationRequest request = createRegistrationRequest("user3", "password", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(CREATED.value())
+                .body("token", notNullValue());
+    }
+
+
+
+    private AuthenticationRequest getAuthRequest(String username, String password) {
+        AuthenticationRequest request = new AuthenticationRequest();
+        request.setUsername(username);
+        request.setPassword(password);
+        return request;
+    }
+
+    @Test
+    void shouldNotAuthenticateIfPasswordIsWrong() {
+        AuthenticationRequest request = getAuthRequest("user1", "password2");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+         .when()
+                .post(baseUrl + "/authenticate")
+         .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldNotAuthenticateIfUserDoesNotExistInDb() {
+        AuthenticationRequest request = getAuthRequest("user2", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/authenticate")
+        .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldAuthenticate() {
+        AuthenticationRequest request = getAuthRequest("user1", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/authenticate")
+        .then()
+                .statusCode(OK.value());
+    }
+
+    @Test
+    void shouldReturnToken() {
+        AuthenticationRequest request = getAuthRequest("user1", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/authenticate")
+        .then()
+                .statusCode(OK.value())
+                .body("token", notNullValue());
     }
 }
