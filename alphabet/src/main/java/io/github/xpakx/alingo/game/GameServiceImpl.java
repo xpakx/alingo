@@ -2,6 +2,7 @@ package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.AnswerRequest;
 import io.github.xpakx.alingo.game.dto.AnswerResponse;
+import io.github.xpakx.alingo.game.dto.ExerciseWithOnlyAnswer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +12,12 @@ public class GameServiceImpl implements GameService {
     private final ExerciseRepository exerciseRepository;
     @Override
     public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
-        Exercise exercise = exerciseRepository.findById(exerciseId)
+        String answer = exerciseRepository.findProjectedById(exerciseId)
+                .map(ExerciseWithOnlyAnswer::getCorrectAnswer)
                 .orElseThrow();
         AnswerResponse response = new AnswerResponse();
-        response.setCorrectAnswer(exercise.getCorrectAnswer());
-        if(request.getAnswer().equals(exercise.getCorrectAnswer())) {
+        response.setCorrectAnswer(answer);
+        if(request.getAnswer().equals(answer)) {
             response.setCorrect(true);
         }
         return response;
