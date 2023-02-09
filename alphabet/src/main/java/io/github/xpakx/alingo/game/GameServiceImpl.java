@@ -17,9 +17,7 @@ public class GameServiceImpl implements GameService {
                 .orElseThrow();
         AnswerResponse response = new AnswerResponse();
         response.setCorrectAnswer(answer);
-        if(request.getAnswer().equals(answer)) {
-            response.setCorrect(true);
-        }
+        response.setCorrect(request.getAnswer().equals(answer));
         return response;
     }
 }
