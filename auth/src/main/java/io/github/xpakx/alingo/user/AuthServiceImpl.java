@@ -66,9 +66,6 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new ValidationException("Username exists!");
         }
-        if (!request.getPassword().equals(request.getPasswordRe())) {
-            throw new ValidationException("Passwords don't match!");
-        }
     }
 
     @Override
