@@ -28,9 +28,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     private ExerciseDto toDto(Exercise exercise, Random random) {
         ExerciseDto dto = new ExerciseDto();
         dto.setId(exercise.getId());
-        List<String> options =
-                random.nextBoolean() ? List.of(exercise.getCorrectAnswer(), exercise.getWrongAnswer()) : List.of(exercise.getWrongAnswer(), exercise.getCorrectAnswer());
-        dto.setOptions(options);
+        if(random.nextBoolean()) {
+            dto.setOptions(List.of(exercise.getCorrectAnswer(), exercise.getWrongAnswer()));
+        } else {
+            dto.setOptions(List.of(exercise.getWrongAnswer(), exercise.getCorrectAnswer()));
+        }
         return dto;
     }
 }
