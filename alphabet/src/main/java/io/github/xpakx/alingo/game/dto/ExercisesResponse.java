@@ -1,7 +1,9 @@
 package io.github.xpakx.alingo.game.dto;
 
+import io.github.xpakx.alingo.game.Exercise;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -9,7 +11,6 @@ import java.util.List;
 @Setter
 public class ExercisesResponse {
     List<ExerciseDto> exercises;
-    Long start;
-    Long end;
+    Integer page;
     Long size;
 }

@@ -11,7 +11,7 @@ import lombok.Setter;
 public class CourseExercisesRequest {
     @Min(value = 1)
     @NotNull
-    Long start;
+    Integer page;
 
     @NotNull
     @Min(value = 1)
