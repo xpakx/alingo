@@ -15,6 +15,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
     private final ExerciseRepository exerciseRepository;
+    private final ExerciseService exerciseService;
+
     @Override
     public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
         return createResponse(request, getAnswerForExercise(exerciseId));
@@ -41,18 +43,7 @@ public class GameServiceImpl implements GameService {
                         request.getAmount(),
                         Sort.by(Sort.Order.asc("id")))
         );
-        ExercisesResponse response = new ExercisesResponse();
-        response.setPage(page.getNumber());
-        response.setSize(page.getTotalElements());
-        response.setExercises(page.getContent().stream().map(this::toDto).toList());
-        return response;
+        return exerciseService.prepareResponse(page);
     }
 
-    private ExerciseDto toDto(Exercise exercise) {
-        ExerciseDto dto = new ExerciseDto();
-        dto.setId(exercise.getId());
-        List<String> options = List.of(exercise.getCorrectAnswer(), exercise.getWrongAnswer());
-        dto.setOptions(options);
-        return dto;
-    }
 }
