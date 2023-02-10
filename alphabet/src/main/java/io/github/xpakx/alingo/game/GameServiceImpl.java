@@ -37,13 +37,12 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public ExercisesResponse getExercisesForCourse(Long courseId, CourseExercisesRequest request) {
-        Page<Exercise> page = exerciseRepository.findByCourseId(
-                courseId,
-                PageRequest.of(request.getPage(),
-                        request.getAmount(),
-                        Sort.by(Sort.Order.asc("id")))
-        );
+        Page<Exercise> page = exerciseRepository.findByCourseId(courseId, toPageRequest(request));
         return exerciseService.prepareResponse(page);
+    }
+
+    private PageRequest toPageRequest(CourseExercisesRequest request) {
+        return PageRequest.of(request.getPage(), request.getAmount(), Sort.by(Sort.Order.asc("id")));
     }
 
 }
