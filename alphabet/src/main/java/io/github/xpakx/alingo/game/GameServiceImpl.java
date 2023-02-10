@@ -15,14 +15,14 @@ public class GameServiceImpl implements GameService {
     private final ExerciseService exerciseService;
 
     @Override
-    public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
-        return createResponse(request, getAnswerForExercise(exerciseId));
+    public AnswerResponse checkAnswer(Long exerciseId, String guess) {
+        return createResponse(guess, getAnswerForExercise(exerciseId));
     }
 
-    private AnswerResponse createResponse(AnswerRequest request, String answer) {
+    private AnswerResponse createResponse(String guess, String answer) {
         AnswerResponse response = new AnswerResponse();
         response.setCorrectAnswer(answer);
-        response.setCorrect(request.getAnswer().equals(answer));
+        response.setCorrect(guess.equals(answer));
         return response;
     }
 
@@ -33,12 +33,12 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ExercisesResponse getExercisesForCourse(Long courseId, CourseExercisesRequest request) {
-        Page<Exercise> page = exerciseRepository.findByCourseId(courseId, toPageRequest(request));
-        return exerciseService.prepareResponse(page);
+    public ExercisesResponse getExercisesForCourse(Long courseId, Integer page, Integer amount) {
+        Page<Exercise> result = exerciseRepository.findByCourseId(courseId, toPageRequest(page, amount));
+        return exerciseService.prepareResponse(result);
     }
 
-    private PageRequest toPageRequest(CourseExercisesRequest request) {
-        return PageRequest.of(request.getPage(), request.getAmount(), Sort.by(Sort.Order.asc("id")));
+    private PageRequest toPageRequest(Integer page, Integer amount) {
+        return PageRequest.of(page, amount, Sort.by(Sort.Order.asc("id")));
     }
 }
