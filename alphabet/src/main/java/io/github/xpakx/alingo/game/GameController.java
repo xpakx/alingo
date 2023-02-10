@@ -1,7 +1,9 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.game.dto.AnswerRequest;
 import io.github.xpakx.alingo.game.dto.AnswerResponse;
 import io.github.xpakx.alingo.game.dto.ExercisesResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -18,10 +20,10 @@ import org.springframework.web.bind.annotation.*;
 public class GameController {
     private final GameService service;
 
-    @GetMapping("/exercise/{exerciseId}")
-    public ResponseEntity<AnswerResponse> answer(@PathVariable Long exerciseId, @NotBlank @RequestParam String answer) {
+    @PostMapping("/exercise/{exerciseId}")
+    public ResponseEntity<AnswerResponse> answer(@Valid @RequestBody AnswerRequest request, @PathVariable Long exerciseId) {
         return new ResponseEntity<>(
-                service.checkAnswer(exerciseId, answer),
+                service.checkAnswer(exerciseId, request),
                 HttpStatus.OK
         );
     }

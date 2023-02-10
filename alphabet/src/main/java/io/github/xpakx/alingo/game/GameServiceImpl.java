@@ -14,15 +14,14 @@ public class GameServiceImpl implements GameService {
     private final ExerciseRepository exerciseRepository;
     private final ExerciseService exerciseService;
 
-    @Override
-    public AnswerResponse checkAnswer(Long exerciseId, String guess) {
-        return createResponse(guess, getAnswerForExercise(exerciseId));
+    public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
+        return createResponse(request, getAnswerForExercise(exerciseId));
     }
 
-    private AnswerResponse createResponse(String guess, String answer) {
+    private AnswerResponse createResponse(AnswerRequest request, String answer) {
         AnswerResponse response = new AnswerResponse();
         response.setCorrectAnswer(answer);
-        response.setCorrect(guess.equals(answer));
+        response.setCorrect(request.getAnswer().equals(answer));
         return response;
     }
 
