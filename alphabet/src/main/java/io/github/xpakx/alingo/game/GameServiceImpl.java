@@ -1,8 +1,6 @@
 package io.github.xpakx.alingo.game;
 
-import io.github.xpakx.alingo.game.dto.AnswerRequest;
-import io.github.xpakx.alingo.game.dto.AnswerResponse;
-import io.github.xpakx.alingo.game.dto.ExerciseWithOnlyAnswer;
+import io.github.xpakx.alingo.game.dto.*;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,5 +25,10 @@ public class GameServiceImpl implements GameService {
         return exerciseRepository.findProjectedById(exerciseId)
                 .map(ExerciseWithOnlyAnswer::getCorrectAnswer)
                 .orElseThrow(NotFoundException::new);
+    }
+    
+    @Override
+    public ExercisesResponse getExercisesForCourse(Long courseId, CourseExercisesRequest request) {
+        return null;
     }
 }
