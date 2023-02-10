@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
@@ -14,15 +15,21 @@ public class ExerciseServiceImpl implements ExerciseService {
         ExercisesResponse response = new ExercisesResponse();
         response.setPage(page.getNumber());
         response.setSize(page.getTotalElements());
-        response.setExercises(page.getContent().stream().map(this::toDto).toList());
+        Random random = new Random();
+        response.setExercises(
+                page.getContent().stream()
+                        .map((a) -> toDto(a, random))
+                        .toList()
+        );
         return response;
     }
 
 
-    private ExerciseDto toDto(Exercise exercise) {
+    private ExerciseDto toDto(Exercise exercise, Random random) {
         ExerciseDto dto = new ExerciseDto();
         dto.setId(exercise.getId());
-        List<String> options = List.of(exercise.getCorrectAnswer(), exercise.getWrongAnswer());
+        List<String> options =
+                random.nextBoolean() ? List.of(exercise.getCorrectAnswer(), exercise.getWrongAnswer()) : List.of(exercise.getWrongAnswer(), exercise.getCorrectAnswer());
         dto.setOptions(options);
         return dto;
     }
