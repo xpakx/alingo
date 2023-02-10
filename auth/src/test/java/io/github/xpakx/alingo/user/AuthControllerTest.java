@@ -177,4 +177,148 @@ class AuthControllerTest {
                 .statusCode(OK.value())
                 .body("token", notNullValue());
     }
+
+    @Test
+    void shouldNotValidateAuthRequestIfPasswordIsEmpty() {
+        AuthenticationRequest request = getAuthRequest("user1", "");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/authenticate")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotValidateAuthRequestIfPasswordIsNull() {
+        AuthenticationRequest request = getAuthRequest("user1", null);
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/authenticate")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotValidateAuthRequestIfPUsernameIsEmpty() {
+        AuthenticationRequest request = getAuthRequest("", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/authenticate")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotValidateAuthRequestIfUsernameIsNull() {
+        AuthenticationRequest request = getAuthRequest(null, "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/authenticate")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptNullUsername() {
+        RegistrationRequest request = createRegistrationRequest(null, "password", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptEmptyUsername() {
+        RegistrationRequest request = createRegistrationRequest("", "password", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptBlankUsername() {
+        RegistrationRequest request = createRegistrationRequest("   ", "password", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptUsernameShorterThanFiveCharacters() {
+        RegistrationRequest request = createRegistrationRequest("user", "password", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptUsernameLongerThanFifteenCharacters() {
+        RegistrationRequest request = createRegistrationRequest("userWithVeryLongUsername", "password", "password");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptNullPassword() {
+        RegistrationRequest request = createRegistrationRequest("user5", null, null);
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptEmptyPassword() {
+        RegistrationRequest request = createRegistrationRequest("user5", "", "");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptBlankPassword() {
+        RegistrationRequest request = createRegistrationRequest("user5", "  ", "  ");
+        given()
+                .contentType(ContentType.JSON)
+                .body(request)
+        .when()
+                .post(baseUrl + "/register")
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
 }

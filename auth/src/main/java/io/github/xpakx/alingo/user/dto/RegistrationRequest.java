@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class RegistrationRequest {
@@ -19,6 +21,6 @@ public class RegistrationRequest {
 
     @AssertTrue(message = "Passwords don't match!")
     private boolean isPasswordRepeated() {
-        return password.equals(passwordRe);
+        return Objects.equals(password, passwordRe);
     }
 }
