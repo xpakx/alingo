@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.AnswerRequest;
+import io.github.xpakx.alingo.security.JwtUtils;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +32,8 @@ class GameControllerTest {
 
     private final static int FULL_STACK = 64;
 
+    @Autowired
+    JwtUtils jwt;
     @Autowired
     ExerciseRepository exerciseRepository;
 
@@ -73,7 +79,7 @@ class GameControllerTest {
         return tokenFor(username, new ArrayList<>());
     }
 
-    private String tokenFor(String username, List<String> authorities) {
-        return "";
+    private String tokenFor(String username, List<GrantedAuthority> authorities) {
+        return jwt.generateToken(new User(username, "", authorities));
     }
 }
