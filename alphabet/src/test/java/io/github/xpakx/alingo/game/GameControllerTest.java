@@ -19,9 +19,10 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GameControllerTest {
@@ -93,5 +94,44 @@ class GameControllerTest {
 
     private String tokenFor(String username, List<GrantedAuthority> authorities) {
         return jwt.generateToken(new User(username, "", authorities));
+    }
+
+    @Test
+    void shouldRespondToWrongGuess() {
+        Long exerciseId = addExercise("correct", "wrong");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(getAnswerRequest("wrong"))
+        .when()
+                .post(baseUrl + "/exercise/{exerciseId}", exerciseId)
+        .then()
+                .statusCode(OK.value())
+                .body("correct", is(false))
+                .body("correctAnswer", is(equalTo("correct")));
+    }
+
+    private Long addExercise(String correct, String wrong) {
+        Exercise exercise = new Exercise();
+        exercise.setCorrectAnswer(correct);
+        exercise.setWrongAnswer(wrong);
+        return exerciseRepository.save(exercise).getId();
+    }
+
+    @Test
+    void shouldRespondToCorrectGuess() {
+        Long exerciseId = addExercise("correct", "wrong");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(getAnswerRequest("correct"))
+        .when()
+                .post(baseUrl + "/exercise/{exerciseId}", exerciseId)
+        .then()
+                .statusCode(OK.value())
+                .body("correct", is(true))
+                .body("correctAnswer", is(equalTo("correct")));
     }
 }
