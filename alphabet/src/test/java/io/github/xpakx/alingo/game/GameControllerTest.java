@@ -1,5 +1,7 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.game.dto.AnswerRequest;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,8 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,5 +48,32 @@ class GameControllerTest {
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
         .then()
                 .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith404ToCheckAnswerIfExerciseDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(getAnswerRequest("answer"))
+        .when()
+                .post(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    private AnswerRequest getAnswerRequest(String answer) {
+        AnswerRequest request = new AnswerRequest();
+        request.setAnswer(answer);
+        return request;
+    }
+
+    private String tokenFor(String username) {
+        return tokenFor(username, new ArrayList<>());
+    }
+
+    private String tokenFor(String username, List<String> authorities) {
+        return "";
     }
 }
