@@ -55,6 +55,18 @@ class GameControllerTest {
         .then()
                 .statusCode(UNAUTHORIZED.value());
     }
+    @Test
+    void shouldRespondWith401ToCheckAnswerIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("21090cjw")
+                .contentType(ContentType.JSON)
+                .body(getAnswerRequest("answer"))
+        .when()
+                .post(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
 
     @Test
     void shouldRespondWith404ToCheckAnswerIfExerciseDoesNotExist() {

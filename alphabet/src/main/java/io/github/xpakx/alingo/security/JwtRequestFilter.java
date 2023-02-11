@@ -1,6 +1,9 @@
 package io.github.xpakx.alingo.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +32,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        authenticateUser(request);
+
+        try {
+            authenticateUser(request);
+        } catch(ExpiredJwtException ex) {
+            logger.warn("JWT token is expired");
+        } catch(UnsupportedJwtException ex) {
+            logger.warn("JWT token is unsupported");
+        } catch(MalformedJwtException ex) {
+            logger.warn("JWT token is malformed");
+        }
         filterChain.doFilter(request, response);
     }
 
@@ -48,7 +60,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         Claims claims = jwt.getAllClaimsFromToken(token);
 
-        if(claims.getSubject() != null && !isUserAlreadyAuthenticated()) {
+        if(claims != null && claims.getSubject() != null && !isUserAlreadyAuthenticated()) {
             UserDetails userDetails = createUserDetails(claims);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -63,7 +75,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private boolean isUserAlreadyAuthenticated() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return !auth.isAuthenticated() || !(auth instanceof AnonymousAuthenticationToken);
+        return auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken);
     }
 
     private UserDetails createUserDetails(Claims claims) {
