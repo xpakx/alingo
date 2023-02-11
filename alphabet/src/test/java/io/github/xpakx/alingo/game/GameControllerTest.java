@@ -34,4 +34,12 @@ class GameControllerTest {
     void tearDown() {
         exerciseRepository.deleteAll();
     }
+
+    @Test
+    void shouldRespondWith401ToCheckAnswerIfNotAuthenticated() {
+        when()
+                .post(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
 }
