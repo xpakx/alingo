@@ -134,4 +134,30 @@ class GameControllerTest {
                 .body("correct", is(true))
                 .body("correctAnswer", is(equalTo("correct")));
     }
+
+    @Test
+    void shouldNotAcceptEmptyGuess() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(getAnswerRequest(""))
+        .when()
+                .post(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldNotAcceptNullGuess() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(getAnswerRequest(null))
+        .when()
+                .post(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
 }
