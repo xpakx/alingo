@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.error;
 
 import io.github.xpakx.alingo.error.dto.ErrorResponse;
+import io.github.xpakx.alingo.game.error.NotFoundException;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler()
+    @ExceptionHandler
     protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
         HttpStatus status = getStatus(ex);
         return handleExceptionInternal(
