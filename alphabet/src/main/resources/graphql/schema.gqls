@@ -1,24 +1,24 @@
-type Exercise {
+type ExerciseDto {
     id: ID!
     options: [String!]!
 }
 
-type Course {
+type ExercisesResponse {
     page: Int!
     size: Int!
     totalSize: Int!
-    exercises: [Exercise]!
+    exercises: [ExerciseDto]!
 }
 
-type Answer {
+type AnswerResponse {
     correct: Boolean!
     correctAnswer: String!
 }
 
 type Query {
-    courseExercises(course: Int, page: Int, amount: Int): Course!
+    courseExercises(course: Int, page: Int, amount: Int): ExercisesResponse!
 }
 
 type Mutation {
-    answer(exercise: Int, guess: String): Answer!
+    answer(exercise: Int, guess: String): AnswerResponse!
 }
