@@ -1,0 +1,24 @@
+type Exercise {
+    id: ID!
+    options: [String!]!
+}
+
+type Course {
+    page: Int!
+    size: Int!
+    totalSize: Int!
+    exercises: [Exercise]!
+}
+
+type Answer {
+    correct: Boolean!
+    correctAnswer: String!
+}
+
+type Query {
+    courseExercises(course: Int, page: Int, amount: Int): Course!
+}
+
+type Mutation {
+    answer(exercise: Int, guess: String): Answer!
+}
