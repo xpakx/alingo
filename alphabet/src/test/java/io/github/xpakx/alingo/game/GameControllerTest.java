@@ -30,9 +30,6 @@ class GameControllerTest {
     @LocalServerPort
     private int port;
     private String baseUrl;
-    private Long userId;
-
-    private final static int FULL_STACK = 64;
 
     @Autowired
     JwtUtils jwt;
@@ -44,7 +41,6 @@ class GameControllerTest {
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost".concat(":").concat(port + "");
-        userId = 1L;
     }
 
     @AfterEach

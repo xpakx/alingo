@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 @RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
@@ -34,7 +36,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public ExercisesResponse getExercisesForCourse(Long courseId, Integer page, Integer amount) {
         Page<Exercise> result = exerciseRepository.findByCourseId(courseId, toPageRequest(page, amount));
-        return exerciseService.prepareResponse(result);
+        return exerciseService.prepareResponse(result, new Random());
     }
 
     private PageRequest toPageRequest(Integer page, Integer amount) {

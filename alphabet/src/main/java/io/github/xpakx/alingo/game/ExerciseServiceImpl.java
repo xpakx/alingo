@@ -11,12 +11,11 @@ import java.util.Random;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
     @Override
-    public ExercisesResponse prepareResponse(Page<Exercise> page) {
+    public ExercisesResponse prepareResponse(Page<Exercise> page, Random random) {
         ExercisesResponse response = new ExercisesResponse();
         response.setPage(page.getNumber());
         response.setSize((long) page.getSize());
         response.setTotalSize(page.getTotalElements());
-        Random random = new Random();
         response.setExercises(
                 page.getContent().stream()
                         .map((a) -> toDto(a, random))
