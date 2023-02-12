@@ -14,7 +14,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public ExercisesResponse prepareResponse(Page<Exercise> page, Random random) {
         ExercisesResponse response = new ExercisesResponse();
         response.setPage(page.getNumber());
-        response.setSize((long) page.getSize());
+        response.setSize((long) page.getContent().size());
         response.setTotalSize(page.getTotalElements());
         response.setExercises(
                 page.getContent().stream()
