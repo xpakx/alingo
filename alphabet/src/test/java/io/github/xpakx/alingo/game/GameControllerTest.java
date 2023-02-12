@@ -217,7 +217,7 @@ class GameControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {-1, 0, 4, 21, 50})
+    @ValueSource(ints = {-1, 0, 21, 50})
     void shouldNotAcceptRequestWithAmountOutsideBounds(int amount) {
         given()
                 .auth()

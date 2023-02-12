@@ -1,7 +1,7 @@
 package io.github.xpakx.alingo.error;
 
 import io.github.xpakx.alingo.error.dto.ErrorResponse;
-import io.github.xpakx.alingo.game.error.NotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(RuntimeException.class)
     protected ResponseEntity<Object> handleException(RuntimeException ex, WebRequest request) {
         HttpStatus status = getStatus(ex);
         return handleExceptionInternal(
@@ -38,5 +38,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private HttpStatus getStatus(RuntimeException ex) {
         ResponseStatus status = AnnotatedElementUtils.findMergedAnnotation(ex.getClass(), ResponseStatus.class);
         return status != null ? status.code() : HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+        return handleExceptionInternal(
+                ex,
+                constructErrorBody(ex, HttpStatus.BAD_REQUEST),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
     }
 }
