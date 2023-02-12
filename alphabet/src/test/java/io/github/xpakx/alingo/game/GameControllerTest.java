@@ -6,6 +6,8 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,8 +21,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -56,6 +57,7 @@ class GameControllerTest {
         .then()
                 .statusCode(UNAUTHORIZED.value());
     }
+
     @Test
     void shouldRespondWith401ToCheckAnswerIfTokenIsWrong() {
         given()
@@ -157,6 +159,73 @@ class GameControllerTest {
                 .body(getAnswerRequest(null))
         .when()
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToCGetExercisesIfNotAuthenticated() {
+        given()
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetExercisesIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("21090cjw")
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithEmptyListToGetExercisesIfCourseDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", 1L)
+        .then()
+                .statusCode(OK.value())
+                .body("exercises", hasSize(0))
+                .body("size", is(equalTo(0)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-10, -1, 0})
+    void shouldNotAcceptRequestWithNonPositivePages(int page) {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .param("page", page)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", 1L)
+        .then()
+                .statusCode(BAD_REQUEST.value());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 4, 21, 50})
+    void shouldNotAcceptRequestWithAmountOutsideBounds(int amount) {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .param("page", 1)
+                .param("amount", amount)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", 1L)
         .then()
                 .statusCode(BAD_REQUEST.value());
     }
