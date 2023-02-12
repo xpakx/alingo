@@ -38,6 +38,8 @@ class GameControllerTest {
     JwtUtils jwt;
     @Autowired
     ExerciseRepository exerciseRepository;
+    @Autowired
+    CourseRepository courseRepository;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +50,7 @@ class GameControllerTest {
     @AfterEach
     void tearDown() {
         exerciseRepository.deleteAll();
+        courseRepository.deleteAll();
     }
 
     @Test
@@ -115,9 +118,16 @@ class GameControllerTest {
     }
 
     private Long addExercise(String correct, String wrong) {
+        return addExercise(correct, wrong, null);
+    }
+
+    private Long addExercise(String correct, String wrong, Long courseId) {
         Exercise exercise = new Exercise();
         exercise.setCorrectAnswer(correct);
         exercise.setWrongAnswer(wrong);
+        if(courseId != null) {
+            exercise.setCourse(courseRepository.getReferenceById(courseId));
+        }
         return exerciseRepository.save(exercise).getId();
     }
 
@@ -228,5 +238,34 @@ class GameControllerTest {
                 .get(baseUrl + "/course/{courseId}/exercise", 1L)
         .then()
                 .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    void shouldRespondWithListOfExercises() {
+        Long courseId = createCourse("course");
+        addExercises(courseId, 5);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .param("page", 1)
+                .param("amount", 3)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", courseId)
+        .then()
+                .statusCode(OK.value())
+                .body("exercises", hasSize(3))
+                .body("size", is(equalTo(3)));
+    }
+
+    private void addExercises(Long courseId, int amount) {
+        for(int i=0; i<amount; i++) {
+            addExercise("correct", "wrong", courseId);
+        }
+    }
+
+    private Long createCourse(String courseName) {
+        Course course = new Course();
+        course.setName(courseName);
+        return courseRepository.save(course).getId();
     }
 }
