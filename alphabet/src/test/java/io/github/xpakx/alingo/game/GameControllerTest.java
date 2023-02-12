@@ -254,7 +254,8 @@ class GameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("exercises", hasSize(3))
-                .body("size", is(equalTo(3)));
+                .body("size", is(equalTo(3)))
+                .body("totalSize", is(equalTo(5)));
     }
 
     private void addExercises(Long courseId, int amount) {

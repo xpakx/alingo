@@ -33,7 +33,7 @@ public class GameController {
                                                           @RequestParam @NotNull @Min(value = 1) @Max(value = 20) Integer amount,
                                                           @PathVariable Long courseId) {
         return new ResponseEntity<>(
-                service.getExercisesForCourse(courseId, page, amount),
+                service.getExercisesForCourse(courseId, page-1, amount),
                 HttpStatus.OK
         );
     }

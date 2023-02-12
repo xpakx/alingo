@@ -13,4 +13,5 @@ public class ExercisesResponse {
     List<ExerciseDto> exercises;
     Integer page;
     Long size;
+    Long totalSize;
 }
