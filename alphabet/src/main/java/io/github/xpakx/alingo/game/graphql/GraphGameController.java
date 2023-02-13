@@ -4,6 +4,8 @@ import io.github.xpakx.alingo.game.GameService;
 import io.github.xpakx.alingo.game.dto.AnswerRequest;
 import io.github.xpakx.alingo.game.dto.AnswerResponse;
 import io.github.xpakx.alingo.game.dto.ExercisesResponse;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,9 @@ public class GraphGameController {
     private final GameService service;
 
     @QueryMapping
-    public ExercisesResponse courseExercises(@Argument long course, @Argument int page, @Argument int amount) {
+    public ExercisesResponse courseExercises(@NotNull @Argument long course,
+                                             @Min(value = 1) @Argument int page,
+                                             @NotNull @Min(value = 1) @Max(value = 20) @Argument int amount) {
         return service.getExercisesForCourse(course, page, amount);
     }
 
