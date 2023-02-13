@@ -4,14 +4,18 @@ import io.github.xpakx.alingo.game.GameService;
 import io.github.xpakx.alingo.game.dto.AnswerRequest;
 import io.github.xpakx.alingo.game.dto.AnswerResponse;
 import io.github.xpakx.alingo.game.dto.ExercisesResponse;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 
 @Controller
 @RequiredArgsConstructor
+@Validated
 public class GraphGameController {
     private final GameService service;
 
@@ -21,7 +25,7 @@ public class GraphGameController {
     }
 
     @MutationMapping
-    public AnswerResponse answer(@Argument long exercise, @Argument String guess) {
+    public AnswerResponse answer(@NotNull @Argument long exercise, @NotBlank @Argument String guess) {
         return service.checkAnswer(exercise, toRequestAnswer(guess));
     }
 

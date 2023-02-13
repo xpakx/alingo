@@ -169,7 +169,7 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", empty())
-                .body("error", not(empty()));
+                .body("errors", not(empty()));
     }
 
     @Test
@@ -202,7 +202,7 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", empty())
-                .body("error", not(empty()));
+                .body("errors", not(empty()));
     }
 
     @Test
@@ -218,6 +218,22 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", empty())
-                .body("error", not(empty()));
+                .body("errors", not(empty()));
+    }
+
+    @Test
+    void shouldNotAcceptNullExerciseId() {
+        GraphQuery query = getGraphQueryForAnswer(getVariablesForAnswer(null, "correct"));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", empty())
+                .body("errors", not(empty()));
     }
 }
