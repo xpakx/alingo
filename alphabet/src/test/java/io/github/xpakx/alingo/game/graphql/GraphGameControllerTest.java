@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GraphGameControllerTest {
@@ -127,5 +128,96 @@ class GraphGameControllerTest {
         answer.setId(exerciseId);
         answer.setGuess(guess);
         return answer;
+    }
+
+    @Test
+    void shouldRespondWith401ToCheckAnswerIfNotAuthenticated() {
+        GraphQuery query = getGraphQueryForAnswer(getVariablesForAnswer(1L, "correct"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToCheckAnswerIfTokenIsWrong() {
+        GraphQuery query = getGraphQueryForAnswer(getVariablesForAnswer(1L, "correct"));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith404ToCheckAnswerIfExerciseDoesNotExist() {
+        GraphQuery query = getGraphQueryForAnswer(getVariablesForAnswer(1L, "correct"));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", empty())
+                .body("error", not(empty()));
+    }
+
+    @Test
+    void shouldRespondToWrongGuess() {
+        Long exerciseId = addExercise("correct", "wrong");
+        GraphQuery query = getGraphQueryForAnswer(getVariablesForAnswer(exerciseId, "wrong"));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.answer.correct", equalTo(false))
+                .body("data.answer.correctAnswer", equalTo("correct"));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyGuess() {
+        GraphQuery query = getGraphQueryForAnswer(getVariablesForAnswer(1L, ""));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", empty())
+                .body("error", not(empty()));
+    }
+
+    @Test
+    void shouldNotAcceptNullGuess() {
+        GraphQuery query = getGraphQueryForAnswer(getVariablesForAnswer(1L, null));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", empty())
+                .body("error", not(empty()));
     }
 }
