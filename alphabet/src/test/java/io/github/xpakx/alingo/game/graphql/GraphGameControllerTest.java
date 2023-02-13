@@ -168,8 +168,8 @@ class GraphGameControllerTest {
                 .post(baseUrl + "/graphql")
         .then()
                 .statusCode(OK.value())
-                .body("data", empty())
-                .body("errors", not(empty()));
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 
     @Test
@@ -201,8 +201,8 @@ class GraphGameControllerTest {
                 .post(baseUrl + "/graphql")
         .then()
                 .statusCode(OK.value())
-                .body("data", empty())
-                .body("errors", not(empty()));
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 
     @Test
@@ -217,8 +217,8 @@ class GraphGameControllerTest {
                 .post(baseUrl + "/graphql")
         .then()
                 .statusCode(OK.value())
-                .body("data", empty())
-                .body("errors", not(empty()));
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 
     @Test
@@ -233,7 +233,7 @@ class GraphGameControllerTest {
                 .post(baseUrl + "/graphql")
         .then()
                 .statusCode(OK.value())
-                .body("data", empty())
-                .body("errors", not(empty()));
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 }
