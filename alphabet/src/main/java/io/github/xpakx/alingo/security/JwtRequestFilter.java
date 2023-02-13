@@ -35,6 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         try {
             authenticateUser(request);
+            logger.debug("User authenticated");
         } catch(ExpiredJwtException ex) {
             logger.warn("JWT token is expired");
         } catch(UnsupportedJwtException ex) {
@@ -52,6 +53,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         final String token = this.getAuthHeader(request).substring(7);
+        logger.debug("Token is "+ token);
 
         if(jwt.isInvalid(token)) {
             logger.warn("Authorization token is invalid");
@@ -59,15 +61,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         Claims claims = jwt.getAllClaimsFromToken(token);
+        logger.debug("Claims received from token");
 
         if(claims != null && claims.getSubject() != null && !isUserAlreadyAuthenticated()) {
             UserDetails userDetails = createUserDetails(claims);
-
+            logger.debug("UserDetails object for user " + userDetails.getUsername() + " created");
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
             authToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
+            logger.debug("UsernamePasswordAuthenticationToken loaded in Security Context");
         }
     }
 
