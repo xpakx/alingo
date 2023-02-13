@@ -1,9 +1,6 @@
 package io.github.xpakx.alingo.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,13 +30,11 @@ public class JwtRequestFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        doFilterInternal((HttpServletRequest) request, (HttpServletResponse) response, filterChain);
+        doFilterInternal((HttpServletRequest) request);
+        filterChain.doFilter(request, response);
     }
 
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-
+    private void doFilterInternal(HttpServletRequest request) {
         try {
             authenticateUser(request);
             logger.debug("User authenticated");
@@ -50,7 +45,6 @@ public class JwtRequestFilter extends GenericFilterBean {
         } catch(MalformedJwtException ex) {
             logger.warn("JWT token is malformed");
         }
-        filterChain.doFilter(request, response);
     }
 
     private void authenticateUser(HttpServletRequest request) {
