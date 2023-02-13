@@ -7,11 +7,14 @@ import io.github.xpakx.alingo.game.ExerciseRepository;
 import io.github.xpakx.alingo.game.dto.AnswerRequest;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.github.xpakx.alingo.utils.GraphAnswer;
+import io.github.xpakx.alingo.utils.GraphExercises;
 import io.github.xpakx.alingo.utils.GraphQuery;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -22,9 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -235,5 +236,127 @@ class GraphGameControllerTest {
                 .statusCode(OK.value())
                 .body("data", nullValue())
                 .body("errors", not(nullValue()));
+    }
+
+    private GraphQuery getGraphQueryForExercises(GraphExercises answer) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    query courseExercises($id: Int, $page: Int, $amount: Int){
+                        courseExercises(course: $id, page: $page, amount: $amount)
+                        {
+                            page
+                            size
+                            totalSize
+                            exercises {
+                                id
+                                options
+                            }
+                        }
+                    }""");
+        query.setVariables(answer);
+        return query;
+    }
+
+    private GraphExercises getVariablesForExercises(Long courseId, Integer page, Integer amount) {
+        GraphExercises variables = new GraphExercises();
+        variables.setId(courseId);
+        variables.setPage(page);
+        variables.setAmount(amount);
+        return variables;
+    }
+
+    @Test
+    void shouldRespondWith401ToCGetExercisesIfNotAuthenticated() {
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(1L, 1, 10));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetExercisesIfTokenIsWrong() {
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(1L, 1, 10));
+        given()
+                .auth()
+                .oauth2("3040234")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWithEmptyListToGetExercisesIfCourseDoesNotExist() {
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(1L, 1, 10));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.courseExercises.exercises", hasSize(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-10, -1, 0})
+    void shouldNotAcceptRequestWithNonPositivePages(int page) {
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(1L, page, 10));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not((nullValue())));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 21, 50})
+    void shouldNotAcceptRequestWithAmountOutsideBounds(int amount) {
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(1L, 1, amount));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not((nullValue())));
+    }
+
+    @Test
+    void shouldRespondWithListOfExercises() {
+        Long courseId = createCourse("course");
+        addExercises(courseId, 5);
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(courseId, 1, 3));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .log().body()
+                .statusCode(OK.value())
+                .body("data.courseExercises.exercises", hasSize(3))
+                .body("data.courseExercises.size", equalTo(3))
+                .body("data.courseExercises.totalSize", equalTo(5));
     }
 }
