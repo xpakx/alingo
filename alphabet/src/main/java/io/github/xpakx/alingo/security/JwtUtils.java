@@ -32,11 +32,6 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
-    public List<GrantedAuthority> getAuthoritiesFromToken(String token) {
-        List<String> claims = (List<String>) getClaimFromToken(token, (c) -> c.get("roles", List.class));
-        return claims.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-    }
-
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }

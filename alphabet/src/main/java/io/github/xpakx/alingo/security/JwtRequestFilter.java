@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +21,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -82,7 +86,12 @@ public class JwtRequestFilter extends GenericFilterBean {
     }
 
     private UserDetails createUserDetails(Claims claims) {
-        return new User(claims.getSubject(), "", new ArrayList<>());
+        return new User(claims.getSubject(), "", getAuthoritiesFromClaims(claims));
+    }
+
+    private List<SimpleGrantedAuthority> getAuthoritiesFromClaims(Claims claims) {
+        List<String> authoritiesString = (List<String>) claims.get("roles", List.class);
+        return authoritiesString != null ? authoritiesString.stream().map(SimpleGrantedAuthority::new).toList() : new ArrayList<>();
     }
 
     private boolean isAuthMissing(HttpServletRequest request) {
