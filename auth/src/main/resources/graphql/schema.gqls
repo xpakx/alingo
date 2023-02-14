@@ -1,0 +1,9 @@
+type AuthenticationResponse {
+    token: String!
+    username: String!
+}
+
+type Mutation {
+    login(username: String, password: String): AuthenticationResponse!
+    register(username: String, password: String, passwordRe: String): AuthenticationResponse!
+}
