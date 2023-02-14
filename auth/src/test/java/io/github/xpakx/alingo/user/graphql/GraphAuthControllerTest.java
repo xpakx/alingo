@@ -4,7 +4,6 @@ import io.github.xpakx.alingo.clients.AccountPublisher;
 import io.github.xpakx.alingo.user.Account;
 import io.github.xpakx.alingo.user.AccountRepository;
 import io.github.xpakx.alingo.user.UserRoleRepository;
-import io.github.xpakx.alingo.user.dto.AuthenticationRequest;
 import io.github.xpakx.alingo.utils.GraphLogin;
 import io.github.xpakx.alingo.utils.GraphQuery;
 import io.github.xpakx.alingo.utils.GraphRegister;
@@ -223,4 +222,171 @@ class GraphAuthControllerTest {
                 .body("data.login.token", not(nullValue()));
     }
 
+    @Test
+    void shouldNotValidateAuthRequestIfPasswordIsEmpty() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("user1", ""));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotValidateAuthRequestIfPasswordIsNull() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("user1", null));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotValidateAuthRequestIfPUsernameIsEmpty() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotValidateAuthRequestIfUsernameIsNull() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin(null, "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNullUsername() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration(null, "password", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyUsername() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration("", "password", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptBlankUsername() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration("    ", "password", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptUsernameShorterThanFiveCharacters() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration("user", "password", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptUsernameLongerThanFifteenCharacters() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration("userWithVeryLongUsername", "password", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNullPassword() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration("user5", null, null));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyPassword() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration("user5", "", ""));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptBlankPassword() {
+        GraphQuery query = getGraphQueryForRegistration(getVariablesForRegistration("user5", "  ", "  "));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
 }
