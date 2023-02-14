@@ -4,6 +4,7 @@ import io.github.xpakx.alingo.user.AuthService;
 import io.github.xpakx.alingo.user.dto.AuthenticationRequest;
 import io.github.xpakx.alingo.user.dto.AuthenticationResponse;
 import io.github.xpakx.alingo.user.dto.RegistrationRequest;
+import io.github.xpakx.alingo.user.graphql.validation.RepeatedPassword;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -24,6 +25,7 @@ public class GraphAuthController {
     }
 
     @MutationMapping
+    @RepeatedPassword
     public AuthenticationResponse register(@NotBlank @Length(min=5, max=15) @Argument String username,
                                            @NotBlank @Argument String password,
                                            @NotBlank @Argument String passwordRe) {
