@@ -1,11 +1,11 @@
 package io.github.xpakx.alingo.user.graphql;
 
 import io.github.xpakx.alingo.clients.AccountPublisher;
-import io.github.xpakx.alingo.security.JwtUtils;
 import io.github.xpakx.alingo.user.Account;
 import io.github.xpakx.alingo.user.AccountRepository;
 import io.github.xpakx.alingo.user.UserRoleRepository;
-import io.github.xpakx.alingo.user.dto.RegistrationRequest;
+import io.github.xpakx.alingo.user.dto.AuthenticationRequest;
+import io.github.xpakx.alingo.utils.GraphLogin;
 import io.github.xpakx.alingo.utils.GraphQuery;
 import io.github.xpakx.alingo.utils.GraphRegister;
 import io.restassured.http.ContentType;
@@ -16,11 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -63,7 +60,7 @@ class GraphAuthControllerTest {
     private GraphQuery getGraphQueryForRegistration(GraphRegister register) {
         GraphQuery query = new GraphQuery();
         query.setQuery("""
-                    mutation answer($username: String, $password: String, $passwordRe: String){
+                    mutation register($username: String, $password: String, $passwordRe: String){
                         register(username: $username, password: $password, passwordRe: $passwordRe)
                         {
                             token
@@ -148,6 +145,82 @@ class GraphAuthControllerTest {
                 .log().body()
                 .statusCode(OK.value())
                 .body("data.register.token", not(nullValue()));
+    }
+
+    private GraphQuery getGraphQueryForLogin(GraphLogin register) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    mutation login($username: String, $password: String){
+                        login(username: $username, password: $password)
+                        {
+                            token
+                            username
+                        }
+                    }""");
+        query.setVariables(register);
+        return query;
+    }
+
+    private GraphLogin getVariablesForLogin(String username, String password) {
+        GraphLogin variables = new GraphLogin();
+        variables.setUsername(username);
+        variables.setPassword(password);
+        return variables;
+    }
+
+    @Test
+    void shouldNotAuthenticateIfPasswordIsWrong() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("user1", "password2"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAuthenticateIfUserDoesNotExistInDb() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("user2", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldAuthenticate() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("user1", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", not(nullValue()))
+                .body("data.login.username", equalTo("user1"));
+    }
+
+    @Test
+    void shouldReturnToken() {
+        GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("user1", "password"));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.login.token", not(nullValue()));
     }
 
 }
