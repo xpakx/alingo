@@ -79,7 +79,6 @@ public class JwtRequestFilter extends GenericFilterBean {
         }
     }
 
-
     private boolean isUserAlreadyAuthenticated() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken);
