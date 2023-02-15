@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AnswerRequest {
-    @NotBlank
+    @NotBlank(message = "Guess cannot be empty")
     private String answer;
 }

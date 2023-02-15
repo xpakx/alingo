@@ -52,6 +52,7 @@ class GameControllerTest {
         when()
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
         .then()
+                .log().body()
                 .statusCode(UNAUTHORIZED.value())
                 .body("error", equalTo(UNAUTHORIZED.value()))
                 .body("errors", nullValue());
@@ -236,8 +237,7 @@ class GameControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"))
-                .body("errors", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
+                .body("message", both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive")));
     }
 
     @ParameterizedTest
@@ -253,8 +253,7 @@ class GameControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"))
-                .body("errors", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
+                .body("message", both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between")));
     }
 
     @Test

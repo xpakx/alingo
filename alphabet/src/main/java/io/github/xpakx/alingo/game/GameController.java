@@ -29,8 +29,8 @@ public class GameController {
     }
 
     @GetMapping("/course/{courseId}/exercise")
-    public ResponseEntity<ExercisesResponse> getExercises(@RequestParam @Min(value = 1) @NotNull Integer page,
-                                                          @RequestParam @NotNull @Min(value = 1) @Max(value = 20) Integer amount,
+    public ResponseEntity<ExercisesResponse> getExercises(@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
+                                                          @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
                                                           @PathVariable Long courseId) {
         return new ResponseEntity<>(
                 service.getExercisesForCourse(courseId, page-1, amount),
