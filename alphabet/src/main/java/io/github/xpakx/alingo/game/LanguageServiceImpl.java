@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
+import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +12,16 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public Language createLanguage(LanguageRequest request) {
-        return null;
+        Language language = new Language();
+        language.setName(request.getName());
+        return languageRepository.save(language);
     }
 
     @Override
     public Language editLanguage(Long languageId, LanguageRequest request) {
-        return null;
+        Language language = languageRepository.findById(languageId)
+                .orElseThrow(NotFoundException::new);
+        language.setName(request.getName());
+        return languageRepository.save(language);
     }
 }
