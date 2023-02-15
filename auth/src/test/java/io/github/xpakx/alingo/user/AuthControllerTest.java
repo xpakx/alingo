@@ -68,7 +68,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -80,7 +82,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("username"));
     }
 
     @Test
@@ -138,7 +142,9 @@ class AuthControllerTest {
          .when()
                 .post(baseUrl + "/authenticate")
          .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("message", containsStringIgnoringCase("invalid password"));
     }
 
     @Test
@@ -150,7 +156,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/authenticate")
         .then()
-                .statusCode(FORBIDDEN.value());
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("message", containsStringIgnoringCase("no user"));
     }
 
     @Test
