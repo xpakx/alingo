@@ -2,11 +2,14 @@ package io.github.xpakx.alingo.error;
 
 import io.github.xpakx.alingo.error.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -60,5 +63,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.FORBIDDEN,
                 request
         );
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return handleExceptionInternal(
+                ex,
+                constructErrorBody(ex),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+    private ErrorResponse constructErrorBody(MethodArgumentNotValidException ex) {
+        ErrorResponse errorBody = new ErrorResponse();
+        errorBody.setMessage("Validation failed!");
+        errorBody.setStatus(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorBody.setError(HttpStatus.BAD_REQUEST.value());
+        return errorBody;
     }
 }
