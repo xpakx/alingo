@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthenticationRequest {
-    @NotBlank
+    @NotBlank(message = "Username cannot be empty")
     private String username;
-    @NotBlank
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 }

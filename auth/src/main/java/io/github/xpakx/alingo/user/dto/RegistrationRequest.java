@@ -11,12 +11,11 @@ import java.util.Objects;
 @Getter
 @Setter
 public class RegistrationRequest {
-    @NotBlank
-    @Length(min=5, max=15)
+    @NotBlank(message = "Username cannot be empty")
+    @Length(min=5, max=15, message = "Username length must be between 5 and 15")
     private String username;
-    @NotBlank
+    @NotBlank(message = "Password cannot be empty")
     private String password;
-    @NotBlank
     private String passwordRe;
 
     @AssertTrue(message = "Passwords don't match!")
