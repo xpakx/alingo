@@ -52,7 +52,9 @@ class GameControllerTest {
         when()
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
     }
 
     @Test
@@ -65,7 +67,9 @@ class GameControllerTest {
         .when()
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
     }
 
     @Test
@@ -78,7 +82,10 @@ class GameControllerTest {
         .when()
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
         .then()
-                .statusCode(NOT_FOUND.value());
+                .statusCode(NOT_FOUND.value())
+                .body("error", equalTo(NOT_FOUND.value()))
+                .body("message", containsStringIgnoringCase("not found"))
+                .body("errors", nullValue());
     }
 
     private AnswerRequest getAnswerRequest(String answer) {
@@ -151,7 +158,10 @@ class GameControllerTest {
         .when()
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("guess")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -164,18 +174,23 @@ class GameControllerTest {
         .when()
                 .post(baseUrl + "/exercise/{exerciseId}", 1L)
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("guess")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
-    void shouldRespondWith401ToCGetExercisesIfNotAuthenticated() {
+    void shouldRespondWith401ToGetExercisesIfNotAuthenticated() {
         given()
                 .param("page", 1)
                 .param("amount", 10)
         .when()
                 .get(baseUrl + "/course/{courseId}/exercise", 1L)
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", hasItem(nullValue()));
     }
 
     @Test
@@ -188,7 +203,9 @@ class GameControllerTest {
         .when()
                 .get(baseUrl + "/course/{courseId}/exercise", 1L)
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
     }
 
     @Test
@@ -217,7 +234,10 @@ class GameControllerTest {
         .when()
                 .get(baseUrl + "/course/{courseId}/exercise", 1L)
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
     }
 
     @ParameterizedTest
@@ -231,7 +251,10 @@ class GameControllerTest {
         .when()
                 .get(baseUrl + "/course/{courseId}/exercise", 1L)
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
     }
 
     @Test
