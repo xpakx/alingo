@@ -3,6 +3,7 @@ package io.github.xpakx.alingo.error;
 import io.github.xpakx.alingo.error.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.List;
+import java.util.Objects;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -81,6 +85,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         errorBody.setMessage("Validation failed!");
         errorBody.setStatus(HttpStatus.BAD_REQUEST.getReasonPhrase());
         errorBody.setError(HttpStatus.BAD_REQUEST.value());
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .filter(Objects::nonNull)
+                .toList();
+        errorBody.setErrors(errors.size() > 0 ? errors : null);
         return errorBody;
     }
 }
