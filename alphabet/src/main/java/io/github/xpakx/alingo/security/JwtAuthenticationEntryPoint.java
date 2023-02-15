@@ -1,10 +1,7 @@
 package io.github.xpakx.alingo.security;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import io.github.xpakx.alingo.error.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jdk.jfr.ContentType;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
