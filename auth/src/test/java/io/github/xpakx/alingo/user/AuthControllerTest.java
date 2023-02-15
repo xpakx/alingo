@@ -195,7 +195,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/authenticate")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -207,11 +209,13 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/authenticate")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
-    void shouldNotValidateAuthRequestIfPUsernameIsEmpty() {
+    void shouldNotValidateAuthRequestIfUsernameIsEmpty() {
         AuthenticationRequest request = getAuthRequest("", "password");
         given()
                 .contentType(ContentType.JSON)
@@ -219,7 +223,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/authenticate")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -231,7 +237,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/authenticate")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -243,7 +251,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -255,7 +265,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -267,7 +279,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -279,7 +293,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -291,7 +307,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -303,7 +321,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -315,7 +335,9 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 
     @Test
@@ -327,6 +349,8 @@ class AuthControllerTest {
         .when()
                 .post(baseUrl + "/register")
         .then()
-                .statusCode(BAD_REQUEST.value());
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"));
     }
 }
