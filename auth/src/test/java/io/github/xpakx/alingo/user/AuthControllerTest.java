@@ -70,7 +70,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("passwords")).and(containsStringIgnoringCase("match"))));
     }
 
     @Test
@@ -84,7 +86,8 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("username"));
+                .body("message", containsStringIgnoringCase("username"))
+                .body("errors", nullValue());
     }
 
     @Test
@@ -144,7 +147,8 @@ class AuthControllerTest {
          .then()
                 .statusCode(UNAUTHORIZED.value())
                 .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("message", containsStringIgnoringCase("invalid password"));
+                .body("message", containsStringIgnoringCase("invalid password"))
+                .body("errors", nullValue());
     }
 
     @Test
@@ -158,7 +162,8 @@ class AuthControllerTest {
         .then()
                 .statusCode(FORBIDDEN.value())
                 .body("error", equalTo(FORBIDDEN.value()))
-                .body("message", containsStringIgnoringCase("no user"));
+                .body("message", containsStringIgnoringCase("no user"))
+                .body("errors", nullValue());
     }
 
     @Test
@@ -197,7 +202,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -211,7 +218,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -225,7 +234,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -239,7 +250,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -253,7 +266,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -267,7 +282,8 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -281,7 +297,8 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -295,7 +312,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("length"))));
     }
 
     @Test
@@ -309,7 +328,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("length"))));
     }
 
     @Test
@@ -323,7 +344,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -337,7 +360,9 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -351,6 +376,8 @@ class AuthControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", containsStringIgnoringCase("Validation failed"));
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasSize(1))
+                .body("errors", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 }
