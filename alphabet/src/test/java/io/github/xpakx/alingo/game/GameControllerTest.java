@@ -191,7 +191,7 @@ class GameControllerTest {
         .then()
                 .statusCode(UNAUTHORIZED.value())
                 .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", hasItem(nullValue()));
+                .body("errors", nullValue());
     }
 
     @Test
