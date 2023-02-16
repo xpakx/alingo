@@ -246,6 +246,40 @@ class LanguageControllerTest {
                 .put(baseUrl + "/language/{languageId}", languageId);
         Optional<Language> language = languageRepository.findById(languageId);
         assertTrue(language.isPresent());
-        assertThat(language.get(), hasProperty("name", equalTo("newLanguage")));
+        assertThat(language.get(), hasProperty("name", equalTo("newName")));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyLanguageNameWhileUpdating() {
+        Long languageId = addLanguage("language1");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getLanguageRequest(""))
+        .when()
+                .put(baseUrl + "/language/{languageId}", languageId)
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
+    }
+
+    @Test
+    void shouldNotAcceptNullLanguageNameWhileUpdating() {
+        Long languageId = addLanguage("language1");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getLanguageRequest(null))
+         .when()
+                .put(baseUrl + "/language/{languageId}", languageId)
+         .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 }
