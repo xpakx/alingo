@@ -13,15 +13,14 @@ import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-class ExerciseServiceImplTest {
+class ExerciseServiceTest {
     Random random = new Random(2109402385802350823L);
-    ExerciseService service  = new ExerciseServiceImpl();
+    ExerciseService service  = new ExerciseService();
 
     @BeforeEach
     void setUp() {
-        service = new ExerciseServiceImpl();
+        service = new ExerciseService();
     }
 
     @Test
