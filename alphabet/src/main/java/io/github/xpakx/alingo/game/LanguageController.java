@@ -17,7 +17,7 @@ public class LanguageController {
     private final LanguageService service;
 
     @PostMapping
-    @Secured("ROLE_MODERATOR")
+    @Secured("MODERATOR")
     public ResponseEntity<Language> createLanguage(@Valid @RequestBody LanguageRequest request) {
         return new ResponseEntity<>(
                 service.createLanguage(request),
@@ -26,7 +26,7 @@ public class LanguageController {
     }
 
     @PutMapping("/{languageId}")
-    @Secured("ROLE_MODERATOR")
+    @Secured("MODERATOR")
     public ResponseEntity<Language> editLanguage(@Valid @RequestBody LanguageRequest request, @PathVariable Long languageId) {
         return new ResponseEntity<>(
                 service.editLanguage(languageId, request),

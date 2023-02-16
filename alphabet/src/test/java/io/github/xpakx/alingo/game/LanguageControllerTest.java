@@ -18,8 +18,8 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
 
@@ -112,4 +112,48 @@ class LanguageControllerTest {
                 .body("name", equalTo("language1"));
     }
 
+    @Test
+    void shouldAddNewLanguageToDb() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getLanguageRequest("newLanguage"))
+        .when()
+                .post(baseUrl + "/language");
+        List<Language> languages = languageRepository.findAll();
+        assertThat(languages, hasItem(hasProperty("name", equalTo("newLanguage"))));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyLanguageName() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getLanguageRequest(""))
+        .when()
+                .post(baseUrl + "/language")
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
+    }
+
+    @Test
+    void shouldNotAcceptNullLanguageName() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getLanguageRequest(null))
+        .when()
+                .post(baseUrl + "/language")
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
+    }
 }

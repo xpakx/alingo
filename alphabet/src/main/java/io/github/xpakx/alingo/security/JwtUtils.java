@@ -62,7 +62,14 @@ public class JwtUtils {
     }
 
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> claims = new HashMap<>();
+        Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+        claims.put(
+                "roles",
+                userDetails.getAuthorities()
+                        .stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList())
+        );
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
