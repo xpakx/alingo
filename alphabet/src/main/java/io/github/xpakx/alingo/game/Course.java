@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class Course {
     private Difficulty difficulty;
 
     @ManyToOne
+    @JsonIgnore
     private Language language;
 }
