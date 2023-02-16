@@ -11,16 +11,14 @@ import java.util.Random;
 @Service
 public class ExerciseService {
     public ExercisesResponse prepareResponse(Page<Exercise> page, Random random) {
-        ExercisesResponse response = new ExercisesResponse();
-        response.setPage(page.getNumber());
-        response.setSize((long) page.getContent().size());
-        response.setTotalSize(page.getTotalElements());
-        response.setExercises(
+        return new ExercisesResponse(
                 page.getContent().stream()
                         .map((a) -> toDto(a, random))
-                        .toList()
+                        .toList(),
+                page.getNumber(),
+                (long) page.getContent().size(),
+                page.getTotalElements()
         );
-        return response;
     }
 
     private ExerciseDto toDto(Exercise exercise, Random random) {
