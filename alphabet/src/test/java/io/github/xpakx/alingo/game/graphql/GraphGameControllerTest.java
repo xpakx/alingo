@@ -53,9 +53,7 @@ class GraphGameControllerTest {
     }
 
     private AnswerRequest getAnswerRequest(String answer) {
-        AnswerRequest request = new AnswerRequest();
-        request.setAnswer(answer);
-        return request;
+        return new AnswerRequest(answer);
     }
 
     private String tokenFor(String username) {

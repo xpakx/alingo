@@ -71,8 +71,7 @@ class LanguageControllerTest {
     }
 
     private LanguageRequest getLanguageRequest(String name) {
-        LanguageRequest request = new LanguageRequest();
-        request.setName(name);
+        LanguageRequest request = new LanguageRequest(name);
         return request;
     }
 

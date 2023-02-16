@@ -21,10 +21,7 @@ public class GameService {
     }
 
     private AnswerResponse createResponse(AnswerRequest request, String answer) {
-        AnswerResponse response = new AnswerResponse();
-        response.setCorrectAnswer(answer);
-        response.setCorrect(request.getAnswer().equals(answer));
-        return response;
+        return new AnswerResponse(request.answer().equals(answer), answer);
     }
 
     private String getAnswerForExercise(Long exerciseId) {

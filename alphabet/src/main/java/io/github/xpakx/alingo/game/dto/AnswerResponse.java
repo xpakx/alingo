@@ -1,11 +1,5 @@
 package io.github.xpakx.alingo.game.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+public record AnswerResponse(boolean correct, String correctAnswer) {
 
-@Getter
-@Setter
-public class AnswerResponse {
-    boolean correct;
-    String correctAnswer;
 }

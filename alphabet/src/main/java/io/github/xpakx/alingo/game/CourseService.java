@@ -26,11 +26,11 @@ public class CourseService {
     }
 
     private void copyFieldsToCourse(CourseRequest request, Course course) {
-        course.setName(request.getName());
-        course.setDescription(request.getDescription());
-        course.setDifficulty(request.getDifficulty());
-        if(request.getLanguageId() != null) {
-            course.setLanguage(languageRepository.getReferenceById(request.getLanguageId()));
+        course.setName(request.name());
+        course.setDescription(request.description());
+        course.setDifficulty(request.difficulty());
+        if(request.languageId() != null) {
+            course.setLanguage(languageRepository.getReferenceById(request.languageId()));
         } else {
             course.setLanguage(null);
         }

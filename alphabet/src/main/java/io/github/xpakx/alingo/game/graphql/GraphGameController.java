@@ -34,8 +34,6 @@ public class GraphGameController {
     }
 
     private AnswerRequest toRequestAnswer(String guess) {
-        AnswerRequest request = new AnswerRequest();
-        request.setAnswer(guess);
-        return request;
+        return new AnswerRequest(guess);
     }
 }

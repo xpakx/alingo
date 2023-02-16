@@ -12,14 +12,14 @@ public class LanguageService {
 
     public Language createLanguage(LanguageRequest request) {
         Language language = new Language();
-        language.setName(request.getName());
+        language.setName(request.name());
         return languageRepository.save(language);
     }
 
     public Language editLanguage(Long languageId, LanguageRequest request) {
         Language language = languageRepository.findById(languageId)
                 .orElseThrow(NotFoundException::new);
-        language.setName(request.getName());
+        language.setName(request.name());
         return languageRepository.save(language);
     }
 }
