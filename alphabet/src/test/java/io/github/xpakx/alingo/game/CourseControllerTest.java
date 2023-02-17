@@ -37,6 +37,8 @@ class CourseControllerTest {
     JwtUtils jwt;
     @Autowired
     CourseRepository courseRepository;
+    @Autowired
+    LanguageRepository languageRepository;
 
     @BeforeEach
     void setUp() {
@@ -46,6 +48,7 @@ class CourseControllerTest {
     @AfterEach
     void tearDown() {
         courseRepository.deleteAll();
+        languageRepository.deleteAll();
     }
 
     @Test
@@ -156,6 +159,136 @@ class CourseControllerTest {
                 .body(getCourseRequest(null))
         .when()
                 .post(baseUrl + "/course")
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
+    }
+
+    @Test
+    void shouldRespondWith401ToUpdateCourseIfNotAuthenticated() {
+        when()
+                .put(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToUpdateCourseIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("329432853295")
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest("course"))
+        .when()
+                .put(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateCourseIfUserIsNotModerator() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest("course"))
+        .when()
+                .put(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith404ToUpdateCourseIfCourseDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest("course"))
+        .when()
+                .put(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(NOT_FOUND.value())
+                .body("error", equalTo(NOT_FOUND.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldUpdateCourse() {
+        Long courseId = addCourse("course1");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest("newName"))
+        .when()
+                .put(baseUrl + "/course/{courseId}", courseId)
+        .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("newName"));
+    }
+
+    private Long addCourse(String name) {
+        return addCourse(name, null);
+    }
+
+    private Long addCourse(String name, Long languageId) {
+        Course course = new Course();
+        course.setName(name);
+        course.setLanguage(languageId != null ? languageRepository.getReferenceById(languageId) : null);
+        return courseRepository.save(course).getId();
+    }
+
+    @Test
+    void shouldUpdateCourseIndDb() {
+        Long courseId = addCourse("course");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest("newName"))
+        .when()
+                .put(baseUrl + "/course/{courseId}", courseId);
+        Optional<Course> language = courseRepository.findById(courseId);
+        assertTrue(language.isPresent());
+        assertThat(language.get(), hasProperty("name", equalTo("newName")));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyCourseNameWhileUpdating() {
+        Long courseId = addCourse("course");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest(""))
+        .when()
+                .put(baseUrl + "/course/{courseId}", courseId)
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
+    }
+
+    @Test
+    void shouldNotAcceptNullCourseNameWhileUpdating() {
+        Long courseId = addCourse("course");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest(null))
+        .when()
+                .put(baseUrl + "/course/{courseId}", courseId)
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
