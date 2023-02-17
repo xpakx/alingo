@@ -324,7 +324,7 @@ class CourseControllerTest {
     @Test
     void shouldAddCourseWithLanguageField() {
         Long languageId = addLanguage("lang");
-        Integer courseId = given()
+        Long courseId = given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
@@ -332,8 +332,10 @@ class CourseControllerTest {
         .when()
                 .post(baseUrl + "/course")
         .then()
-                .extract().path("id");
-        Optional<Course> language = courseRepository.findById(Long.valueOf(courseId));
+                .extract()
+                .jsonPath()
+                .getLong("id");
+        Optional<Course> language = courseRepository.findById(courseId);
         assertTrue(language.isPresent());
         assertThat(language.get(), hasProperty("name", equalTo("course")));
         assertThat(language.get(), hasProperty("description", equalTo("desc")));
