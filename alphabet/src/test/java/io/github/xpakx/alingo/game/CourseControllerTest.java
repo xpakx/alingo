@@ -296,4 +296,48 @@ class CourseControllerTest {
                 .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
+    @Test
+    void shouldUpdateCourseWithLanguageField() {
+        Long courseId = addCourse("course");
+        Long languageId = addLanguage("lang");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest("newName", "desc", Difficulty.EASY, languageId))
+        .when()
+                .put(baseUrl + "/course/{courseId}", courseId);
+        Optional<Course> language = courseRepository.findById(courseId);
+        assertTrue(language.isPresent());
+        assertThat(language.get(), hasProperty("name", equalTo("newName")));
+        assertThat(language.get(), hasProperty("description", equalTo("desc")));
+        assertThat(language.get(), hasProperty("difficulty", equalTo(Difficulty.EASY)));
+        assertThat(language.get(), hasProperty("language", hasProperty("id", equalTo(languageId))));
+    }
+
+    private Long addLanguage(String name) {
+        Language language = new Language();
+        language.setName(name);
+        return languageRepository.save(language).getId();
+    }
+
+    @Test
+    void shouldAddCourseWithLanguageField() {
+        Long languageId = addLanguage("lang");
+        Integer courseId = given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getCourseRequest("course", "desc", Difficulty.EASY, languageId))
+        .when()
+                .post(baseUrl + "/course")
+        .then()
+                .extract().path("id");
+        Optional<Course> language = courseRepository.findById(Long.valueOf(courseId));
+        assertTrue(language.isPresent());
+        assertThat(language.get(), hasProperty("name", equalTo("course")));
+        assertThat(language.get(), hasProperty("description", equalTo("desc")));
+        assertThat(language.get(), hasProperty("difficulty", equalTo(Difficulty.EASY)));
+        assertThat(language.get(), hasProperty("language", hasProperty("id", equalTo(languageId))));
+    }
 }
