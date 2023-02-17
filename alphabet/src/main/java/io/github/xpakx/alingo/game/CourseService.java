@@ -18,8 +18,8 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    public Course editCourse(Long languageId, CourseRequest request) {
-        Course course = courseRepository.findById(languageId)
+    public Course editCourse(Long courseId, CourseRequest request) {
+        Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundException::new);
         copyFieldsToCourse(request, course);
         return courseRepository.save(course);

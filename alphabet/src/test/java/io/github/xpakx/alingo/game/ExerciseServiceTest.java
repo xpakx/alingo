@@ -16,11 +16,11 @@ import static org.hamcrest.Matchers.*;
 
 class ExerciseServiceTest {
     Random random = new Random(2109402385802350823L);
-    ExerciseService service  = new ExerciseService();
+    ExerciseService service  = new ExerciseService(null, null);
 
     @BeforeEach
     void setUp() {
-        service = new ExerciseService();
+        service = new ExerciseService(null, null);
     }
 
     @Test
