@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ public class Exercise {
     private String correctAnswer;
 
     @ManyToOne
+    @JsonIgnore
     private Course course;
 
 }
