@@ -151,7 +151,7 @@ class CourseControllerTest {
     }
 
     @Test
-    void shouldNotAcceptNullLanguageName() {
+    void shouldNotAcceptNullCourseName() {
         given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
