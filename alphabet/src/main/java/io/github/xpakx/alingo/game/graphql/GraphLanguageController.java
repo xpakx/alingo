@@ -2,7 +2,6 @@ package io.github.xpakx.alingo.game.graphql;
 
 import io.github.xpakx.alingo.game.Language;
 import io.github.xpakx.alingo.game.LanguageService;
-import io.github.xpakx.alingo.game.dto.AnswerResponse;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,12 +18,12 @@ public class GraphLanguageController {
     private final LanguageService service;
 
     @MutationMapping
-    public Language addLanguage(@NotBlank(message = "Language name cannot be empty") String name) {
+    public Language addLanguage(@NotBlank(message = "Language name cannot be empty") @Argument String name) {
         return service.createLanguage(toRequest(name));
     }
 
     @MutationMapping
-    public Language updateLanguage(@NotNull Long languageId, @NotBlank(message = "Language name cannot be empty") String name) {
+    public Language updateLanguage(@NotNull @Argument Long languageId, @NotBlank(message = "Language name cannot be empty") @Argument String name) {
         return service.editLanguage(languageId, toRequest(name));
     }
 
