@@ -15,10 +15,42 @@ type AnswerResponse {
     correctAnswer: String!
 }
 
+type Language {
+    id: ID!
+    name: String!
+}
+
+type Course {
+    id: ID!
+    name: String!
+    description: String
+    difficulty: String
+}
+
+type Exercise {
+    id: ID!
+    letter: String
+    wrongAnswer: String!
+    correctAnswer: String!
+}
+
+enum Difficulty {
+    EASY
+    MEDIUM
+    HARD
+    VERY_HARD
+}
+
 type Query {
     courseExercises(course: Int, page: Int, amount: Int): ExercisesResponse!
 }
 
 type Mutation {
     answer(exercise: Int, guess: String): AnswerResponse!
+    addLanguage(name: String): Language!
+    editLanguage(languageId: ID, name: String): Language!
+    addCourse(name: String, description: String, difficulty: Difficulty, languageId: Int): Course!
+    editCourse(courseId: ID, name: String, description: String, difficulty: Difficulty, languageId: Int): Course!
+    addExercise(letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
+    editExercise(exerciseId: ID, letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
 }
