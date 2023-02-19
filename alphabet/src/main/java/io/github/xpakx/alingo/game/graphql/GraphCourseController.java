@@ -19,7 +19,7 @@ public class GraphCourseController {
     private final CourseService service;
 
     @MutationMapping
-    public Course addLanguage(@NotBlank(message = "Course name cannot be empty!") @Argument String name,
+    public Course addCourse(@NotBlank(message = "Course name cannot be empty!") @Argument String name,
                                 @Argument String description,
                                 @Argument Difficulty difficulty,
                                 @Argument Long languageId) {
@@ -27,7 +27,7 @@ public class GraphCourseController {
     }
 
     @MutationMapping
-    public Course updateLanguage(@NotNull @Argument Long courseId,
+    public Course updateCourse(@NotNull @Argument Long courseId,
                                  @NotBlank(message = "Course name cannot be empty!") @Argument String name,
                                  @Argument String description,
                                  @Argument Difficulty difficulty,
