@@ -6,6 +6,7 @@ import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.github.xpakx.alingo.utils.GraphLanguage;
 import io.github.xpakx.alingo.utils.GraphQuery;
+import io.github.xpakx.alingo.utils.GraphUpdateLanguage;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +20,13 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GraphLanguageControllerTest {
@@ -50,7 +51,7 @@ class GraphLanguageControllerTest {
 
     @Test
     void shouldRespondWith401ToAddLanguageIfNotAuthenticated() {
-        GraphQuery query = getGraphQuery(getVariables("lang"));
+        GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .contentType(ContentType.JSON)
                 .body(query)
@@ -62,7 +63,7 @@ class GraphLanguageControllerTest {
                 .body("errors", nullValue());
     }
 
-    private GraphQuery getGraphQuery(GraphLanguage answer) {
+    private GraphQuery getNewLanguageGraphQuery(GraphLanguage answer) {
         GraphQuery query = new GraphQuery();
         query.setQuery("""
                     mutation addLanguage($name: String){
@@ -76,13 +77,31 @@ class GraphLanguageControllerTest {
         return query;
     }
 
-    private GraphLanguage getVariables(String name) {
+    private GraphLanguage getNewLanguageVariables(String name) {
         return new GraphLanguage(name);
+    }
+
+    private GraphQuery getUpdateGraphQuery(GraphUpdateLanguage answer) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    mutation editLanguage($id: ID, $name: String){
+                        editLanguage(languageId: $id, name: $name)
+                        {
+                            id
+                            name
+                        }
+                    }""");
+        query.setVariables(answer);
+        return query;
+    }
+
+    private GraphUpdateLanguage getUpdateVariables(String name, Long languageId) {
+        return new GraphUpdateLanguage(languageId, name);
     }
 
     @Test
     void shouldRespondWith401ToAddLanguageIfTokenIsWrong() {
-        GraphQuery query = getGraphQuery(getVariables("lang"));
+        GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .auth()
                 .oauth2("204230990324")
@@ -101,7 +120,7 @@ class GraphLanguageControllerTest {
 
     @Test
     void shouldRespondWith403ToAddLanguageIfUserIsNotModerator() {
-        GraphQuery query = getGraphQuery(getVariables("lang"));
+        GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .auth()
                 .oauth2(tokenFor("user1"))
@@ -123,7 +142,7 @@ class GraphLanguageControllerTest {
 
     @Test
     void shouldAddLanguage() {
-        GraphQuery query = getGraphQuery(getVariables("lang"));
+        GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
@@ -138,7 +157,7 @@ class GraphLanguageControllerTest {
 
     @Test
     void shouldAddNewLanguageToDb() {
-        GraphQuery query = getGraphQuery(getVariables("lang"));
+        GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
@@ -152,7 +171,7 @@ class GraphLanguageControllerTest {
 
     @Test
     void shouldNotAcceptEmptyLanguageName() {
-        GraphQuery query = getGraphQuery(getVariables(""));
+        GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables(""));
         given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
@@ -168,7 +187,7 @@ class GraphLanguageControllerTest {
 
     @Test
     void shouldNotAcceptNullLanguageName() {
-        GraphQuery query = getGraphQuery(getVariables(null));
+        GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables(null));
         given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
@@ -182,4 +201,130 @@ class GraphLanguageControllerTest {
                 .body("errors", not(nullValue()));
     }
 
+    @Test
+    void shouldRespondWith401ToUpdateLanguageIfNotAuthenticated() {
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables("lang", 1L));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToUpdateLanguageIfTokenIsWrong() {
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables("lang", 1L));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateLanguageIfUserIsNotModerator() {
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables("lang", 1L));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(FORBIDDEN.value());
+    }
+
+    @Test
+    void shouldRespondWith404ToUpdateLanguageIfLanguageDoesNotExist() {
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables("lang", 1L));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(NOT_FOUND.value());
+    }
+
+    @Test
+    void shouldUpdateLanguage() {
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables("newLanguage", addLanguage("language")));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.editLanguage.name", equalTo("newLanguage"));
+    }
+
+    private Long addLanguage(String name) {
+        Language language = new Language();
+        language.setName(name);
+        return languageRepository.save(language).getId();
+    }
+
+    @Test
+    void shouldUpdateLanguageIndDb() {
+        Long languageId = addLanguage("language");
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables("newLanguage", languageId));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql");
+        Optional<Language> language = languageRepository.findById(languageId);
+        assertTrue(language.isPresent());
+        assertThat(language.get(), hasProperty("name", equalTo("newLanguage")));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyLanguageNameWhileUpdating() {
+        Long languageId = addLanguage("language1");
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables("", languageId));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNullLanguageNameWhileUpdating() {
+        Long languageId = addLanguage("language1");
+        GraphQuery query = getUpdateGraphQuery(getUpdateVariables(null, languageId));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
 }
