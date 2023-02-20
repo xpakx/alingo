@@ -129,7 +129,9 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(FORBIDDEN.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 
     private String tokenFor(String username) {
@@ -180,7 +182,7 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(BAD_REQUEST.value())
+                .statusCode(OK.value())
                 .body("data", nullValue())
                 .body("errors", not(nullValue()));
     }
@@ -196,7 +198,7 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(BAD_REQUEST.value())
+                .statusCode(OK.value())
                 .body("data", nullValue())
                 .body("errors", not(nullValue()));
     }
@@ -240,7 +242,9 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(FORBIDDEN.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 
     @Test
@@ -254,7 +258,9 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(NOT_FOUND.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 
     @Test
@@ -306,7 +312,7 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(BAD_REQUEST.value())
+                .statusCode(OK.value())
                 .body("data", nullValue())
                 .body("errors", not(nullValue()));
     }
@@ -323,7 +329,7 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(BAD_REQUEST.value())
+                .statusCode(OK.value())
                 .body("data", nullValue())
                 .body("errors", not(nullValue()));
     }
