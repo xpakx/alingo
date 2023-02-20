@@ -2,7 +2,6 @@ package io.github.xpakx.alingo.game.graphql;
 
 import io.github.xpakx.alingo.game.Language;
 import io.github.xpakx.alingo.game.LanguageRepository;
-import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.github.xpakx.alingo.utils.GraphLanguage;
 import io.github.xpakx.alingo.utils.GraphQuery;
@@ -113,17 +112,12 @@ class GraphLanguageControllerTest {
                 .statusCode(UNAUTHORIZED.value());
     }
 
-    private LanguageRequest getLanguageRequest(String name) {
-        LanguageRequest request = new LanguageRequest(name);
-        return request;
-    }
-
     @Test
     void shouldRespondWith403ToAddLanguageIfUserIsNotModerator() {
         GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .auth()
-                .oauth2(tokenFor("user1"))
+                .oauth2(tokenFor())
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -134,12 +128,12 @@ class GraphLanguageControllerTest {
                 .body("errors", not(nullValue()));
     }
 
-    private String tokenFor(String username) {
-        return tokenFor(username, new ArrayList<>());
+    private String tokenFor() {
+        return tokenFor(new ArrayList<>());
     }
 
-    private String tokenFor(String username, List<GrantedAuthority> authorities) {
-        return jwt.generateToken(new User(username, "", authorities));
+    private String tokenFor(List<GrantedAuthority> authorities) {
+        return jwt.generateToken(new User("user1", "", authorities));
     }
 
     @Test
@@ -147,7 +141,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -162,7 +156,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables("lang"));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
        .when()
@@ -176,7 +170,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables(""));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -192,7 +186,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getNewLanguageGraphQuery(getNewLanguageVariables(null));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -236,7 +230,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getUpdateGraphQuery(getUpdateVariables("lang", 1L));
         given()
                 .auth()
-                .oauth2(tokenFor("user1"))
+                .oauth2(tokenFor())
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -252,7 +246,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getUpdateGraphQuery(getUpdateVariables("lang", 1L));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -268,7 +262,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getUpdateGraphQuery(getUpdateVariables("newLanguage", addLanguage("language")));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -290,7 +284,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getUpdateGraphQuery(getUpdateVariables("newLanguage", languageId));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -306,7 +300,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getUpdateGraphQuery(getUpdateVariables("", languageId));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -323,7 +317,7 @@ class GraphLanguageControllerTest {
         GraphQuery query = getUpdateGraphQuery(getUpdateVariables(null, languageId));
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()

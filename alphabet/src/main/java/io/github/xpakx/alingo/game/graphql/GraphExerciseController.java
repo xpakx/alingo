@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 
@@ -17,6 +18,7 @@ public class GraphExerciseController {
     private final ExerciseService service;
 
     @MutationMapping
+    @Secured("MODERATOR")
     public Exercise addExercise(@Argument String letter,
                                 @NotBlank(message = "Wrong answer must be provided!") @Argument String wrongAnswer,
                                 @NotBlank(message = "Correct answer must be provided!") @Argument String correctAnswer,
@@ -25,6 +27,7 @@ public class GraphExerciseController {
     }
 
     @MutationMapping
+    @Secured("MODERATOR")
     public Exercise updateExercise(@NotNull @Argument Long exerciseId,
                                    @Argument String letter,
                                    @NotBlank(message = "Wrong answer must be provided!") @Argument String wrongAnswer,
