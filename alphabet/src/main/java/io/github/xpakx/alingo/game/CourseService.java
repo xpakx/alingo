@@ -1,7 +1,6 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseRequest;
-import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

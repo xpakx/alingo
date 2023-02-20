@@ -18,6 +18,7 @@ public class Course {
 
     private String description;
 
+    @Enumerated
     private Difficulty difficulty;
 
     @ManyToOne

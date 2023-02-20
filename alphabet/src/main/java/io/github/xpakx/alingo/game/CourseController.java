@@ -1,7 +1,6 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseRequest;
-import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

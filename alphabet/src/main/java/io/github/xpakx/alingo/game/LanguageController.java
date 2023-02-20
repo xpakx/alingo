@@ -1,7 +1,5 @@
 package io.github.xpakx.alingo.game;
 
-import io.github.xpakx.alingo.game.dto.AnswerRequest;
-import io.github.xpakx.alingo.game.dto.AnswerResponse;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
