@@ -26,7 +26,7 @@ public class GraphLanguageController {
 
     @MutationMapping
     @Secured("MODERATOR")
-    public Language updateLanguage(@NotNull @Argument Long languageId, @NotBlank(message = "Language name cannot be empty") @Argument String name) {
+    public Language editLanguage(@NotNull @Argument Long languageId, @NotBlank(message = "Language name cannot be empty") @Argument String name) {
         return service.editLanguage(languageId, toRequest(name));
     }
 
