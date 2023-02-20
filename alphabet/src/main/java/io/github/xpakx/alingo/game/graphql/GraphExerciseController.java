@@ -28,7 +28,7 @@ public class GraphExerciseController {
 
     @MutationMapping
     @Secured("MODERATOR")
-    public Exercise updateExercise(@NotNull @Argument Long exerciseId,
+    public Exercise editExercise(@NotNull @Argument Long exerciseId,
                                    @Argument String letter,
                                    @NotBlank(message = "Wrong answer must be provided!") @Argument String wrongAnswer,
                                    @NotBlank(message = "Correct answer must be provided!") @Argument String correctAnswer,

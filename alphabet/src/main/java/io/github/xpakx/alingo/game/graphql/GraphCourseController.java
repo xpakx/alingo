@@ -30,7 +30,7 @@ public class GraphCourseController {
 
     @MutationMapping
     @Secured("MODERATOR")
-    public Course updateCourse(@NotNull @Argument Long courseId,
+    public Course editCourse(@NotNull @Argument Long courseId,
                                  @NotBlank(message = "Course name cannot be empty!") @Argument String name,
                                  @Argument String description,
                                  @Argument Difficulty difficulty,
