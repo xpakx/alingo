@@ -1,7 +1,6 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseRequest;
-import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
