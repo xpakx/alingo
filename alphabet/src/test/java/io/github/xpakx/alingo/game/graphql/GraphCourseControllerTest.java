@@ -366,4 +366,27 @@ class GraphCourseControllerTest {
         language.setName(name);
         return languageRepository.save(language).getId();
     }
+
+    @Test
+    void shouldAddCourseWithLanguageField() {
+        Long languageId = addLanguage("lang");
+        GraphQuery query = getNewCourseGraphQuery(getNewCourseVariables("course", "description", "EASY", languageId));
+        Long courseId = given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .extract()
+                .jsonPath()
+                .getLong("data.addCourse.id");
+        Optional<Course> language = courseRepository.findById(courseId);
+        assertTrue(language.isPresent());
+        assertThat(language.get(), hasProperty("name", equalTo("course")));
+        assertThat(language.get(), hasProperty("description", equalTo("description")));
+        assertThat(language.get(), hasProperty("difficulty", equalTo(Difficulty.EASY)));
+        assertThat(language.get(), hasProperty("language", hasProperty("id", equalTo(languageId))));
+    }
 }
