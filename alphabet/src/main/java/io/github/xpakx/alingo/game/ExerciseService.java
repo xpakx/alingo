@@ -5,6 +5,7 @@ import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Random;
@@ -37,10 +38,11 @@ public class ExerciseService {
         return dto;
     }
 
+    @Transactional
     public Exercise createExercise(ExerciseRequest request) {
         Exercise exercise = new Exercise();
         copyFieldsToExercise(request, exercise);
-        exercise.setOrder(0);
+        exercise.setOrder(exerciseRepository.getMaxOrderByCourseId(exercise.getCourse().getId()));
         return exerciseRepository.save(exercise);
     }
 

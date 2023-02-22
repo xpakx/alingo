@@ -21,6 +21,7 @@ public class Exercise {
     @Column(nullable = false)
     private String correctAnswer;
 
+    @Column(name = "course_order")
     private Integer order;
 
     @ManyToOne
