@@ -21,10 +21,12 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -72,11 +74,11 @@ class GraphExerciseControllerTest {
         return new GraphExercise(letter, wrong, correct, courseId);
     }
 
-    private GraphQuery getUpdateExerciseGraphQuery(GraphExercise answer) {
+    private GraphQuery getUpdateExerciseGraphQuery(GraphUpdateExercise answer) {
         GraphQuery query = new GraphQuery();
         query.setQuery("""
-                    mutation addExercise($id: ID, $letter: String, $wrongAnswer: String, $correctAnswer: String, $courseId: Int){
-                        addExercise(exerciseId: $id, letter: $letter, wrongAnswer: $wrongAnswer, correctAnswer: $correctAnswer, courseId: $courseId)
+                    mutation editExercise($id: ID, $letter: String, $wrongAnswer: String, $correctAnswer: String, $courseId: Int){
+                        editExercise(exerciseId: $id, letter: $letter, wrongAnswer: $wrongAnswer, correctAnswer: $correctAnswer, courseId: $courseId)
                         {
                             id
                             letter
@@ -260,5 +262,199 @@ class GraphExerciseControllerTest {
                 .body("errors", not(nullValue()));
     }
 
+    @Test
+    void shouldRespondWith401ToUpdateExerciseIfNotAuthenticated() {
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(1L, "a", "wrong", "correct", 1L));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
 
+    @Test
+    void shouldRespondWith401ToUpdateExerciseIfTokenIsWrong() {
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(1L, "a", "wrong", "correct", 1L));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToUpdateExerciseIfUserIsNotModerator() {
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(1L, "a", "wrong", "correct", 1L));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldRespondWith404ToUpdateExerciseIfExerciseDoesNotExist() {
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(1L, "a", "wrong", "correct", 1L));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldUpdateExercise() {
+        Long courseId = addCourse();
+        Long exerciseId = addExercise("a", courseId);
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", "correct", courseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .log().body()
+                .statusCode(OK.value())
+                .body("data.editExercise.letter", equalTo("g"));
+    }
+
+    private Long addExercise(String letter, Long courseId) {
+        Exercise exercise = new Exercise();
+        exercise.setLetter(letter);
+        exercise.setWrongAnswer("wrong");
+        exercise.setCorrectAnswer("correct");
+        exercise.setCourse(courseId != null ? courseRepository.getReferenceById(courseId) : null);
+        return exerciseRepository.save(exercise).getId();
+    }
+
+    @Test
+    void shouldUpdateExerciseIndDb() {
+        Long courseId = addCourse();
+        Long exerciseId = addExercise("a", courseId);
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", "correct", courseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql");
+        Optional<Exercise> exercise = exerciseRepository.findById(exerciseId);
+        assertTrue(exercise.isPresent());
+        assertThat(exercise.get(), hasProperty("letter", equalTo("g")));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyWrongAnswerWhileUpdating() {
+        Long courseId = addCourse();
+        Long exerciseId = addExercise("a", courseId);
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "", "correct", courseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNullWrongAnswerWhileUpdating() {
+        Long courseId = addCourse();
+        Long exerciseId = addExercise("a", courseId);
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", null, "correct", courseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptEmptyCorrectAnswerWhileUpdating() {
+        Long courseId = addCourse();
+        Long exerciseId = addExercise("a", courseId);
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", "", courseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNullCorrectAnswerWhileUpdating() {
+
+        Long courseId = addCourse();
+        Long exerciseId = addExercise("a", courseId);
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", null, courseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNullCourseIdWhileUpdating() {
+
+        Long courseId = addCourse();
+        Long exerciseId = addExercise("a", courseId);
+        GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", "correct", null));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
 }
