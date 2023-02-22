@@ -40,6 +40,7 @@ public class ExerciseService {
     public Exercise createExercise(ExerciseRequest request) {
         Exercise exercise = new Exercise();
         copyFieldsToExercise(request, exercise);
+        exercise.setOrder(0);
         return exerciseRepository.save(exercise);
     }
 

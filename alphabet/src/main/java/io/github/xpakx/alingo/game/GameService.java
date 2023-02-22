@@ -36,6 +36,6 @@ public class GameService {
     }
 
     private PageRequest toPageRequest(Integer page, Integer amount) {
-        return PageRequest.of(page, amount, Sort.by(Sort.Order.asc("id")));
+        return PageRequest.of(page, amount, Sort.by(Sort.Order.asc("order")).and(Sort.by(Sort.Order.asc("id"))));
     }
 }

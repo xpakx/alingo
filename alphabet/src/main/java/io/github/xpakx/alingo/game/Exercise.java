@@ -21,6 +21,8 @@ public class Exercise {
     @Column(nullable = false)
     private String correctAnswer;
 
+    private Integer order;
+
     @ManyToOne
     @JsonIgnore
     private Course course;
