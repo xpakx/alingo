@@ -32,6 +32,7 @@ type Exercise {
     letter: String
     wrongAnswer: String!
     correctAnswer: String!
+    order: Int!
 }
 
 enum Difficulty {

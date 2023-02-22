@@ -64,6 +64,7 @@ class GraphExerciseControllerTest {
                             letter
                             wrongAnswer
                             correctAnswer
+                            order
                         }
                     }""");
         query.setVariables(answer);
@@ -84,6 +85,7 @@ class GraphExerciseControllerTest {
                             letter
                             wrongAnswer
                             correctAnswer
+                            order
                         }
                     }""");
         query.setVariables(answer);
