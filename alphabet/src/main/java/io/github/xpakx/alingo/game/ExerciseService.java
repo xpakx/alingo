@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -62,5 +63,21 @@ public class ExerciseService {
         } else {
             exercise.setCourse(null);
         }
+    }
+
+    public Exercise changeOrder(Long exerciseId, OrderRequest request) {
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(NotFoundException::new);
+        if(Objects.equals(exercise.getOrder(), request.newOrder())) {
+            return exercise;
+        }
+        if(request.newOrder() > exercise.getOrder()) {
+            exerciseRepository.decrementOrderBetween(exercise.getCourse().getId(), exercise.getOrder(), request.newOrder()+1);
+            exercise.setOrder(request.newOrder());
+        } else {
+            exerciseRepository.incrementOrderBetween(exercise.getCourse().getId(),request.newOrder()-1,  exercise.getOrder());
+            exercise.setOrder(request.newOrder());
+        }
+        return exerciseRepository.save(exercise);
     }
 }
