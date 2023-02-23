@@ -8,6 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"course_order", "course_id"}))
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
