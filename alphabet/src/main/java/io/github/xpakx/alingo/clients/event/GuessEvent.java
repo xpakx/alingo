@@ -8,6 +8,5 @@ import lombok.Setter;
 public class GuessEvent {
     private String username;
     private Long exerciseId;
-    private String letter;
     private boolean correct;
 }
