@@ -1,10 +1,12 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.ExerciseRequest;
+import io.github.xpakx.alingo.game.dto.OrderRequest;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -404,5 +406,64 @@ class ExerciseControllerTest {
                 .body("error", equalTo(BAD_REQUEST.value()))
                 .body("message", containsStringIgnoringCase("Validation failed"))
                 .body("errors", hasItem(both(containsStringIgnoringCase("belong")).and(containsStringIgnoringCase("course"))));
+    }
+
+    @Test
+    void shouldRespondWith401ToReorderExerciseIfNotAuthenticated() {
+        when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToReorderExerciseIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("329432853295")
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(0))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    private OrderRequest getOrderRequest(Integer order) {
+        return new OrderRequest(order);
+    }
+
+    @Test
+    void shouldRespondWith403ToReorderExerciseIfUserIsNotModerator() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(0))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", 1L)
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith404ToReorderExerciseIfExerciseDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(0))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", 1L)
+        .then()
+                .statusCode(NOT_FOUND.value())
+                .body("error", equalTo(NOT_FOUND.value()))
+                .body("errors", nullValue());
     }
 }
