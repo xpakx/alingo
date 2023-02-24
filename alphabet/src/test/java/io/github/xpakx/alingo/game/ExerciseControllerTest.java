@@ -466,4 +466,38 @@ class ExerciseControllerTest {
                 .body("error", equalTo(NOT_FOUND.value()))
                 .body("errors", nullValue());
     }
+
+    @Test
+    void shouldNotAcceptNullOrderWhileReordering() {
+        Long exerciseId = addExercise("g", addCourse());
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(null))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", exerciseId)
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("provided"))));
+    }
+
+    @Test
+    void shouldNotAcceptNegatvieOrderWhileReordering() {
+        Long exerciseId = addExercise("g", addCourse());
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(-1))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", exerciseId)
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("Validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("negative"))));
+    }
 }
