@@ -628,4 +628,23 @@ class ExerciseControllerTest {
         assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(2)))));
         assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(3)))));
     }
+
+    @Test
+    void shouldNotAcceptOrderGreaterThanTheGreatestForTheCourse() {
+        Long courseId = addCourse();
+        addOrderedExercise(courseId, 0);
+        Long exerciseId = addOrderedExercise(courseId, 1);
+        addOrderedExercise(courseId, 2);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(5))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", exerciseId)
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("high"))));
+    }
 }
