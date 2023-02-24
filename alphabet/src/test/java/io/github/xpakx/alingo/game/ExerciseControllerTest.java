@@ -485,7 +485,7 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void shouldNotAcceptNegatvieOrderWhileReordering() {
+    void shouldNotAcceptNegativeOrderWhileReordering() {
         Long exerciseId = addExercise("g", addCourse());
         given()
                 .auth()
@@ -499,5 +499,133 @@ class ExerciseControllerTest {
                 .body("error", equalTo(BAD_REQUEST.value()))
                 .body("message", containsStringIgnoringCase("Validation failed"))
                 .body("errors", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("negative"))));
+    }
+
+    @Test
+    void shouldReorder() {
+        Long exerciseId = addOrderedExercise(addCourse(), 0);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(0))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", exerciseId)
+        .then()
+                .statusCode(OK.value());
+    }
+
+    private Long addOrderedExercise(Long courseId, Integer order) {
+        Exercise exercise = new Exercise();
+        exercise.setLetter("a");
+        exercise.setWrongAnswer("wrong");
+        exercise.setCorrectAnswer("correct");
+        exercise.setCourse(courseId != null ? courseRepository.getReferenceById(courseId) : null);
+        exercise.setOrder(order);
+        return exerciseRepository.save(exercise).getId();
+    }
+
+    @Test
+    void shouldReorderUpwardWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        Long ex5Id = addOrderedExercise(courseId, 4);
+        Long ex6Id = addOrderedExercise(courseId, 5);
+        Long ex7Id = addOrderedExercise(courseId, 6);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(1))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", ex5Id)
+        .then()
+                .statusCode(OK.value());
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex5Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(3)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(4)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex6Id))).and(hasProperty("order", equalTo(5)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex7Id))).and(hasProperty("order", equalTo(6)))));
+    }
+
+    @Test
+    void shouldReorderDownwardWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        Long ex5Id = addOrderedExercise(courseId, 4);
+        Long ex6Id = addOrderedExercise(courseId, 5);
+        Long ex7Id = addOrderedExercise(courseId, 6);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(5))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", ex3Id)
+        .then()
+                .statusCode(OK.value());
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex5Id))).and(hasProperty("order", equalTo(3)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex6Id))).and(hasProperty("order", equalTo(4)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(5)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex7Id))).and(hasProperty("order", equalTo(6)))));
+    }
+
+    @Test
+    void shouldMoveAtTheFirstPlaceWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(0))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", ex3Id)
+        .then()
+                .statusCode(OK.value());
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(3)))));
+    }
+
+    @Test
+    void shouldMoveAtTheLastPlaceWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(getOrderRequest(3))
+        .when()
+                .put(baseUrl + "/exercise/{exerciseId}/order", ex2Id)
+        .then()
+                .statusCode(OK.value());
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(3)))));
     }
 }
