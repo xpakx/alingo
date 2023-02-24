@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.clients.PublishGuess;
 import io.github.xpakx.alingo.game.dto.*;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class GameService {
     private final ExerciseRepository exerciseRepository;
     private final ExerciseService exerciseService;
 
+    @PublishGuess
     public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
         return createResponse(request, getAnswerForExercise(exerciseId));
     }

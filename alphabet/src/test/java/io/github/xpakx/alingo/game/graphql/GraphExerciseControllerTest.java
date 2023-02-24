@@ -348,6 +348,7 @@ class GraphExerciseControllerTest {
         exercise.setWrongAnswer("wrong");
         exercise.setCorrectAnswer("correct");
         exercise.setCourse(courseId != null ? courseRepository.getReferenceById(courseId) : null);
+        exercise.setOrder(0);
         return exerciseRepository.save(exercise).getId();
     }
 

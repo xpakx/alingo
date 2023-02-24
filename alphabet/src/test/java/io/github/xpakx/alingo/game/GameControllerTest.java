@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.clients.GuessPublisher;
 import io.github.xpakx.alingo.game.dto.AnswerRequest;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.restassured.http.ContentType;
@@ -10,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -35,6 +37,8 @@ class GameControllerTest {
     ExerciseRepository exerciseRepository;
     @Autowired
     CourseRepository courseRepository;
+    @MockBean
+    GuessPublisher publisher;
 
     @BeforeEach
     void setUp() {
