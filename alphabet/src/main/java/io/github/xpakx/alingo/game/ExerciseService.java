@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.*;
+import io.github.xpakx.alingo.game.error.DataException;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -65,11 +66,16 @@ public class ExerciseService {
         }
     }
 
+    @Transactional
     public Exercise changeOrder(Long exerciseId, OrderRequest request) {
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(NotFoundException::new);
         if(Objects.equals(exercise.getOrder(), request.newOrder())) {
             return exercise;
+        }
+        Integer highestOrder = exerciseRepository.getMaxOrderByCourseId(exercise.getCourse().getId());
+        if(request.newOrder() > highestOrder) {
+            throw new DataException("Order is too high!");
         }
         if(request.newOrder() > exercise.getOrder()) {
             exerciseRepository.decrementOrderBetween(exercise.getCourse().getId(), exercise.getOrder(), request.newOrder()+1);

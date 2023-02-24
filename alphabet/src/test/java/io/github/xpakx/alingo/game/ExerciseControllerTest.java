@@ -645,6 +645,6 @@ class ExerciseControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("high"))));
+                .body("message", both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("high")));
     }
 }
