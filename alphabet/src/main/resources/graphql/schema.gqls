@@ -54,4 +54,5 @@ type Mutation {
     editCourse(courseId: ID, name: String, description: String, difficulty: Difficulty, languageId: Int): Course!
     addExercise(letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
     editExercise(exerciseId: ID, letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
+    reorderExercise(exerciseId: ID, order: Int): Exercise!
 }
