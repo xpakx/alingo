@@ -6,6 +6,7 @@ import io.github.xpakx.alingo.game.Exercise;
 import io.github.xpakx.alingo.game.ExerciseRepository;
 import io.github.xpakx.alingo.security.JwtUtils;
 import io.github.xpakx.alingo.utils.GraphExercise;
+import io.github.xpakx.alingo.utils.GraphOrder;
 import io.github.xpakx.alingo.utils.GraphQuery;
 import io.github.xpakx.alingo.utils.GraphUpdateExercise;
 import io.restassured.http.ContentType;
@@ -448,6 +449,284 @@ class GraphExerciseControllerTest {
         Long courseId = addCourse();
         Long exerciseId = addExercise("a", courseId);
         GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", "correct", null));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldRespondWith401ToReorderExerciseIfNotAuthenticated() {
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(0, 1L));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+                .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    private GraphQuery getOrderGraphQuery(GraphOrder variables) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    mutation reorderExercise($id: ID, $order: Int){
+                        reorderExercise(exerciseId: $id, order: $order)
+                        {
+                            id
+                            letter
+                            wrongAnswer
+                            correctAnswer
+                            order
+                        }
+                    }""");
+        query.setVariables(variables);
+        return query;
+    }
+
+    private GraphOrder getOrderVariables(Integer order, Long exerciseId) {
+        return new GraphOrder(order, exerciseId);
+    }
+
+    @Test
+    void shouldRespondWith401ToReorderExerciseIfTokenIsWrong() {
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(0, 1L));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToReorderExerciseIfUserIsNotModerator() {
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(0, 1L));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldRespondWith404ToReorderExerciseIfExerciseDoesNotExist() {
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(0, 1L));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNullOrderWhileReordering() {
+        Long exerciseId = addExercise("g", addCourse());
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(null, exerciseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldNotAcceptNegativeOrderWhileReordering() {
+        Long exerciseId = addExercise("g", addCourse());
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(-1, exerciseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+         .when()
+                .post(baseUrl + "/graphql")
+         .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
+    }
+
+    @Test
+    void shouldReorder() {
+        Long exerciseId = addOrderedExercise(addCourse(), 0);
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(0, exerciseId));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("errors", nullValue())
+                .body("data", not(nullValue()));
+    }
+
+    private Long addOrderedExercise(Long courseId, Integer order) {
+        Exercise exercise = new Exercise();
+        exercise.setLetter("a");
+        exercise.setWrongAnswer("wrong");
+        exercise.setCorrectAnswer("correct");
+        exercise.setCourse(courseId != null ? courseRepository.getReferenceById(courseId) : null);
+        exercise.setOrder(order);
+        return exerciseRepository.save(exercise).getId();
+    }
+
+    @Test
+    void shouldReorderUpwardWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        Long ex5Id = addOrderedExercise(courseId, 4);
+        Long ex6Id = addOrderedExercise(courseId, 5);
+        Long ex7Id = addOrderedExercise(courseId, 6);
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(1, ex5Id));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("errors", nullValue())
+                .body("data", not(nullValue()));
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex5Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(3)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(4)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex6Id))).and(hasProperty("order", equalTo(5)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex7Id))).and(hasProperty("order", equalTo(6)))));
+    }
+
+    @Test
+    void shouldReorderDownwardWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        Long ex5Id = addOrderedExercise(courseId, 4);
+        Long ex6Id = addOrderedExercise(courseId, 5);
+        Long ex7Id = addOrderedExercise(courseId, 6);
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(5, ex3Id));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("errors", nullValue())
+                .body("data", not(nullValue()));
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex5Id))).and(hasProperty("order", equalTo(3)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex6Id))).and(hasProperty("order", equalTo(4)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(5)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex7Id))).and(hasProperty("order", equalTo(6)))));
+    }
+
+    @Test
+    void shouldMoveAtTheFirstPlaceWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(0, ex3Id));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("errors", nullValue())
+                .body("data", not(nullValue()));
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(3)))));
+    }
+
+    @Test
+    void shouldMoveAtTheLastPlaceWithoutGaps() {
+        Long courseId = addCourse();
+        Long ex1Id = addOrderedExercise(courseId, 0);
+        Long ex2Id = addOrderedExercise(courseId, 1);
+        Long ex3Id = addOrderedExercise(courseId, 2);
+        Long ex4Id = addOrderedExercise(courseId, 3);
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(3, ex2Id));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("errors", nullValue())
+                .body("data", not(nullValue()));
+        List<Exercise> exercises = exerciseRepository.findAll();
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex1Id))).and(hasProperty("order", equalTo(0)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex3Id))).and(hasProperty("order", equalTo(1)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex4Id))).and(hasProperty("order", equalTo(2)))));
+        assertThat(exercises, hasItem(both(hasProperty("id", equalTo(ex2Id))).and(hasProperty("order", equalTo(3)))));
+    }
+
+    @Test
+    void shouldNotAcceptOrderGreaterThanTheGreatestForTheCourse() {
+        Long courseId = addCourse();
+        addOrderedExercise(courseId, 0);
+        Long exerciseId = addOrderedExercise(courseId, 1);
+        addOrderedExercise(courseId, 2);
+        GraphQuery query = getOrderGraphQuery(getOrderVariables(5, exerciseId));
         given()
                 .auth()
                 .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
