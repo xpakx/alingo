@@ -1,0 +1,94 @@
+version: '3.3'
+
+services:
+  alphabet:
+    build: ./alphabet/
+    container_name: alphabet
+    depends_on:
+      - dbalphabet
+      - rabbitmq
+      - cache
+    expose:
+      - 8081
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbalphabet:5432/alphabet
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_REDIS_HOST=cache
+      - SPRING_REDIS_PORT=6379
+      - SPRING_REDIS_PASSWORD=password
+  dbalphabet:
+    image: 'postgres:13.1-alpine'
+    container_name: dbalphabet
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=alphabet
+    expose:
+      - 5432
+  auth:
+    build: ./auth/
+    container_name: auth
+    depends_on:
+      - dbauth
+      - rabbitmq
+    expose:
+      - 8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbauth:5432/auth
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=rabbitmq
+  dbauth:
+    image: 'postgres:13.1-alpine'
+    container_name: dbauth
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auth
+    expose:
+      - 5432
+  gateway:
+    build: ./gateway/
+    container_name: gateway
+    ports:
+      - "8000:8000"
+    depends_on: 
+      - alphabet
+      - auth
+    environment:
+      SPRING_PROFILES_ACTIVE: path
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://alphabet:8081
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: 'alphabet'
+      SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: 'Path=/exercise/**,/course/**,/language/**'
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://auth:8080
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: 'auth'
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: 'Path=/authenticate,/register'
+      SPRING_CLOUD_GATEWAY_GLOBALCORS_CORS-CONFIGURATIONS['[/**]']_ALLOWEDORIGINS: http://localhost
+  alingofrontend:
+    container_name: alingofrontend
+    build: ./frontend/
+    ports:
+      - "80:80"
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass password
+    volumes: 
+      - cache:/data
+volumes:
+  cache:
+    driver: local
