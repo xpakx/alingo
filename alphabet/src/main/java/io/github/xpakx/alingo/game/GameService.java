@@ -19,16 +19,34 @@ public class GameService {
 
     @PublishGuess
     public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
-        return createResponse(request, getAnswerForExercise(exerciseId));
+        return createResponse(request, getExercise(exerciseId));
     }
 
-    private AnswerResponse createResponse(AnswerRequest request, String answer) {
-        return new AnswerResponse(request.answer().equals(answer), answer);
+    private AnswerResponse createResponse(AnswerRequest request, Exercise exercise) {
+        return new AnswerResponse(
+                request.answer().equals(exercise.getCorrectAnswer()),
+                exercise.getCorrectAnswer(),
+                exercise.getLetter(),
+                getCourseId(exercise),
+                getCourseName(exercise),
+                getLanguageName(exercise)
+        );
     }
 
-    private String getAnswerForExercise(Long exerciseId) {
-        return exerciseRepository.findProjectedById(exerciseId)
-                .map(ExerciseWithOnlyAnswer::getCorrectAnswer)
+    private String getLanguageName(Exercise exercise) {
+        return exercise.getCourse() != null && exercise.getCourse().getLanguage() != null ? exercise.getCourse().getLanguage().getName() : null;
+    }
+
+    private String getCourseName(Exercise exercise) {
+        return exercise.getCourse() != null ? exercise.getCourse().getName() : null;
+    }
+
+    private Long getCourseId(Exercise exercise) {
+        return exercise.getCourse() != null ? exercise.getCourse().getId() : null;
+    }
+
+    private Exercise getExercise(Long exerciseId) {
+        return exerciseRepository.findById(exerciseId)
                 .orElseThrow(NotFoundException::new);
     }
 

@@ -21,6 +21,10 @@ public class GuessPublisher {
         event.setCorrect(answer.correct());
         event.setUsername(username);
         event.setExerciseId(exerciseId);
+        event.setLetter(answer.letter());
+        event.setCourseId(answer.courseId());
+        event.setCourseName(answer.courseName());
+        event.setLanguage(answer.language());
         template.convertAndSend(guessesTopic, "guess", event);
     }
 }

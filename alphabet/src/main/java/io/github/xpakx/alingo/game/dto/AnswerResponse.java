@@ -1,5 +1,13 @@
 package io.github.xpakx.alingo.game.dto;
 
-public record AnswerResponse(boolean correct, String correctAnswer) {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public record AnswerResponse(
+        boolean correct,
+        String correctAnswer,
+        @JsonIgnore String letter,
+        @JsonIgnore Long courseId,
+        @JsonIgnore String courseName,
+        @JsonIgnore String language) {
 
 }
