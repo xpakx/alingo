@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { ErrorInterceptor } from './auth/error.interceptor';
 import { LoginComponent } from './auth/login/login.component';
 import { RegistrationComponent } from './auth/registration/registration.component';
+import { GameComponent } from './alphabet/game/game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,
