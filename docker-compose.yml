@@ -89,6 +89,29 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass password
     volumes: 
       - cache:/data
+  stats:
+    build: ./stats/
+    container_name: stats
+    depends_on:
+      - dbstats
+      - rabbitmq
+    expose:
+      - 8082
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbstats:5432/stats
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_RABBITMQ_HOST=rabbitmq
+  dbstats:
+    image: 'postgres:13.1-alpine'
+    container_name: dbstats
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=stats
+    expose:
+      - 5432
 volumes:
   cache:
     driver: local
