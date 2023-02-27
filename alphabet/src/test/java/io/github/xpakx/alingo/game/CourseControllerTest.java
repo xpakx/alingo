@@ -116,7 +116,7 @@ class CourseControllerTest {
         .when()
                 .post(baseUrl + "/course")
         .then()
-                .statusCode(OK.value())
+                .statusCode(CREATED.value())
                 .body("name", equalTo("newCourse"));
     }
 

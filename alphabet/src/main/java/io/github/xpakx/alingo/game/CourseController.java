@@ -19,16 +19,14 @@ public class CourseController {
     public ResponseEntity<Course> createCourse(@Valid @RequestBody CourseRequest request) {
         return new ResponseEntity<>(
                 service.createCourse(request),
-                HttpStatus.OK
+                HttpStatus.CREATED
         );
     }
 
     @PutMapping("/{courseId}")
     @Secured("MODERATOR")
-    public ResponseEntity<Course> editCourse(@Valid @RequestBody CourseRequest request, @PathVariable Long courseId) {
-        return new ResponseEntity<>(
-                service.editCourse(courseId, request),
-                HttpStatus.OK
-        );
+    @ResponseBody
+    public Course editCourse(@Valid @RequestBody CourseRequest request, @PathVariable Long courseId) {
+        return service.editCourse(courseId, request);
     }
 }

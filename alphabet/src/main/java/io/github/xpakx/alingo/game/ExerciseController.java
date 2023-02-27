@@ -20,25 +20,21 @@ public class ExerciseController {
     public ResponseEntity<Exercise> createExercise(@Valid @RequestBody ExerciseRequest request) {
         return new ResponseEntity<>(
                 service.createExercise(request),
-                HttpStatus.OK
+                HttpStatus.CREATED
         );
     }
 
     @PutMapping("/{exerciseId}")
     @Secured("MODERATOR")
-    public ResponseEntity<Exercise> editExercise(@Valid @RequestBody ExerciseRequest request, @PathVariable Long exerciseId) {
-        return new ResponseEntity<>(
-                service.editExercise(exerciseId, request),
-                HttpStatus.OK
-        );
+    @ResponseBody
+    public Exercise editExercise(@Valid @RequestBody ExerciseRequest request, @PathVariable Long exerciseId) {
+        return service.editExercise(exerciseId, request);
     }
 
     @PutMapping("/{exerciseId}/order")
     @Secured("MODERATOR")
-    public ResponseEntity<Exercise> reorder(@Valid @RequestBody OrderRequest request, @PathVariable Long exerciseId) {
-        return new ResponseEntity<>(
-                service.changeOrder(exerciseId, request),
-                HttpStatus.OK
-        );
+    @ResponseBody
+    public Exercise reorder(@Valid @RequestBody OrderRequest request, @PathVariable Long exerciseId) {
+        return service.changeOrder(exerciseId, request);
     }
 }

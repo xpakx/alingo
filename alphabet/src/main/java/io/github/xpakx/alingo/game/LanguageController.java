@@ -19,16 +19,14 @@ public class LanguageController {
     public ResponseEntity<Language> createLanguage(@Valid @RequestBody LanguageRequest request) {
         return new ResponseEntity<>(
                 service.createLanguage(request),
-                HttpStatus.OK
+                HttpStatus.CREATED
         );
     }
 
     @PutMapping("/{languageId}")
     @Secured("MODERATOR")
-    public ResponseEntity<Language> editLanguage(@Valid @RequestBody LanguageRequest request, @PathVariable Long languageId) {
-        return new ResponseEntity<>(
-                service.editLanguage(languageId, request),
-                HttpStatus.OK
-        );
+    @ResponseBody
+    public Language editLanguage(@Valid @RequestBody LanguageRequest request, @PathVariable Long languageId) {
+        return service.editLanguage(languageId, request);
     }
 }

@@ -117,7 +117,7 @@ class ExerciseControllerTest {
         .when()
                 .post(baseUrl + "/exercise/new")
         .then()
-                .statusCode(OK.value())
+                .statusCode(CREATED.value())
                 .body("letter", equalTo("g"));
     }
 

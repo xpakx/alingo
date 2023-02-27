@@ -20,20 +20,16 @@ public class GameController {
     private final GameService service;
 
     @PostMapping("/exercise/{exerciseId}")
-    public ResponseEntity<AnswerResponse> answer(@Valid @RequestBody AnswerRequest request, @PathVariable Long exerciseId) {
-        return new ResponseEntity<>(
-                service.checkAnswer(exerciseId, request),
-                HttpStatus.OK
-        );
+    @ResponseBody
+    public AnswerResponse answer(@Valid @RequestBody AnswerRequest request, @PathVariable Long exerciseId) {
+        return service.checkAnswer(exerciseId, request);
     }
 
     @GetMapping("/course/{courseId}/exercise")
-    public ResponseEntity<ExercisesResponse> getExercises(@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
+    @ResponseBody
+    public ExercisesResponse getExercises(@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
                                                           @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
                                                           @PathVariable Long courseId) {
-        return new ResponseEntity<>(
-                service.getExercisesForCourse(courseId, page-1, amount),
-                HttpStatus.OK
-        );
+        return service.getExercisesForCourse(courseId, page-1, amount);
     }
 }

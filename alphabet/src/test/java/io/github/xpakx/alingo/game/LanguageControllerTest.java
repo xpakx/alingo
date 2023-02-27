@@ -108,7 +108,7 @@ class LanguageControllerTest {
         .when()
                 .post(baseUrl + "/language")
         .then()
-                .statusCode(OK.value())
+                .statusCode(CREATED.value())
                 .body("name", equalTo("language1"));
     }
 
