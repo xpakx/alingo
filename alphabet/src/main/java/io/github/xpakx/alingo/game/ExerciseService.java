@@ -18,14 +18,15 @@ public class ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final CourseRepository courseRepository;
 
-    public ExercisesResponse prepareResponse(Page<Exercise> page, Random random) {
+    public ExercisesResponse prepareResponse(Page<Exercise> page, Random random, boolean premium) {
         return new ExercisesResponse(
                 page.getContent().stream()
                         .map((a) -> toDto(a, random))
                         .toList(),
                 page.getNumber(),
                 (long) page.getContent().size(),
-                page.getTotalElements()
+                page.getTotalElements(),
+                premium
         );
     }
 

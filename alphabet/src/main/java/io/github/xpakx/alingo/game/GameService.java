@@ -16,6 +16,7 @@ import java.util.Random;
 public class GameService {
     private final ExerciseRepository exerciseRepository;
     private final ExerciseService exerciseService;
+    private final CourseRepository courseRepository;
 
     @PublishGuess
     public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
@@ -52,7 +53,7 @@ public class GameService {
 
     public ExercisesResponse getExercisesForCourse(Long courseId, Integer page, Integer amount) {
         Page<Exercise> result = exerciseRepository.findByCourseId(courseId, toPageRequest(page, amount));
-        return exerciseService.prepareResponse(result, new Random());
+        return exerciseService.prepareResponse(result, new Random(), courseRepository.isPremium(courseId));
     }
 
     private PageRequest toPageRequest(Integer page, Integer amount) {

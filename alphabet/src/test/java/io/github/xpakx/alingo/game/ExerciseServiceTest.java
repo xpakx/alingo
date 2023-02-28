@@ -34,7 +34,7 @@ class ExerciseServiceTest {
         }
         Page<Exercise> page = new PageImpl<>(exercises, Pageable.ofSize(5), 5);
 
-        ExercisesResponse response = service.prepareResponse(page, random);
+        ExercisesResponse response = service.prepareResponse(page, random, false);
         assertThat(response.exercises(), hasItem(hasProperty("options", contains("wrong", "correct"))));
         assertThat(response.exercises(), hasItem(hasProperty("options", contains("correct", "wrong"))));
     }

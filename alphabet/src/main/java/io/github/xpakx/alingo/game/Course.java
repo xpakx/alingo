@@ -18,6 +18,8 @@ public class Course {
 
     private String description;
 
+    private boolean premium;
+
     @Enumerated
     private Difficulty difficulty;
 
