@@ -26,7 +26,7 @@ public class GameController {
 
     @GetMapping("/course/{courseId}/exercise")
     @ResponseBody
-    @PostAuthorize("hasRole('SUBSCRIBER') or returnObject.premium==false")
+    @PostAuthorize("hasAuthority('SUBSCRIBER') or returnObject.premium==false")
     public ExercisesResponse getExercises(@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
                                                           @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
                                                           @PathVariable Long courseId) {
