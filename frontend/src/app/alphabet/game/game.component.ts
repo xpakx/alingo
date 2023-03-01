@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AlphabetService } from '../alphabet.service';
 import { AnswerResponse } from '../dto/answer-response';
 import { Exercise } from '../dto/exercise';
@@ -71,6 +71,21 @@ export class GameComponent implements OnInit {
   }
 
   onGuess(number: number) {
+    console.log(number)
     this.guess(this.exercises[this.current].options[number]);
+  }
+
+  @HostListener('document:keydown.arrowleft', ['$event'])
+  @HostListener('document:keydown.a', ['$event'])
+  onLeftArrowDown(event: KeyboardEvent) {
+    event.preventDefault();
+    this.onGuess(0);
+  }
+
+  @HostListener('document:keydown.arrowright', ['$event'])
+  @HostListener('document:keydown.d', ['$event'])
+  onRightArrowDown(event: KeyboardEvent) {
+    event.preventDefault();
+    this.onGuess(1);
   }
 }
