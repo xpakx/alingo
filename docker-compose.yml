@@ -59,14 +59,18 @@ services:
     depends_on: 
       - alphabet
       - auth
+      - stats
     environment:
       SPRING_PROFILES_ACTIVE: path
       SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://alphabet:8081
       SPRING_CLOUD_GATEWAY_ROUTES[0]_ID: 'alphabet'
       SPRING_CLOUD_GATEWAY_ROUTES[0]_PREDICATES[0]: 'Path=/exercise/**,/course/**,/language/**'
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://auth:8080
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: 'auth'
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: 'Path=/authenticate,/register'
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_URI: http://auth:8080
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_ID: 'auth'
+      SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: 'Path=/authenticate,/register'
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://stats:8082
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: 'stats'
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: 'Path=stats/**'
       SPRING_CLOUD_GATEWAY_GLOBALCORS_CORS-CONFIGURATIONS['[/**]']_ALLOWEDORIGINS: http://localhost
   alingofrontend:
     container_name: alingofrontend
