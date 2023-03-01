@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
@@ -283,8 +284,45 @@ class GameControllerTest {
     }
 
     private Long createCourse(String courseName) {
+        return createCourse(courseName, false);
+    }
+
+    private Long createCourse(String courseName, boolean premium) {
         Course course = new Course();
         course.setName(courseName);
+        course.setPremium(premium);
         return courseRepository.save(course).getId();
+    }
+    
+    @Test
+    void shouldRespondWith403ToGetExercisesFromPremiumCourseIfNotSubscribed() {
+        Long courseId = createCourse("course", true);
+        addExercises(courseId, 5);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", courseId)
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWithExercisesFromPremiumCourseIfSubscribed() {
+        Long courseId = createCourse("course", true);
+        addExercises(courseId, 5);
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("SUBSCRIBER"))))
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/course/{courseId}/exercise", courseId)
+        .then()
+                .statusCode(OK.value());
     }
 }
