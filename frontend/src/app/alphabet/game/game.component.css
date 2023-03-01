@@ -14,7 +14,7 @@
 .option {
     width: 200px;
     height: 200px;
-    background-color: #ccc;
+    background-color: #3e98c7;
     border-radius: 10px;
     margin: 0 20px;
     cursor: pointer;
@@ -28,11 +28,11 @@
     background-color: #ddd;
 }
   
-.left-option {
+.correct-option {
     background-color: #4CAF50;
 }
   
-.right-option {
+.wrong-option {
     background-color: #F44336;
 }
   
