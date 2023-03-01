@@ -11,7 +11,7 @@ import { ExercisesResponse } from '../dto/exercises-response';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  exercises: Exercise[] = [];
+  exercises: Exercise[] = [{id: 0, options: ["לָ", "מָ"]}]//[];
   page: number = 0;
   courseId?: number;
   isError: boolean = false;
@@ -68,5 +68,9 @@ export class GameComponent implements OnInit {
       this.current = 0;
       this.getExercises(this.page + 1);
     }
+  }
+
+  onGuess(number: number) {
+    this.guess(this.exercises[this.current].options[number]);
   }
 }

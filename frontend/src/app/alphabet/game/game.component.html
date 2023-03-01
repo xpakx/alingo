@@ -1,1 +1,12 @@
-<p>game works!</p>
+<div class="game-container">
+    <div class="options-container">
+      <div class="option left-option" (click)="onGuess(0)">
+        <p class="option-text">{{ exercises[current].options[0] }}</p>
+      </div>
+      <div class="option right-option" (click)="onGuess(1)">
+        <p class="option-text">{{ exercises[current].options[1] }}</p>
+      </div>
+    </div>
+    <button class="repeat-btn">Repeat</button>
+</div>
+  
