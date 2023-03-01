@@ -13,7 +13,15 @@ public class GuessController {
     @GetMapping("/stats/{username}/alphabet")
     @ResponseBody
     @PreAuthorize("#username == authentication.principal.username")
-    public Page<Guess> getGuesses(Integer page, Integer amount, @PathVariable String username) {
+    public Page<Guess> getGuesses(@RequestParam Integer page,
+                                  @RequestParam Integer amount,
+                                  @PathVariable String username) {
         return service.getGuesses(username, page-1, amount);
     }
+
+    /*
+    (@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
+                                                          @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
+                                                          @PathVariable Long courseId) {
+     */
 }
