@@ -117,7 +117,7 @@ class GraphGuessControllerTest {
     @ParameterizedTest
     @ValueSource(ints = {-10, -1, 0})
     void shouldNotAcceptRequestWithNonPositivePages(int page) {
-        GraphQuery query = getGraphQueryForGuesses(getVariablesForGuesses("user1", 1, 10));
+        GraphQuery query = getGraphQueryForGuesses(getVariablesForGuesses("user1", page, 10));
         given()
                 .auth()
                 .oauth2(tokenFor("user1"))
@@ -134,7 +134,7 @@ class GraphGuessControllerTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, 0, 21, 50})
     void shouldNotAcceptRequestWithAmountOutsideBounds(int amount) {
-        GraphQuery query = getGraphQueryForGuesses(getVariablesForGuesses("user1", 1, 10));
+        GraphQuery query = getGraphQueryForGuesses(getVariablesForGuesses("user1", 1, amount));
         given()
                 .auth()
                 .oauth2(tokenFor("user1"))
