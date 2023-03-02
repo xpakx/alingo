@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 
@@ -20,6 +21,7 @@ public class GraphGuessController {
     private final GuessService service;
 
     @QueryMapping
+    @PreAuthorize("#username == authentication.principal.username")
     public Page<Guess> getGuesses(@NotBlank @Argument String username,
                                   @Min(value = 1) @Argument int page,
                                   @NotNull @Min(value = 1) @Max(value = 20) @Argument int amount) {

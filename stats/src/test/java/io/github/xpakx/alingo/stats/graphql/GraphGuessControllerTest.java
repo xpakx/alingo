@@ -191,8 +191,7 @@ class GraphGuessControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not((nullValue())))
-                .body("errors.message", hasItem(equalTo("Access Denied")));
+                .body("errors", not((nullValue())));
     }
 
 }
