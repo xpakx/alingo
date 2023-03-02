@@ -25,7 +25,7 @@ public class GraphGameController {
     @QueryMapping
     @PostAuthorize("hasAuthority('SUBSCRIBER') or returnObject.premium==false")
     public ExercisesResponse courseExercises(@NotNull @Argument long course,
-                                             @Min(value = 1) @Argument int page,
+                                             @Argument int page,
                                              @NotNull @Min(value = 1) @Max(value = 20) @Argument int amount) {
         return service.getExercisesForCourse(course, page-1, amount);
     }
