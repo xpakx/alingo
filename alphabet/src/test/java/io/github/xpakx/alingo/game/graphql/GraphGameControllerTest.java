@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
@@ -89,8 +90,13 @@ class GraphGameControllerTest {
     }
 
     private Long createCourse(String courseName) {
+        return createCourse(courseName, false);
+    }
+
+    private Long createCourse(String courseName, boolean premium) {
         Course course = new Course();
         course.setName(courseName);
+        course.setPremium(premium);
         return courseRepository.save(course).getId();
     }
 
@@ -360,5 +366,40 @@ class GraphGameControllerTest {
                 .body("data.courseExercises.exercises", hasSize(3))
                 .body("data.courseExercises.size", equalTo(3))
                 .body("data.courseExercises.totalSize", equalTo(5));
+    }
+
+    @Test
+    void shouldRespondWith403ToGetExercisesFromPremiumCourseIfNotSubscribed() {
+        Long courseId = createCourse("course", true);
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(courseId, 1, 10));
+        given()
+                .auth()
+                .oauth2(tokenFor("non-subscriber"))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
+    }
+
+    @Test
+    void shouldRespondWithExercisesFromPremiumCourseIfSubscribed() {
+        Long courseId = createCourse("course", true);
+        GraphQuery query = getGraphQueryForExercises(getVariablesForExercises(courseId, 1, 10));
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("SUBSCRIBER"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", not(nullValue()))
+                .body("errors", (nullValue()));
     }
 }
