@@ -19,9 +19,9 @@ export class RegistrationComponent {
 
   constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {
     this.form = this.fb.nonNullable.group({
-      username: [new String(''), Validators.required],
-      password: [new String(''), Validators.required],
-      passwordRe: [new String(''), Validators.required]
+      username: [new String(''), [Validators.required, Validators.minLength(1)]],
+      password: [new String(''), [Validators.required, Validators.minLength(1)]],
+      passwordRe: [new String(''), [Validators.required, Validators.minLength(1)]]
     });
   }
 
