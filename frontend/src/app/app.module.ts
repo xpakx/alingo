@@ -11,6 +11,7 @@ import { RegistrationComponent } from './auth/registration/registration.componen
 import { GameComponent } from './alphabet/game/game.component';
 import { LanguageFormComponent } from './alphabet/language-form/language-form.component';
 import { CourseFormComponent } from './alphabet/course-form/course-form.component';
+import { ExerciseFormComponent } from './alphabet/exercise-form/exercise-form.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { CourseFormComponent } from './alphabet/course-form/course-form.componen
     RegistrationComponent,
     GameComponent,
     LanguageFormComponent,
-    CourseFormComponent
+    CourseFormComponent,
+    ExerciseFormComponent
   ],
   imports: [
     BrowserModule,

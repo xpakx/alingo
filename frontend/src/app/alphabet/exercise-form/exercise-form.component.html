@@ -1,0 +1,17 @@
+<form id="name" [formGroup]="form">
+    <label for="exercise-letter">Letter:</label>
+    <input type="text" id="course-letter" formControlName="letter">
+    <span class="error-message">This field is required.</span>
+
+    <label for="exercise-wrong">Wrong Answer:</label>
+    <input type="text" id="course-wrong" formControlName="wrongAnswer">
+    <span class="error-message">This field is required.</span>
+
+    <label for="exercise-correct">Correct Answer:</label>
+    <input type="text" id="course-correct" formControlName="correctAnswer">
+    <span class="error-message">This field is required.</span>
+
+    <button class="btn" [disabled]="form.invalid" (click)="onSubmit()">
+        {{ this.exercise ? 'Save' : 'Add' }}
+    </button>
+</form>
