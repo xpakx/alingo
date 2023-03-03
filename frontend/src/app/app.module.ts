@@ -12,6 +12,9 @@ import { GameComponent } from './alphabet/game/game.component';
 import { LanguageFormComponent } from './alphabet/language-form/language-form.component';
 import { CourseFormComponent } from './alphabet/course-form/course-form.component';
 import { ExerciseFormComponent } from './alphabet/exercise-form/exercise-form.component';
+import { AddLanguageComponent } from './alphabet/add-language/add-language.component';
+import { AddCourseComponent } from './alphabet/add-course/add-course.component';
+import { AddExerciseComponent } from './alphabet/add-exercise/add-exercise.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { ExerciseFormComponent } from './alphabet/exercise-form/exercise-form.co
     GameComponent,
     LanguageFormComponent,
     CourseFormComponent,
-    ExerciseFormComponent
+    ExerciseFormComponent,
+    AddLanguageComponent,
+    AddCourseComponent,
+    AddExerciseComponent
   ],
   imports: [
     BrowserModule,
