@@ -8,14 +8,16 @@
             <label for="username">Username</label>
         </div>
         <input id="username" formControlName="username"/>
+        <span class="error-message">This field is required.</span>
     
         <div>
             <label for="password">Password</label>
         </div>
         <input id="password" formControlName="password" type="password" />
+        <span class="error-message">This field is required.</span>
     
+        <button class="btn" (click)="login()" [class.disabled]="form.invalid">
+            Login
+        </button>
     </form>
-    <button class="btn" (click)="login()" [class.disabled]="form.invalid">
-        Login
-    </button>
 </div>
