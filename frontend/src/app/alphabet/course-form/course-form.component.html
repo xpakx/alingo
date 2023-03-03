@@ -1,0 +1,15 @@
+<form id="name" [formGroup]="form">
+    <label for="course-name">Name:</label>
+    <input type="text" id="course-name" formControlName="name">
+    <span class="error-message">This field is required.</span>
+
+    <label for="course-description">Description:</label>
+    <input type="text" id="course-description" formControlName="description">
+
+    <label for="course-difficulty">Difficulty:</label>
+    <input type="text" id="course-difficulty" formControlName="difficulty">
+
+    <button class="btn" [disabled]="form.invalid" (click)="onSubmit()">
+        {{ this.course ? 'Save' : 'Add' }}
+    </button>
+</form>

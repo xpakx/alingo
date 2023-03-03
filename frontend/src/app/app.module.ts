@@ -10,6 +10,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegistrationComponent } from './auth/registration/registration.component';
 import { GameComponent } from './alphabet/game/game.component';
 import { LanguageFormComponent } from './alphabet/language-form/language-form.component';
+import { CourseFormComponent } from './alphabet/course-form/course-form.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { LanguageFormComponent } from './alphabet/language-form/language-form.co
     LoginComponent,
     RegistrationComponent,
     GameComponent,
-    LanguageFormComponent
+    LanguageFormComponent,
+    CourseFormComponent
   ],
   imports: [
     BrowserModule,
