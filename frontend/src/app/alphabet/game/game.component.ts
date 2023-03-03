@@ -11,7 +11,7 @@ import { ExercisesResponse } from '../dto/exercises-response';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  exercises: Exercise[] = [{id: 0, options: ["לָ", "מָ"]}]//[];
+  exercises: Exercise[] = []; //{id: 0, options: ["לָ", "מָ"]}]
   page: number = 0;
   courseId?: number;
   isError: boolean = false;

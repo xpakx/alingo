@@ -9,13 +9,15 @@ import { ErrorInterceptor } from './auth/error.interceptor';
 import { LoginComponent } from './auth/login/login.component';
 import { RegistrationComponent } from './auth/registration/registration.component';
 import { GameComponent } from './alphabet/game/game.component';
+import { LanguageFormComponent } from './alphabet/language-form/language-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    GameComponent
+    GameComponent,
+    LanguageFormComponent
   ],
   imports: [
     BrowserModule,

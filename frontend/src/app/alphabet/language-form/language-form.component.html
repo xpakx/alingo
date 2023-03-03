@@ -1,0 +1,6 @@
+<form id="name" [formGroup]="form">
+    <label for="language-name">Name:</label>
+    <input type="text" id="language-name" formControlName="name">
+    <span class="error-message">This field is required.</span>
+    <button class="btn" [disabled]="form.invalid" (click)="onSubmit()">Submit</button>
+</form>

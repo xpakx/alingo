@@ -23,7 +23,6 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GraphGuessControllerTest {
