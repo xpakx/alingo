@@ -46,4 +46,11 @@ public class LanguageController {
     public List<CourseData> getCourses(@RequestParam Integer page, @RequestParam Integer amount, @PathVariable Long languageId) {
         return service.getCourses(languageId, page, amount);
     }
+
+    @GetMapping
+    @Secured("MODERATOR")
+    @ResponseBody
+    public List<Language> getLanguages(@RequestParam Integer page, @RequestParam Integer amount) {
+        return service.getLanguages(page, amount);
+    }
 }

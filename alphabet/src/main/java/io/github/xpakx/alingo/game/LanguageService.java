@@ -44,4 +44,14 @@ public class LanguageService {
                 )
         );
     }
+
+    public List<Language> getLanguages(Integer page, Integer amount) {
+        return languageRepository.findBy(
+                PageRequest.of(
+                        page,
+                        amount,
+                        Sort.by(Sort.Order.asc("id"))
+                )
+        );
+    }
 }
