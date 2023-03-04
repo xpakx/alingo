@@ -1,6 +1,5 @@
 package io.github.xpakx.alingo.game;
 
-import io.github.xpakx.alingo.game.dto.ExerciseData;
 import io.github.xpakx.alingo.game.dto.ExerciseWithOnlyAnswer;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;

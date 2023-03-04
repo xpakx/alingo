@@ -29,6 +29,10 @@ export class AlphabetModerationService extends JwtService {
     return this.http.put<LanguageDetails>(`${this.apiServerUrl}/language/${languageId}`, request, { headers: this.getHeaders() });
   }
 
+  public getLanguage(languageId: number): Observable<LanguageDetails> {
+    return this.http.get<LanguageDetails>(`${this.apiServerUrl}/language/${languageId}`, { headers: this.getHeaders() });
+  }
+
   public createCourse(request: CourseRequest): Observable<CourseDetails> {
     return this.http.post<CourseDetails>(`${this.apiServerUrl}/course`, request, { headers: this.getHeaders() });
   }
