@@ -22,4 +22,9 @@ public class LanguageService {
         language.setName(request.name());
         return languageRepository.save(language);
     }
+
+    public Language getLanguage(Long languageId) {
+        return languageRepository.findById(languageId)
+                .orElseThrow(NotFoundException::new);
+    }
 }

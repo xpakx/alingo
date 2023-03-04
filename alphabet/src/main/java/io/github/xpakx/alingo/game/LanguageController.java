@@ -29,4 +29,11 @@ public class LanguageController {
     public Language editLanguage(@Valid @RequestBody LanguageRequest request, @PathVariable Long languageId) {
         return service.editLanguage(languageId, request);
     }
+
+    @GetMapping("/{languageId}")
+    @Secured("MODERATOR")
+    @ResponseBody
+    public Language getLanguage(@PathVariable Long languageId) {
+        return service.getLanguage(languageId);
+    }
 }
