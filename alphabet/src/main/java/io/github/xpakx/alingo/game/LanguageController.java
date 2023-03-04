@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,5 +38,12 @@ public class LanguageController {
     @ResponseBody
     public Language getLanguage(@PathVariable Long languageId) {
         return service.getLanguage(languageId);
+    }
+
+    @GetMapping("/{languageId}/course")
+    @Secured("MODERATOR")
+    @ResponseBody
+    public List<CourseData> getCourses(@RequestParam Integer page, @RequestParam Integer amount, @PathVariable Long languageId) {
+        return service.getCourses(languageId, page, amount);
     }
 }
