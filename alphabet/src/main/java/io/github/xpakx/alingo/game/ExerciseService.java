@@ -89,7 +89,7 @@ public class ExerciseService {
     }
 
     public ExerciseData getExercise(Long exerciseId) {
-        return exerciseRepository.getProjectedById(exerciseId)
+        return exerciseRepository.findProjectedById(exerciseId, ExerciseData.class)
                 .orElseThrow(NotFoundException::new);
     }
 }

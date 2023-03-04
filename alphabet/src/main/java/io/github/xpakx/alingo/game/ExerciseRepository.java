@@ -30,5 +30,5 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     @Query("UPDATE Exercise ex SET ex.order = ex.order - 1 WHERE ex.course.id = :courseId AND ex.order > :orderStart AND ex.order < :orderEnd")
     void decrementOrderBetween(Long courseId, Integer orderStart, Integer orderEnd);
 
-    Optional<ExerciseData> getProjectedById(Long exerciseId);
+    <T> Optional<T> findProjectedById(Long id, Class<T> type);
 }
