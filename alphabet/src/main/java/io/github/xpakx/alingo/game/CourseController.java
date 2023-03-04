@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,12 @@ public class CourseController {
     @ResponseBody
     public Course editCourse(@Valid @RequestBody CourseRequest request, @PathVariable Long courseId) {
         return service.editCourse(courseId, request);
+    }
+
+    @GetMapping("/{courseId}")
+    @Secured("MODERATOR")
+    @ResponseBody
+    public CourseData getCourse(@PathVariable Long courseId) {
+        return service.getCourse(courseId);
     }
 }

@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,10 @@ public class CourseService {
         } else {
             course.setLanguage(null);
         }
+    }
+
+    public CourseData getCourse(Long courseId) {
+        return courseRepository.findProjectedById(courseId)
+                .orElseThrow(NotFoundException::new);
     }
 }
