@@ -2,15 +2,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
-import { LanguageDetails } from '../dto/language-details';
+import { ExerciseData } from '../dto/exercise-data';
+import { ExerciseDetails } from '../dto/exercise-details';
 
 @Component({
-  selector: 'app-edit-language',
-  templateUrl: './edit-language.component.html',
-  styleUrls: ['./edit-language.component.css']
+  selector: 'app-edit-exercise',
+  templateUrl: './edit-exercise.component.html',
+  styleUrls: ['./edit-exercise.component.css']
 })
-export class EditLanguageComponent implements OnInit {
-  language?: LanguageDetails;
+export class EditExerciseComponent implements OnInit {
+  exercise?: ExerciseDetails;
   isError: boolean = false;
   errorMsg: String = "";
 
@@ -18,19 +19,19 @@ export class EditLanguageComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(routeParams => {
-      this.loadLanguage(routeParams['id']);
+      this.loadExercise(routeParams['id']);
     });   
   }
 
-  loadLanguage(id: number) {
-    this.modService.getLanguage(id).subscribe({
-      next: (response: LanguageDetails) => this.onResponse(response),
+  loadExercise(id: number) {
+    this.modService.getExercise(id).subscribe({
+      next: (response: ExerciseData) => this.onResponse(response),
       error: (error: HttpErrorResponse) => this.onError(error)
     });
   }
 
-  onResponse(response: LanguageDetails): void {
-    this.language = response;
+  onResponse(response: ExerciseData): void {
+    this.exercise = response;
   }
 
   onError(error: HttpErrorResponse): void {

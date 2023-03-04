@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { JwtService } from '../common/jwt-service';
+import { CourseData } from './dto/course-data';
 import { CourseDetails } from './dto/course-details';
 import { CourseRequest } from './dto/course-request';
+import { ExerciseData } from './dto/exercise-data';
 import { ExerciseDetails } from './dto/exercise-details';
 import { ExerciseRequest } from './dto/exercise-request';
 import { LanguageDetails } from './dto/language-details';
@@ -41,12 +43,20 @@ export class AlphabetModerationService extends JwtService {
     return this.http.put<CourseDetails>(`${this.apiServerUrl}/course/${courseId}`, request, { headers: this.getHeaders() });
   }
 
+  public getCourse(courseId: number): Observable<CourseData> {
+    return this.http.get<CourseData>(`${this.apiServerUrl}/course/${courseId}`, { headers: this.getHeaders() });
+  }
+
   public createExercise(request: ExerciseRequest): Observable<ExerciseDetails> {
     return this.http.post<ExerciseDetails>(`${this.apiServerUrl}/exercise/new`, request, { headers: this.getHeaders() });
   }
 
   public updateExercise(exerciseId: number, request: ExerciseRequest): Observable<ExerciseDetails> {
     return this.http.put<ExerciseDetails>(`${this.apiServerUrl}/exercise/${exerciseId}`, request, { headers: this.getHeaders() });
+  }
+
+  public getExercise(exerciseId: number): Observable<ExerciseData> {
+    return this.http.get<ExerciseData>(`${this.apiServerUrl}/exercise/${exerciseId}`, { headers: this.getHeaders() });
   }
 
   public reorder(exerciseId: number, request: OrderRequest): Observable<ExerciseDetails> {
