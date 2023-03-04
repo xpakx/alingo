@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.game.dto.ExerciseData;
 import io.github.xpakx.alingo.game.dto.ExerciseWithOnlyAnswer;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,4 +29,6 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     @Transactional
     @Query("UPDATE Exercise ex SET ex.order = ex.order - 1 WHERE ex.course.id = :courseId AND ex.order > :orderStart AND ex.order < :orderEnd")
     void decrementOrderBetween(Long courseId, Integer orderStart, Integer orderEnd);
+
+    Optional<ExerciseData> getProjectedById(Long exerciseId);
 }

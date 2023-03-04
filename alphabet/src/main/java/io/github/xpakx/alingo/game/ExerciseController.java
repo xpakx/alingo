@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.game;
 
+import io.github.xpakx.alingo.game.dto.ExerciseData;
 import io.github.xpakx.alingo.game.dto.ExerciseRequest;
 import io.github.xpakx.alingo.game.dto.OrderRequest;
 import jakarta.validation.Valid;
@@ -36,5 +37,12 @@ public class ExerciseController {
     @ResponseBody
     public Exercise reorder(@Valid @RequestBody OrderRequest request, @PathVariable Long exerciseId) {
         return service.changeOrder(exerciseId, request);
+    }
+
+    @GetMapping("/{exerciseId}")
+    @Secured("MODERATOR")
+    @ResponseBody
+    public ExerciseData getExercise(@PathVariable Long exerciseId) {
+        return service.getExercise(exerciseId);
     }
 }

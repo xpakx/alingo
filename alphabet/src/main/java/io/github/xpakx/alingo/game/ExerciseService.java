@@ -87,4 +87,9 @@ public class ExerciseService {
         }
         return exerciseRepository.save(exercise);
     }
+
+    public ExerciseData getExercise(Long exerciseId) {
+        return exerciseRepository.getProjectedById(exerciseId)
+                .orElseThrow(NotFoundException::new);
+    }
 }
