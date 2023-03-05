@@ -1,0 +1,25 @@
+<div class="exercise" *ngIf="exercise">
+    <div class="field">
+        <div class="name">Letter</div>
+        <div class="letter">{{ exercise.letter }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Wrong answer</div>
+        <div class="answer">{{ exercise.wrongAnswer }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Correct answer</div>
+        <div class="answer">{{ exercise.correctAnswer }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Course</div>
+        <div class="course-name" [routerLink]="'/course/'+exercise.course.id">
+            {{ exercise.course.name }}
+        </div>
+    </div>
+
+    <button class="btn" [routerLink]="'/exercise/'+exercise.id+'/edit'">
+
+    </button>
+</div>
+

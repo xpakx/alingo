@@ -18,6 +18,7 @@ import { AddExerciseComponent } from './alphabet/add-exercise/add-exercise.compo
 import { EditLanguageComponent } from './alphabet/edit-language/edit-language.component';
 import { EditCourseComponent } from './alphabet/edit-course/edit-course.component';
 import { EditExerciseComponent } from './alphabet/edit-exercise/edit-exercise.component';
+import { ViewExerciseComponent } from './alphabet/view-exercise/view-exercise.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { EditExerciseComponent } from './alphabet/edit-exercise/edit-exercise.co
     AddExerciseComponent,
     EditLanguageComponent,
     EditCourseComponent,
-    EditExerciseComponent
+    EditExerciseComponent,
+    ViewExerciseComponent
   ],
   imports: [
     BrowserModule,
