@@ -16,11 +16,11 @@ export class LanguagesComponent implements OnInit {
   constructor(private modService: AlphabetModerationService) { }
 
   ngOnInit(): void {
-      this.loadLanguages();
+      this.loadLanguages(1);
   }
 
-  loadLanguages() {
-    this.modService.getLanguages().subscribe({
+  loadLanguages(page: number) {
+    this.modService.getLanguages(page).subscribe({
       next: (response: LanguageDetails[]) => this.onResponse(response),
       error: (error: HttpErrorResponse) => this.onError(error)
     });

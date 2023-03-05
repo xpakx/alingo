@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -35,8 +35,9 @@ export class AlphabetModerationService extends JwtService {
     return this.http.get<LanguageDetails>(`${this.apiServerUrl}/language/${languageId}`, { headers: this.getHeaders() });
   }
 
-  public getLanguages(): Observable<LanguageDetails[]> {
-    return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language`, { headers: this.getHeaders() });
+  public getLanguages(page: number): Observable<LanguageDetails[]> {
+    let params = new HttpParams().set('page', page).set('amount', 20);
+    return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language`, { headers: this.getHeaders(), params : params });
   }
 
   public createCourse(request: CourseRequest): Observable<CourseDetails> {
@@ -51,8 +52,9 @@ export class AlphabetModerationService extends JwtService {
     return this.http.get<CourseData>(`${this.apiServerUrl}/course/${courseId}`, { headers: this.getHeaders() });
   }
 
-  public getCoursesForLanguage(languageId: number): Observable<CourseData[]> {
-    return this.http.get<CourseData[]>(`${this.apiServerUrl}/language/${languageId}/course`, { headers: this.getHeaders() });
+  public getCoursesForLanguage(languageId: number, page: number): Observable<CourseData[]> {
+    let params = new HttpParams().set('page', page).set('amount', 20);
+    return this.http.get<CourseData[]>(`${this.apiServerUrl}/language/${languageId}/course`, { headers: this.getHeaders(), params: params });
   }
 
   public createExercise(request: ExerciseRequest): Observable<ExerciseDetails> {
