@@ -1,0 +1,24 @@
+<div class="course" *ngIf="course">
+    <div class="field">
+        <div class="name">Name</div>
+        <div class="letter">{{ course.name }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Description</div>
+        <div class="answer">{{ course.description }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Difficulty</div>
+        <div class="answer">{{ course.difficulty }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Language</div>
+        <div class="language-name" [routerLink]="'/language/'+course.language.id">
+            {{ course.language }}
+        </div>
+    </div>
+
+    <button class="btn" [routerLink]="'/course/'+course.id+'/edit'">
+        Edit
+    </button>
+</div>

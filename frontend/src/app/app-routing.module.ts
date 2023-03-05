@@ -7,6 +7,7 @@ import { EditCourseComponent } from './alphabet/edit-course/edit-course.componen
 import { EditExerciseComponent } from './alphabet/edit-exercise/edit-exercise.component';
 import { EditLanguageComponent } from './alphabet/edit-language/edit-language.component';
 import { GameComponent } from './alphabet/game/game.component';
+import { ViewCourseComponent } from './alphabet/view-course/view-course.component';
 import { ViewExerciseComponent } from './alphabet/view-exercise/view-exercise.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegistrationComponent } from './auth/registration/registration.component';
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'language/:id/edit', component: EditLanguageComponent },
   { path: 'course/add', component: AddCourseComponent },
   { path: 'course/:id/edit', component: EditCourseComponent },
+  { path: 'course/:id', component: ViewCourseComponent },
   { path: 'exercise/add', component: AddExerciseComponent },
   { path: 'exercise/:id/edit', component: EditExerciseComponent },
   { path: 'exercise/:id', component: ViewExerciseComponent }
