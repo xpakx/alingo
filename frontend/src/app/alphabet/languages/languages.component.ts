@@ -12,11 +12,12 @@ export class LanguagesComponent implements OnInit {
   languages: LanguageDetails[] = [];
   isError: boolean = false;
   errorMsg: String = "";
+  page: number = 1;
 
   constructor(private modService: AlphabetModerationService) { }
 
   ngOnInit(): void {
-      this.loadLanguages(1);
+      this.loadLanguages(this.page);
   }
 
   loadLanguages(page: number) {
@@ -33,5 +34,13 @@ export class LanguagesComponent implements OnInit {
   onError(error: HttpErrorResponse): void {
     this.isError = true;
     this.errorMsg = error.error.message;
+  }
+
+  nextPage(): void {
+    this.loadLanguages(++this.page);
+  }
+
+  prevPage(): void {
+    this.loadLanguages(--this.page);
   }
 }
