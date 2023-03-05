@@ -9,6 +9,7 @@ import { EditLanguageComponent } from './alphabet/edit-language/edit-language.co
 import { GameComponent } from './alphabet/game/game.component';
 import { ViewCourseComponent } from './alphabet/view-course/view-course.component';
 import { ViewExerciseComponent } from './alphabet/view-exercise/view-exercise.component';
+import { ViewLanguageComponent } from './alphabet/view-language/view-language.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegistrationComponent } from './auth/registration/registration.component';
 
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'register', component: RegistrationComponent },
   { path: 'language/add', component: AddLanguageComponent },
   { path: 'language/:id/edit', component: EditLanguageComponent },
+  { path: 'language/:id', component: ViewLanguageComponent },
   { path: 'course/add', component: AddCourseComponent },
   { path: 'course/:id/edit', component: EditCourseComponent },
   { path: 'course/:id', component: ViewCourseComponent },

@@ -20,6 +20,7 @@ import { EditCourseComponent } from './alphabet/edit-course/edit-course.componen
 import { EditExerciseComponent } from './alphabet/edit-exercise/edit-exercise.component';
 import { ViewExerciseComponent } from './alphabet/view-exercise/view-exercise.component';
 import { ViewCourseComponent } from './alphabet/view-course/view-course.component';
+import { ViewLanguageComponent } from './alphabet/view-language/view-language.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ViewCourseComponent } from './alphabet/view-course/view-course.componen
     EditCourseComponent,
     EditExerciseComponent,
     ViewExerciseComponent,
-    ViewCourseComponent
+    ViewCourseComponent,
+    ViewLanguageComponent
   ],
   imports: [
     BrowserModule,
