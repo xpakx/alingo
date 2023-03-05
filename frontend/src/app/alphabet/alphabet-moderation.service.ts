@@ -35,6 +35,10 @@ export class AlphabetModerationService extends JwtService {
     return this.http.get<LanguageDetails>(`${this.apiServerUrl}/language/${languageId}`, { headers: this.getHeaders() });
   }
 
+  public getLanguages(): Observable<LanguageDetails[]> {
+    return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language`, { headers: this.getHeaders() });
+  }
+
   public createCourse(request: CourseRequest): Observable<CourseDetails> {
     return this.http.post<CourseDetails>(`${this.apiServerUrl}/course`, request, { headers: this.getHeaders() });
   }
@@ -45,6 +49,10 @@ export class AlphabetModerationService extends JwtService {
 
   public getCourse(courseId: number): Observable<CourseData> {
     return this.http.get<CourseData>(`${this.apiServerUrl}/course/${courseId}`, { headers: this.getHeaders() });
+  }
+
+  public getCoursesForLanguage(languageId: number): Observable<CourseData[]> {
+    return this.http.get<CourseData[]>(`${this.apiServerUrl}/language/${languageId}/course`, { headers: this.getHeaders() });
   }
 
   public createExercise(request: ExerciseRequest): Observable<ExerciseDetails> {
