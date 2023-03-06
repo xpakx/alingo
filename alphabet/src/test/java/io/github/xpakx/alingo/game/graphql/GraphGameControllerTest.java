@@ -212,7 +212,8 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("guess")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -228,7 +229,8 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("guess")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -244,7 +246,9 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("id")).and(containsStringIgnoringCase("provided"))));
     }
 
     private GraphQuery getGraphQueryForExercises(GraphExercises answer) {
@@ -329,7 +333,8 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not((nullValue())));
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
     }
 
     @ParameterizedTest
@@ -346,7 +351,8 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not((nullValue())));
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
     }
 
     @Test
