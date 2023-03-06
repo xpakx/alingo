@@ -125,7 +125,8 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     private String tokenFor() {
@@ -178,7 +179,8 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -194,7 +196,8 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -238,7 +241,8 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -254,7 +258,8 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("not found")));
     }
 
     @Test
@@ -308,7 +313,8 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -325,6 +331,7 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 }
