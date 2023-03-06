@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.error;
 
 import io.github.xpakx.alingo.error.dto.ErrorResponse;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -51,11 +52,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
         return handleExceptionInternal(
                 ex,
-                constructErrorBody(ex, HttpStatus.BAD_REQUEST),
+                constructErrorBody(ex),
                 new HttpHeaders(),
                 HttpStatus.BAD_REQUEST,
                 request
         );
+    }
+
+    private ErrorResponse constructErrorBody(ConstraintViolationException ex) {
+        ErrorResponse errorBody = new ErrorResponse();
+        errorBody.setMessage("Validation failed!");
+        errorBody.setStatus(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorBody.setError(HttpStatus.BAD_REQUEST.value());
+        List<String> errors = ex.getConstraintViolations()
+                .stream()
+                .map(ConstraintViolation::getMessage)
+                .filter(Objects::nonNull)
+                .toList();
+        errorBody.setErrors(errors.size() > 0 ? errors : null);
+        return errorBody;
     }
 
     @Override
