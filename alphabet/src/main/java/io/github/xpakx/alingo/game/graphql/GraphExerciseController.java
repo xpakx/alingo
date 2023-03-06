@@ -30,7 +30,7 @@ public class GraphExerciseController {
 
     @MutationMapping
     @Secured("MODERATOR")
-    public Exercise editExercise(@NotNull @Argument Long exerciseId,
+    public Exercise editExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long exerciseId,
                                    @Argument String letter,
                                    @NotBlank(message = "Wrong answer must be provided!") @Argument String wrongAnswer,
                                    @NotBlank(message = "Correct answer must be provided!") @Argument String correctAnswer,
@@ -44,7 +44,7 @@ public class GraphExerciseController {
 
     @MutationMapping
     @Secured("MODERATOR")
-    public Exercise reorderExercise(@NotNull @Argument Long exerciseId,
+    public Exercise reorderExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long exerciseId,
                                  @NotNull(message = "Order must be provided") @PositiveOrZero(message = "Order cannot be negative") @Argument Integer order) {
         return service.changeOrder(exerciseId, new OrderRequest(order));
     }
