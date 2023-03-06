@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     @Cacheable(cacheNames = "answers", key = "'answers'.concat(#id)")
-    Optional<ExerciseWithOnlyAnswer> findProjectedById(Long id);
+    Optional<Exercise> findCacheableById(Long id);
     Page<Exercise> findByCourseId(Long courseId, Pageable pageable);
     @Query("SELECT coalesce(max(ex.order), 0) FROM Exercise ex WHERE ex.course.id = :courseId")
     Integer getMaxOrderByCourseId(Long courseId);

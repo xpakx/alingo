@@ -47,7 +47,7 @@ public class GameService {
     }
 
     private Exercise getExercise(Long exerciseId) {
-        return exerciseRepository.findById(exerciseId)
+        return exerciseRepository.findCacheableById(exerciseId)
                 .orElseThrow(NotFoundException::new);
     }
 
