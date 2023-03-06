@@ -178,7 +178,8 @@ class GraphGameControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("not found")));
     }
 
     @Test
