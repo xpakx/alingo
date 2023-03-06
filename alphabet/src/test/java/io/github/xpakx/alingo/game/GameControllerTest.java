@@ -240,7 +240,8 @@ class GameControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive")));
+                .body("message", containsStringIgnoringCase("validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
     }
 
     @ParameterizedTest
@@ -256,7 +257,8 @@ class GameControllerTest {
         .then()
                 .statusCode(BAD_REQUEST.value())
                 .body("error", equalTo(BAD_REQUEST.value()))
-                .body("message", both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between")));
+                .body("message", containsStringIgnoringCase("validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
     }
 
     @Test
