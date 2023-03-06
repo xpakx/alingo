@@ -24,14 +24,15 @@ public class GraphGameController {
 
     @QueryMapping
     @PostAuthorize("hasAuthority('SUBSCRIBER') or returnObject.premium==false")
-    public ExercisesResponse courseExercises(@NotNull @Argument long course,
-                                             @Argument int page,
-                                             @NotNull @Min(value = 1) @Max(value = 20) @Argument int amount) {
+    public ExercisesResponse courseExercises(@NotNull(message = "Course id must be provided!") @Argument long course,
+                                             @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
+                                             @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {
         return service.getExercisesForCourse(course, page-1, amount);
     }
 
     @MutationMapping
-    public AnswerResponse answer(@NotNull @Argument long exercise, @NotBlank @Argument String guess) {
+    public AnswerResponse answer(@NotNull(message = "Exercise id must be provided!") @Argument long exercise,
+                                 @NotBlank(message = "Guess cannot be empty")  @Argument String guess) {
         return service.checkAnswer(exercise, toRequestAnswer(guess));
     }
 
