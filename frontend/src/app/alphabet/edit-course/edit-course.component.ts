@@ -11,7 +11,7 @@ import { CourseDetails } from '../dto/course-details';
   styleUrls: ['./edit-course.component.css']
 })
 export class EditCourseComponent implements OnInit {
-  course?: CourseDetails;
+  course?: CourseData;
   isError: boolean = false;
   errorMsg: String = "";
 

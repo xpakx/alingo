@@ -2,5 +2,5 @@ export interface ExerciseRequest {
     letter: String,
     wrongAnswer: String,
     correctAnswer: String,
-    courseId: number
+    courseId: Number
 }

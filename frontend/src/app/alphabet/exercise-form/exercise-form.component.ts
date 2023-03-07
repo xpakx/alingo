@@ -51,7 +51,7 @@ export class ExerciseFormComponent implements OnInit {
         letter: this.form.controls.letter.value,
         wrongAnswer: this.form.controls.wrongAnswer.value,
         correctAnswer: this.form.controls.correctAnswer.value,
-        courseId: 0
+        courseId: this.form.controls.courseId.value
       }).subscribe({
         next: (response: ExerciseDetails) => this.onCreation(response),
         error: (error: HttpErrorResponse) => this.onError(error)

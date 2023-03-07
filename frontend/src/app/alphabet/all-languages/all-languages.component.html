@@ -1,0 +1,7 @@
+<button class="language-btn" *ngFor="let language of languages" (click)="chooseLanguage(language.id)">
+    <div class="name">Name</div>
+    <div class="letter">{{ language.name }}</div>
+</button>
+
+<button class="btn" (click)="prevPage()">Previous</button>
+<button class="btn" (click)="nextPage()">Next</button>
