@@ -1,0 +1,30 @@
+<div class="course" *ngFor="let course of courses">
+    <div class="field">
+        <div class="name">Name</div>
+        <div class="letter">{{ course.name }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Description</div>
+        <div class="answer">{{ course.description }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Difficulty</div>
+        <div class="answer">{{ course.difficulty }}</div>
+    </div>
+    <div class="field">
+        <div class="name">Language</div>
+        <div class="language-name" [routerLink]="'/language/'+course.language.id">
+            {{ course.language }}
+        </div>
+    </div>
+
+    <button class="btn" [routerLink]="'/course/'+course.id">
+        View
+    </button>
+    <button class="btn" [routerLink]="'/course/'+course.id+'/edit'">
+        Edit
+    </button>
+</div>
+
+<button class="btn" (click)="prevPage()">Previous</button>
+<button class="btn" (click)="nextPage()">Next</button>
