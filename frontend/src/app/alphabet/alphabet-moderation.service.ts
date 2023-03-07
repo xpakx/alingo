@@ -52,6 +52,11 @@ export class AlphabetModerationService extends JwtService {
     return this.http.get<CourseData>(`${this.apiServerUrl}/course/${courseId}`, { headers: this.getHeaders() });
   }
 
+  public getCourses(page: number): Observable<CourseDetails[]> {
+    let params = new HttpParams().set('page', page).set('amount', 20);
+    return this.http.get<CourseDetails[]>(`${this.apiServerUrl}/course`, { headers: this.getHeaders(), params : params });
+  }
+
   public getCoursesForLanguage(languageId: number, page: number): Observable<CourseData[]> {
     let params = new HttpParams().set('page', page).set('amount', 20);
     return this.http.get<CourseData[]>(`${this.apiServerUrl}/language/${languageId}/course`, { headers: this.getHeaders(), params: params });

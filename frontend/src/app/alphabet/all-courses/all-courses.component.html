@@ -1,1 +1,7 @@
-<p>all-courses works!</p>
+<button class="course-btn" *ngFor="let course of courses" (click)="chooseCourse(course.id)">
+    <div class="name">Name</div>
+    <div class="letter">{{ course.name }}</div>
+</button>
+
+<button class="btn" (click)="prevPage()">Previous</button>
+<button class="btn" (click)="nextPage()">Next</button>

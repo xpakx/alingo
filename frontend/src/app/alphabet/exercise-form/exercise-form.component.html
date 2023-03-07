@@ -14,7 +14,7 @@
     <label for="course-id">Course:</label>
     <input type="text" id="course-id" formControlName="courseId">
     <span class="error-message">This field is required.</span>
-    <app-all-courses (courseId)="onCourseChoice"></app-all-courses>
+    <app-all-courses (courseId)="onCourseChoice($event)"></app-all-courses>
 
     <button class="btn" [disabled]="form.invalid" (click)="onSubmit()">
         {{ this.exercise ? 'Save' : 'Add' }}
