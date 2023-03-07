@@ -127,7 +127,8 @@ class GraphGuessControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not((nullValue())));
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
     }
 
     @ParameterizedTest
@@ -144,7 +145,8 @@ class GraphGuessControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not((nullValue())));
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
     }
 
     @Test
@@ -190,7 +192,8 @@ class GraphGuessControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not((nullValue())));
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
 }
