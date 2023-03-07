@@ -88,7 +88,9 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("passwords")).and(containsStringIgnoringCase("match"))));
+
     }
 
     @Test
@@ -102,7 +104,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("username")));
     }
 
     @Test
@@ -177,7 +180,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("invalid password")));
     }
 
     @Test
@@ -191,7 +195,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("no user")));
     }
 
     @Test
@@ -232,7 +237,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -246,11 +252,12 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
-    void shouldNotValidateAuthRequestIfPUsernameIsEmpty() {
+    void shouldNotValidateAuthRequestIfUsernameIsEmpty() {
         GraphQuery query = getGraphQueryForLogin(getVariablesForLogin("", "password"));
         given()
                 .contentType(ContentType.JSON)
@@ -260,7 +267,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -274,7 +282,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -288,7 +297,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -302,7 +312,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -316,7 +327,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -330,7 +342,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("length"))));
     }
 
     @Test
@@ -344,7 +357,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("username")).and(containsStringIgnoringCase("length"))));
     }
 
     @Test
@@ -358,7 +372,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -372,7 +387,8 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -386,6 +402,7 @@ class GraphAuthControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("password")).and(containsStringIgnoringCase("empty"))));
     }
 }

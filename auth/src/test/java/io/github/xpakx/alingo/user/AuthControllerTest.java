@@ -127,8 +127,6 @@ class AuthControllerTest {
                 .body("token", notNullValue());
     }
 
-
-
     private AuthenticationRequest getAuthRequest(String username, String password) {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setUsername(username);
