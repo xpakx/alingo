@@ -20,15 +20,16 @@ public class GraphAuthController {
     private final AuthService service;
 
     @MutationMapping
-    public AuthenticationResponse login(@NotBlank @Argument String username, @NotBlank @Argument String password) {
+    public AuthenticationResponse login(@NotBlank(message = "Username cannot be empty") @Argument String username,
+                                        @NotBlank(message = "Password cannot be empty") @Argument String password) {
         return service.generateAuthenticationToken(toAuthRequest(username, password));
     }
 
     @MutationMapping
     @RepeatedPassword
-    public AuthenticationResponse register(@NotBlank @Length(min=5, max=15) @Argument String username,
-                                           @NotBlank @Argument String password,
-                                           @NotBlank @Argument String passwordRe) {
+    public AuthenticationResponse register(@NotBlank(message = "Username cannot be empty") @Length(min=5, max=15, message = "Username length must be between 5 and 15") @Argument String username,
+                                           @NotBlank(message = "Password cannot be empty") @Argument String password,
+                                           @Argument String passwordRe) {
         return service.register(toRegistrationRequest(username, password, passwordRe));
     }
 
