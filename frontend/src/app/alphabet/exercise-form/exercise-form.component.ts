@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
+import { ExerciseData } from '../dto/exercise-data';
 import { ExerciseDetails } from '../dto/exercise-details';
 import { ExerciseForm } from '../form/exercise-form';
 
@@ -14,13 +15,14 @@ export class ExerciseFormComponent implements OnInit {
   form: FormGroup<ExerciseForm>;
   isError: boolean = false;
   errorMsg: String = "";
-  @Input("exercise") exercise?: ExerciseDetails;
+  @Input("exercise") exercise?: ExerciseData;
 
   constructor(private fb: FormBuilder, private modService: AlphabetModerationService) {
     this.form = this.fb.nonNullable.group({
       letter: [new String(""), [Validators.required, Validators.minLength(1)]],
       wrongAnswer: [new String(""), [Validators.required, Validators.minLength(1)]],
-      correctAnswer: [new String(""), [Validators.required, Validators.minLength(1)]]
+      correctAnswer: [new String(""), [Validators.required, Validators.minLength(1)]],
+      courseId: [new Number(), Validators.required]
     });
   }
 
@@ -29,7 +31,8 @@ export class ExerciseFormComponent implements OnInit {
       this.form.setValue({
         letter: this.exercise.letter, 
         wrongAnswer: this.exercise.wrongAnswer, 
-        correctAnswer: this.exercise.correctAnswer
+        correctAnswer: this.exercise.correctAnswer,
+        courseId: this.exercise.course.id
       });
     }
   }
@@ -77,5 +80,11 @@ export class ExerciseFormComponent implements OnInit {
   onError(error: HttpErrorResponse): void {
     this.isError = true;
     this.errorMsg = error.error.message;
+  }
+
+  onCourseChoice(id: number): void {
+    this.form.patchValue({
+      courseId: id
+    });
   }
 }

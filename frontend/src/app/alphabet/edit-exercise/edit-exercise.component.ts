@@ -11,7 +11,7 @@ import { ExerciseDetails } from '../dto/exercise-details';
   styleUrls: ['./edit-exercise.component.css']
 })
 export class EditExerciseComponent implements OnInit {
-  exercise?: ExerciseDetails;
+  exercise?: ExerciseData;
   isError: boolean = false;
   errorMsg: String = "";
 

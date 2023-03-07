@@ -23,6 +23,7 @@ import { ViewCourseComponent } from './alphabet/view-course/view-course.componen
 import { ViewLanguageComponent } from './alphabet/view-language/view-language.component';
 import { LanguagesComponent } from './alphabet/languages/languages.component';
 import { CoursesComponent } from './alphabet/courses/courses.component';
+import { AllCoursesComponent } from './alphabet/all-courses/all-courses.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { CoursesComponent } from './alphabet/courses/courses.component';
     ViewCourseComponent,
     ViewLanguageComponent,
     LanguagesComponent,
-    CoursesComponent
+    CoursesComponent,
+    AllCoursesComponent
   ],
   imports: [
     BrowserModule,
