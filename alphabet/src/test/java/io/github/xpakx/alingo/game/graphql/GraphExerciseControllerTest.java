@@ -138,7 +138,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
     private String tokenFor() {
@@ -198,7 +199,9 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("wrong")).and(containsStringIgnoringCase("provided"))));
+
     }
 
     @Test
@@ -214,7 +217,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("wrong")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
@@ -230,7 +234,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("correct")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
@@ -246,7 +251,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("correct")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
@@ -262,7 +268,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("belong")).and(containsStringIgnoringCase("course"))));
     }
 
     @Test
@@ -306,7 +313,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
     @Test
@@ -322,7 +330,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("not found")));
     }
 
     @Test
@@ -385,7 +394,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("wrong")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
@@ -403,7 +413,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("wrong")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
@@ -421,12 +432,12 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("correct")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
     void shouldNotAcceptNullCorrectAnswerWhileUpdating() {
-
         Long courseId = addCourse();
         Long exerciseId = addExercise("a", courseId);
         GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", null, courseId));
@@ -440,12 +451,12 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("correct")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
     void shouldNotAcceptNullCourseIdWhileUpdating() {
-
         Long courseId = addCourse();
         Long exerciseId = addExercise("a", courseId);
         GraphQuery query = getUpdateExerciseGraphQuery(getUpdateExerciseVariables(exerciseId, "g", "wrong", "correct", null));
@@ -459,7 +470,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("belong")).and(containsStringIgnoringCase("course"))));
     }
 
     @Test
@@ -524,7 +536,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
     @Test
@@ -540,7 +553,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("not found")));
     }
 
     @Test
@@ -557,7 +571,8 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("provided"))));
     }
 
     @Test
@@ -574,7 +589,8 @@ class GraphExerciseControllerTest {
          .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("negative"))));
     }
 
     @Test
@@ -737,6 +753,7 @@ class GraphExerciseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("high"))));
     }
 }
