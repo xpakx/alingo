@@ -27,6 +27,15 @@ type Course {
     difficulty: String
 }
 
+type CourseData {
+    id: ID!
+    name: String!
+    description: String
+    difficulty: String
+    premium: Boolean!
+    language: Language
+}
+
 type Exercise {
     id: ID!
     letter: String
@@ -44,6 +53,9 @@ enum Difficulty {
 
 type Query {
     courseExercises(course: Int, page: Int, amount: Int): ExercisesResponse!
+    getLanguage(id: ID): Language!
+    getLanguages(page: Int, amount: Int): [Language]!
+    getCoursesForLanguage(languageId: ID, page: Int, amount: Int): [CourseData]!
 }
 
 type Mutation {
