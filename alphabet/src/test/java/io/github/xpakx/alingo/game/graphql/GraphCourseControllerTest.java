@@ -112,7 +112,8 @@ class GraphCourseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
     private String tokenFor() {
@@ -165,7 +166,8 @@ class GraphCourseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -181,7 +183,8 @@ class GraphCourseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -245,7 +248,8 @@ class GraphCourseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
     @Test
@@ -261,7 +265,8 @@ class GraphCourseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("not found")));
     }
 
     @Test
@@ -321,7 +326,8 @@ class GraphCourseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
@@ -338,7 +344,8 @@ class GraphCourseControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data", nullValue())
-                .body("errors", not(nullValue()));
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
 
     @Test
