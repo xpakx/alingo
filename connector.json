@@ -1,0 +1,17 @@
+{
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "dbstats",
+    "database.port": "5432",
+    "database.user": "admin",
+    "database.password": "password",
+    "database.dbname": "stats",
+    "database.server.name": "dbstats",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "schema-changes.stats",
+    "name": "stats-db-connector",
+    "topic.prefix": "postgres"
+  },
+  "name": "stats-db-connector"
+}
