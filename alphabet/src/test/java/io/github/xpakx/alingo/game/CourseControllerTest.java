@@ -80,7 +80,7 @@ class CourseControllerTest {
     }
 
     private CourseRequest getCourseRequest(String name, String description, Difficulty difficulty, Long languageId) {
-        return new CourseRequest(name, description, difficulty, languageId);
+        return new CourseRequest(name, description, difficulty, languageId, false);
     }
 
     @Test

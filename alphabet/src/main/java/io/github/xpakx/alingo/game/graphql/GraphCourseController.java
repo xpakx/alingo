@@ -39,6 +39,6 @@ public class GraphCourseController {
     }
 
     private CourseRequest toRequest(String name, String description, Difficulty difficulty, Long languageId) {
-        return new CourseRequest(name, description, difficulty, languageId);
+        return new CourseRequest(name, description, difficulty, languageId, false);
     }
 }

@@ -29,6 +29,7 @@ public class CourseService {
         course.setName(request.name());
         course.setDescription(request.description());
         course.setDifficulty(request.difficulty());
+        course.setPremium(request.premium());
         if(request.languageId() != null) {
             course.setLanguage(languageRepository.getReferenceById(request.languageId()));
         } else {
