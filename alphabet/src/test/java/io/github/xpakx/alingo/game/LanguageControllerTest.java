@@ -6,6 +6,8 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -342,5 +344,113 @@ class LanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("name", equalTo("language"));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetLanguagesIfNotAuthenticated() {
+        given()
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetLanguagesIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("21090cjw")
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetLanguagesIfUserIsNotModerator() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language")
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWithEmptyListToGetLanguagesIfCourseDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language")
+        .then()
+                .statusCode(OK.value())
+                .body("$", hasSize(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-10, -1, 0})
+    void shouldNotAcceptGetLanguagesRequestWithNonPositivePages(int page) {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", page)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language")
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 21, 50})
+    void shouldNotAcceptGetLanguagesRequestWithAmountOutsideBounds(int amount) {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", 1)
+                .param("amount", amount)
+        .when()
+                .get(baseUrl + "/language")
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
+    }
+
+    @Test
+    void shouldRespondWithListOfLanguages() {
+        addLanguage("lang1");
+        addLanguage("lang2");
+        addLanguage("lang3");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", 1)
+                .param("amount", 2)
+        .when()
+                .get(baseUrl + "/language")
+        .then()
+                .statusCode(OK.value())
+                .body("$", hasSize(2));
     }
 }
