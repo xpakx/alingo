@@ -42,8 +42,8 @@ public class GraphCourseController {
 
     @QueryMapping
     @Secured("MODERATOR")
-    public CourseData getCourse(@NotNull(message = "Course id must be provided!") @Argument Long courseId) {
-        return service.getCourse(courseId);
+    public CourseData getCourse(@NotNull(message = "Course id must be provided!") @Argument Long id) {
+        return service.getCourse(id);
     }
 
     private CourseRequest toRequest(String name, String description, Difficulty difficulty, Long languageId) {
