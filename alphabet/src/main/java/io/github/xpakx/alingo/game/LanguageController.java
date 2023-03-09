@@ -51,7 +51,7 @@ public class LanguageController {
     public List<CourseData> getCourses(@RequestParam  @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
                                        @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
                                        @PathVariable Long languageId) {
-        return service.getCourses(languageId, page, amount);
+        return service.getCourses(languageId, page-1, amount);
     }
 
     @GetMapping
@@ -59,6 +59,6 @@ public class LanguageController {
     @ResponseBody
     public List<Language> getLanguages(@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
                                        @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount) {
-        return service.getLanguages(page, amount);
+        return service.getLanguages(page-1, amount);
     }
 }
