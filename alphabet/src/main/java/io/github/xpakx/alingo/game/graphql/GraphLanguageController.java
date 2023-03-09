@@ -39,8 +39,8 @@ public class GraphLanguageController {
 
     @QueryMapping
     @Secured("MODERATOR")
-    public Language getLanguage(@NotNull(message = "Language id must be provided!") @Argument Long languageId) {
-        return service.getLanguage(languageId);
+    public Language getLanguage(@NotNull(message = "Language id must be provided!") @Argument Long id) {
+        return service.getLanguage(id);
     }
 
     @QueryMapping

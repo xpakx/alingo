@@ -281,4 +281,66 @@ class LanguageControllerTest {
                 .body("message", containsStringIgnoringCase("Validation failed"))
                 .body("errors", hasItem(both(containsStringIgnoringCase("name")).and(containsStringIgnoringCase("empty"))));
     }
+
+    @Test
+    void shouldRespondWith401ToGetLanguageIfNotAuthenticated() {
+        when()
+                .get(baseUrl + "/language/{languageId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetLanguageIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("329432853295")
+        .when()
+                .get(baseUrl + "/language/{languageId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetLanguageIfUserIsNotModerator() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+        .when()
+                .get(baseUrl + "/language/{languageId}", 1L)
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith404ToGetLanguageIfLanguageDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+        .when()
+                .get(baseUrl + "/language/{languageId}", 1L)
+        .then()
+                .statusCode(NOT_FOUND.value())
+                .body("error", equalTo(NOT_FOUND.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldReturnLanguage() {
+        Long languageId = addLanguage("language");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+        .when()
+                .get(baseUrl + "/language/{languageId}", languageId)
+        .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("language"));
+    }
 }
