@@ -5,5 +5,5 @@ public interface ExerciseData {
     String getLetter();
     String getWrongAnswer();
     String getCorrectAnswer();
-    CourseData getCourse();
+    CourseMin getCourse();
 }

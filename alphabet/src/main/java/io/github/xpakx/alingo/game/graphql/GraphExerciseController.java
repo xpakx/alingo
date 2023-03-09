@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.game.graphql;
 
 import io.github.xpakx.alingo.game.*;
+import io.github.xpakx.alingo.game.dto.ExerciseData;
 import io.github.xpakx.alingo.game.dto.ExerciseRequest;
 import io.github.xpakx.alingo.game.dto.OrderRequest;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -47,5 +49,11 @@ public class GraphExerciseController {
     public Exercise reorderExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long exerciseId,
                                  @NotNull(message = "Order must be provided") @PositiveOrZero(message = "Order cannot be negative") @Argument Integer order) {
         return service.changeOrder(exerciseId, new OrderRequest(order));
+    }
+
+    @QueryMapping
+    @Secured("MODERATOR")
+    public ExerciseData getExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long exerciseId) {
+        return service.getExercise(exerciseId);
     }
 }

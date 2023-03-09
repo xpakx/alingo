@@ -36,7 +36,20 @@ type CourseData {
     language: Language
 }
 
+type CourseMin {
+    id: ID!
+    name: String!
+}
+
 type Exercise {
+    id: ID!
+    letter: String
+    wrongAnswer: String!
+    correctAnswer: String!
+    order: Int!
+}
+
+type ExerciseData {
     id: ID!
     letter: String
     wrongAnswer: String!
@@ -57,6 +70,7 @@ type Query {
     getLanguages(page: Int, amount: Int): [Language]!
     getCoursesForLanguage(languageId: ID, page: Int, amount: Int): [CourseData]!
     getCourse(id: ID): CourseData!
+    getExercise(id: ID): ExerciseData!
 }
 
 type Mutation {
