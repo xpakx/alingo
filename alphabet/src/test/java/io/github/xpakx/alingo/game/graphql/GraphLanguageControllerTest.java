@@ -3,14 +3,13 @@ package io.github.xpakx.alingo.game.graphql;
 import io.github.xpakx.alingo.game.Language;
 import io.github.xpakx.alingo.game.LanguageRepository;
 import io.github.xpakx.alingo.security.JwtUtils;
-import io.github.xpakx.alingo.utils.GetByIdVariables;
-import io.github.xpakx.alingo.utils.GraphLanguage;
-import io.github.xpakx.alingo.utils.GraphQuery;
-import io.github.xpakx.alingo.utils.GraphUpdateLanguage;
+import io.github.xpakx.alingo.utils.*;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -429,5 +428,138 @@ class GraphLanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("data.getLanguage.name", equalTo("language"));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetLanguagesIfNotAuthenticated() {
+        GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, 20));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    private GraphQuery getLanguagesGraphQuery(PageVariables variables) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    query getLanguages($page: Int, $amount: Int){
+                        getLanguages(page: $page, amount: $amount)
+                        {
+                            id
+                            name
+                        }
+                    }""");
+        query.setVariables(variables);
+        return query;
+    }
+
+    private PageVariables getPageVariables(Integer page, Integer amount) {
+        return new PageVariables(page, amount);
+    }
+
+    @Test
+    void shouldRespondWith401ToGetLanguagesIfTokenIsWrong() {
+        GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, 20));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetLanguagesIfUserIsNotModerator() {
+        GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, 20));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
+    }
+
+    @Test
+    void shouldRespondWithEmptyListToGetLanguagesIfThereAreNoLanguages() {
+        GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, 20));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.getLanguages", hasSize(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-10, -1, 0})
+    void shouldNotAcceptGetLanguagesRequestWithNonPositivePages(int page) {
+        GraphQuery query = getLanguagesGraphQuery(getPageVariables(page, 20));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 21, 50})
+    void shouldNotAcceptGetLanguagesRequestWithAmountOutsideBounds(int amount) {
+        GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, amount));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
+    }
+
+    @Test
+    void shouldRespondWithListOfLanguages() {
+        addLanguage("lang1");
+        addLanguage("lang2");
+        addLanguage("lang3");
+        GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, 2));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .log().body()
+                .statusCode(OK.value())
+                .body("data.getLanguages", hasSize(2));
     }
 }
