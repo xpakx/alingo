@@ -4,7 +4,11 @@ import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +44,15 @@ public class CourseService {
     public CourseData getCourse(Long courseId) {
         return courseRepository.findProjectedById(courseId)
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public List<CourseData> getCourses(Integer page, Integer amount) {
+        return courseRepository.findListBy(
+                PageRequest.of(
+                        page,
+                        amount,
+                        Sort.by(Sort.Order.asc("id"))
+                )
+        );
     }
 }

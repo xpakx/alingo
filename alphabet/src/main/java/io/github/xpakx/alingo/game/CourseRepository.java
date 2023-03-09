@@ -1,7 +1,6 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseData;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +14,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Optional<CourseData> findProjectedById(Long courseId);
 
-    List<CourseData> findByLanguageId(Long languageId, Pageable id);
+    List<CourseData> findByLanguageId(Long languageId, Pageable page);
+
+    List<CourseData> findListBy(Pageable page);
 }

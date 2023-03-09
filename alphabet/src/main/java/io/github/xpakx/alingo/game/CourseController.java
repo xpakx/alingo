@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/course")
@@ -36,5 +38,11 @@ public class CourseController {
     @ResponseBody
     public CourseData getCourse(@PathVariable Long courseId) {
         return service.getCourse(courseId);
+    }
+    @GetMapping("/all")
+    @Secured("MODERATOR")
+    @ResponseBody
+    public List<CourseData> getCourses(@RequestParam Integer page, @RequestParam Integer amount) {
+        return service.getCourses(page, amount);
     }
 }
