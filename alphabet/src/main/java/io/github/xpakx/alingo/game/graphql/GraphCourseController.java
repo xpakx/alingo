@@ -3,12 +3,14 @@ package io.github.xpakx.alingo.game.graphql;
 import io.github.xpakx.alingo.game.Course;
 import io.github.xpakx.alingo.game.CourseService;
 import io.github.xpakx.alingo.game.Difficulty;
+import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -36,6 +38,12 @@ public class GraphCourseController {
                                  @Argument Difficulty difficulty,
                                  @Argument Long languageId) {
         return service.editCourse(courseId, toRequest(name, description, difficulty, languageId));
+    }
+
+    @QueryMapping
+    @Secured("MODERATOR")
+    public CourseData getCourse(@NotNull(message = "Course id must be provided!") @Argument Long courseId) {
+        return service.getCourse(courseId);
     }
 
     private CourseRequest toRequest(String name, String description, Difficulty difficulty, Long languageId) {

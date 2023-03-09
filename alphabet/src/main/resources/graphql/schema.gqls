@@ -56,6 +56,7 @@ type Query {
     getLanguage(id: ID): Language!
     getLanguages(page: Int, amount: Int): [Language]!
     getCoursesForLanguage(languageId: ID, page: Int, amount: Int): [CourseData]!
+    getCourse(id: ID): CourseData!
 }
 
 type Mutation {
