@@ -5,10 +5,7 @@ import io.github.xpakx.alingo.game.CourseRepository;
 import io.github.xpakx.alingo.game.Exercise;
 import io.github.xpakx.alingo.game.ExerciseRepository;
 import io.github.xpakx.alingo.security.JwtUtils;
-import io.github.xpakx.alingo.utils.GraphExercise;
-import io.github.xpakx.alingo.utils.GraphOrder;
-import io.github.xpakx.alingo.utils.GraphQuery;
-import io.github.xpakx.alingo.utils.GraphUpdateExercise;
+import io.github.xpakx.alingo.utils.*;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -755,5 +752,100 @@ class GraphExerciseControllerTest {
                 .body("data", nullValue())
                 .body("errors", not(nullValue()))
                 .body("errors.message", hasItem(both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("high"))));
+    }
+
+    private GraphQuery getGetExerciseGraphQuery(GetByIdVariables answer) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    query getExercise($id: ID){
+                        getExercise(id: $id)
+                        {
+                            id
+                            letter
+                        }
+                    }""");
+        query.setVariables(answer);
+        return query;
+    }
+
+    private GetByIdVariables getIdVariables(Long id) {
+        return new GetByIdVariables(id);
+    }
+
+    @Test
+    void shouldRespondWith401ToGetExerciseIfNotAuthenticated() {
+        GraphQuery query = getGetExerciseGraphQuery(getIdVariables(1L));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetExerciseIfTokenIsWrong() {
+        GraphQuery query = getGetExerciseGraphQuery(getIdVariables(1L));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetExerciseIfUserIsNotModerator() {
+        GraphQuery query = getGetExerciseGraphQuery(getIdVariables(1L));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
+    }
+
+    @Test
+    void shouldRespondWith404ToGetExerciseIfLanguageDoesNotExist() {
+        GraphQuery query = getGetExerciseGraphQuery(getIdVariables(1L));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("not found")));
+    }
+
+    @Test
+    void shouldReturnExercise() {
+        GraphQuery query = getGetExerciseGraphQuery(getIdVariables(addExercise("a", addCourse())));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.getExercise.letter", equalTo("a"));
     }
 }

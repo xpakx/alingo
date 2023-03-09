@@ -646,4 +646,66 @@ class ExerciseControllerTest {
                 .body("error", equalTo(BAD_REQUEST.value()))
                 .body("message", both(containsStringIgnoringCase("order")).and(containsStringIgnoringCase("high")));
     }
+
+    @Test
+    void shouldRespondWith401ToGetExerciseIfNotAuthenticated() {
+        when()
+                .get(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetExerciseIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("329432853295")
+        .when()
+                .get(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetExerciseIfUserIsNotModerator() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+        .when()
+                .get(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith404ToGetExerciseIfCourseDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+        .when()
+                .get(baseUrl + "/exercise/{exerciseId}", 1L)
+        .then()
+                .statusCode(NOT_FOUND.value())
+                .body("error", equalTo(NOT_FOUND.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldReturnExercise() {
+        Long exerciseId = addExercise("a", addCourse());
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+        .when()
+                .get(baseUrl + "/exercise/{exerciseId}", exerciseId)
+        .then()
+                .statusCode(OK.value())
+                .body("letter", equalTo("a"));
+    }
 }
