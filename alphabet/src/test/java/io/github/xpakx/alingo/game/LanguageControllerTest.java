@@ -36,6 +36,8 @@ class LanguageControllerTest {
     JwtUtils jwt;
     @Autowired
     LanguageRepository languageRepository;
+    @Autowired
+    CourseRepository courseRepository;
 
     @BeforeEach
     void setUp() {
@@ -44,6 +46,7 @@ class LanguageControllerTest {
 
     @AfterEach
     void tearDown() {
+        courseRepository.deleteAll();
         languageRepository.deleteAll();
     }
 
@@ -390,7 +393,7 @@ class LanguageControllerTest {
     }
 
     @Test
-    void shouldRespondWithEmptyListToGetLanguagesIfCourseDoesNotExist() {
+    void shouldRespondWithEmptyListToGetLanguagesIfThereAreNoLanguages() {
         given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
@@ -452,5 +455,122 @@ class LanguageControllerTest {
         .then()
                 .statusCode(OK.value())
                 .body("$", hasSize(2));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCoursesIfNotAuthenticated() {
+        given()
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language/{languageId}/course", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCoursesIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("21090cjw")
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language/{languageId}/course", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetCoursesIfUserIsNotModerator() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language/{languageId}/course", 1L)
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWithEmptyListToGetCoursesIfLanguageDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", 1)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language/{languageId}/course", 1L)
+        .then()
+                .statusCode(OK.value())
+                .body("$", hasSize(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-10, -1, 0})
+    void shouldNotAcceptGetCoursesRequestWithNonPositivePages(int page) {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", page)
+                .param("amount", 10)
+        .when()
+                .get(baseUrl + "/language/{languageId}/course", 1L)
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 21, 50})
+    void shouldNotAcceptGetCoursesRequestWithAmountOutsideBounds(int amount) {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", 1)
+                .param("amount", amount)
+        .when()
+                .get(baseUrl + "/language/{languageId}/course", 1L)
+        .then()
+                .statusCode(BAD_REQUEST.value())
+                .body("error", equalTo(BAD_REQUEST.value()))
+                .body("message", containsStringIgnoringCase("validation failed"))
+                .body("errors", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
+    }
+
+    @Test
+    void shouldRespondWithListOfCourses() {
+        Long languageId = addLanguage("lang");
+        addCourse("course1", languageId);
+        addCourse("course2", languageId);
+        addCourse("course3", languageId);
+        addLanguage("lang3");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .param("page", 1)
+                .param("amount", 2)
+        .when()
+                .get(baseUrl + "/language/{languageId}/course", languageId)
+        .then()
+                .statusCode(OK.value())
+                .body("$", hasSize(2));
+    }
+
+    private void addCourse(String name, Long languageId) {
+        Course course = new Course();
+        course.setName(name);
+        course.setLanguage(languageRepository.getReferenceById(languageId));
+        courseRepository.save(course);
     }
 }
