@@ -53,7 +53,7 @@ public class GraphExerciseController {
 
     @QueryMapping
     @Secured("MODERATOR")
-    public ExerciseData getExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long exerciseId) {
-        return service.getExercise(exerciseId);
+    public ExerciseData getExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long id) {
+        return service.getExercise(id);
     }
 }
