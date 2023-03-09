@@ -2,6 +2,7 @@ package io.github.xpakx.alingo.game.graphql;
 
 import io.github.xpakx.alingo.game.*;
 import io.github.xpakx.alingo.security.JwtUtils;
+import io.github.xpakx.alingo.utils.GetByIdVariables;
 import io.github.xpakx.alingo.utils.GraphCourse;
 import io.github.xpakx.alingo.utils.GraphQuery;
 import io.github.xpakx.alingo.utils.GraphUpdateCourse;
@@ -395,5 +396,100 @@ class GraphCourseControllerTest {
         assertThat(language.get(), hasProperty("description", equalTo("description")));
         assertThat(language.get(), hasProperty("difficulty", equalTo(Difficulty.EASY)));
         assertThat(language.get(), hasProperty("language", hasProperty("id", equalTo(languageId))));
+    }
+
+    private GraphQuery getGetCourseGraphQuery(GetByIdVariables answer) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    query getCourse($id: ID){
+                        getCourse(id: $id)
+                        {
+                            id
+                            name
+                        }
+                    }""");
+        query.setVariables(answer);
+        return query;
+    }
+
+    private GetByIdVariables getIdVariables(Long id) {
+        return new GetByIdVariables(id);
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCourseIfNotAuthenticated() {
+        GraphQuery query = getGetCourseGraphQuery(getIdVariables(1L));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCourseIfTokenIsWrong() {
+        GraphQuery query = getGetCourseGraphQuery(getIdVariables(1L));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetCourseIfUserIsNotModerator() {
+        GraphQuery query = getGetCourseGraphQuery(getIdVariables(1L));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
+    }
+
+    @Test
+    void shouldRespondWith404ToGetCourseIfLanguageDoesNotExist() {
+        GraphQuery query = getGetCourseGraphQuery(getIdVariables(1L));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("not found")));
+    }
+
+    @Test
+    void shouldReturnCourse() {
+        GraphQuery query = getGetCourseGraphQuery(getIdVariables(addCourse("course")));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.getCourse.name", equalTo("course"));
     }
 }

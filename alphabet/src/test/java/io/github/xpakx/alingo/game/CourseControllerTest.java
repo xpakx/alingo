@@ -341,4 +341,66 @@ class CourseControllerTest {
         assertThat(language.get(), hasProperty("difficulty", equalTo(Difficulty.EASY)));
         assertThat(language.get(), hasProperty("language", hasProperty("id", equalTo(languageId))));
     }
+
+    @Test
+    void shouldRespondWith401ToGetCourseIfNotAuthenticated() {
+        when()
+                .get(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCourseIfTokenIsWrong() {
+        given()
+                .auth()
+                .oauth2("329432853295")
+        .when()
+                .get(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetCourseIfUserIsNotModerator() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1"))
+        .when()
+                .get(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(FORBIDDEN.value())
+                .body("error", equalTo(FORBIDDEN.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldRespondWith404ToGetCourseIfCourseDoesNotExist() {
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+        .when()
+                .get(baseUrl + "/course/{courseId}", 1L)
+        .then()
+                .statusCode(NOT_FOUND.value())
+                .body("error", equalTo(NOT_FOUND.value()))
+                .body("errors", nullValue());
+    }
+
+    @Test
+    void shouldReturnCourse() {
+        Long courseId = addCourse("course");
+        given()
+                .auth()
+                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+        .when()
+                .get(baseUrl + "/course/{courseId}", courseId)
+        .then()
+                .statusCode(OK.value())
+                .body("name", equalTo("course"));
+    }
 }
