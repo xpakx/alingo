@@ -1,5 +1,7 @@
 package io.github.xpakx.alingo.game.graphql;
 
+import io.github.xpakx.alingo.game.Course;
+import io.github.xpakx.alingo.game.CourseRepository;
 import io.github.xpakx.alingo.game.Language;
 import io.github.xpakx.alingo.game.LanguageRepository;
 import io.github.xpakx.alingo.security.JwtUtils;
@@ -37,6 +39,8 @@ class GraphLanguageControllerTest {
     JwtUtils jwt;
     @Autowired
     LanguageRepository languageRepository;
+    @Autowired
+    CourseRepository courseRepository;
 
     @BeforeEach
     void setUp() {
@@ -45,6 +49,7 @@ class GraphLanguageControllerTest {
 
     @AfterEach
     void tearDown() {
+        courseRepository.deleteAll();
         languageRepository.deleteAll();
     }
 
@@ -561,5 +566,145 @@ class GraphLanguageControllerTest {
                 .log().body()
                 .statusCode(OK.value())
                 .body("data.getLanguages", hasSize(2));
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCoursesIfNotAuthenticated() {
+        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, 1, 20));
+        given()
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value())
+                .body("error", equalTo(UNAUTHORIZED.value()))
+                .body("errors", nullValue());
+    }
+
+    private GraphQuery getCoursesGraphQuery(PageWithIdVariables variables) {
+        GraphQuery query = new GraphQuery();
+        query.setQuery("""
+                    query getCoursesForLanguage($id: ID, $page: Int, $amount: Int){
+                        getCoursesForLanguage(languageId: $id, page: $page, amount: $amount)
+                        {
+                            id
+                            name
+                        }
+                    }""");
+        query.setVariables(variables);
+        return query;
+    }
+
+    private PageWithIdVariables getPageAndIdVariables(Long id, Integer page, Integer amount) {
+        return new PageWithIdVariables(id, page, amount);
+    }
+
+    @Test
+    void shouldRespondWith401ToGetCoursesIfTokenIsWrong() {
+        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, 1, 20));
+        given()
+                .auth()
+                .oauth2("204230990324")
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(UNAUTHORIZED.value());
+    }
+
+    @Test
+    void shouldRespondWith403ToGetCoursesIfUserIsNotModerator() {
+        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, 1, 20));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
+    }
+
+    @Test
+    void shouldRespondWithEmptyListToGetCoursesIfLanguageNotFound() {
+        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, 1, 20));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.getCoursesForLanguage", hasSize(0));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-10, -1, 0})
+    void shouldNotAcceptGetCoursesRequestWithNonPositivePages(int page) {
+        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, page, 20));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("page")).and(containsStringIgnoringCase("positive"))));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 21, 50})
+    void shouldNotAcceptGetCoursesRequestWithAmountOutsideBounds(int amount) {
+        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, 1, amount));
+        given()
+                .auth()
+                .oauth2(tokenFor())
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(both(containsStringIgnoringCase("amount")).and(containsStringIgnoringCase("between"))));
+    }
+
+    @Test
+    void shouldRespondWithListOfCourses() {
+        Long languageId = addLanguage("lang");
+        addCourse("course1", languageId);
+        addCourse("course2", languageId);
+        addCourse("course3", languageId);
+        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(languageId, 1, 2));
+        given()
+                .auth()
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .contentType(ContentType.JSON)
+                .body(query)
+        .when()
+                .post(baseUrl + "/graphql")
+        .then()
+                .statusCode(OK.value())
+                .body("data.getCoursesForLanguage", hasSize(2));
+    }
+
+    private void addCourse(String name, Long languageId) {
+        Course course = new Course();
+        course.setName(name);
+        course.setLanguage(languageRepository.getReferenceById(languageId));
+        courseRepository.save(course);
     }
 }

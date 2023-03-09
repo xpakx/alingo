@@ -554,7 +554,6 @@ class LanguageControllerTest {
         addCourse("course1", languageId);
         addCourse("course2", languageId);
         addCourse("course3", languageId);
-        addLanguage("lang3");
         given()
                 .auth()
                 .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
