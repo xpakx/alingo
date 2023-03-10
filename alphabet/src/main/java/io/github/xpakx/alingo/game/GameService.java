@@ -53,7 +53,7 @@ public class GameService {
     }
 
 
-    @Cacheable(cacheNames = "exercises", key = "'exercises'.concat(#courseId).concat('_').concat(#page).concat('_').concat(#amount)")
+    @Cacheable(cacheNames = "exercises", key = "'exercises'.concat(#courseId).concat('_').concat(#page).concat('_').concat(#amount)", unless = "#result.size == 0")
     public ExercisesResponse getExercisesForCourse(Long courseId, Integer page, Integer amount) {
         Page<Exercise> result = exerciseRepository.findByCourseId(courseId, toPageRequest(page, amount));
         return exerciseService.prepareResponse(result, new Random(), courseRepository.isPremium(courseId));
