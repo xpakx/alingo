@@ -3,6 +3,7 @@ package io.github.xpakx.alingo.game;
 import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
+import io.github.xpakx.alingo.utils.EvictLanguageCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ public class LanguageService {
         return languageRepository.save(language);
     }
 
+    @EvictLanguageCache
     public Language editLanguage(Long languageId, LanguageRequest request) {
         Language language = languageRepository.findById(languageId)
                 .orElseThrow(NotFoundException::new);
@@ -48,6 +50,7 @@ public class LanguageService {
         );
     }
 
+    @Cacheable(cacheNames = "langLists", key = "'langLists'.concat(#page).concat('_').concat(#amount)")
     public List<Language> getLanguages(Integer page, Integer amount) {
         return languageRepository.findBy(
                 PageRequest.of(

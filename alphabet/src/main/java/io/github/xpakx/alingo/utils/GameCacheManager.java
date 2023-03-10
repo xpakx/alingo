@@ -20,4 +20,8 @@ public class GameCacheManager {
 
     }
 
+    @CacheEvict(cacheNames = "languageLists", allEntries = true)
+    public void invalidateLanguageListsCache() {
+
+    }
 }
