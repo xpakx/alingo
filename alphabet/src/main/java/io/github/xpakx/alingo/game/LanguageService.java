@@ -38,7 +38,7 @@ public class LanguageService {
     }
 
 
-    @Cacheable(cacheNames = "courseListsByLang", key = "'courseListsByLang'.concat(#languageId).concat('_').concat(#page).concat('_').concat(#amount)")
+    @Cacheable(cacheNames = "courseListsByLang", key = "'courseListsByLang'.concat(#languageId).concat('_').concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
     public List<CourseData> getCourses(Long languageId, Integer page, Integer amount) {
         return courseRepository.findByLanguageId(
                 languageId,
@@ -50,7 +50,7 @@ public class LanguageService {
         );
     }
 
-    @Cacheable(cacheNames = "langLists", key = "'langLists'.concat(#page).concat('_').concat(#amount)")
+    @Cacheable(cacheNames = "langLists", key = "'langLists'.concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
     public List<Language> getLanguages(Integer page, Integer amount) {
         return languageRepository.findBy(
                 PageRequest.of(

@@ -50,7 +50,7 @@ public class CourseService {
                 .orElseThrow(NotFoundException::new);
     }
 
-    @Cacheable(cacheNames = "courseLists", key = "'courseLists'.concat(#page).concat('_').concat(#amount)")
+    @Cacheable(cacheNames = "courseLists", key = "'courseLists'.concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
     public List<CourseData> getCourses(Integer page, Integer amount) {
         return courseRepository.findListBy(
                 PageRequest.of(
