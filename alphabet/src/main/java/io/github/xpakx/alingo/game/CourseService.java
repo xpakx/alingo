@@ -3,7 +3,9 @@ package io.github.xpakx.alingo.game;
 import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
+import io.github.xpakx.alingo.utils.EvictCourseCache;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    @EvictCourseCache
     public Course editCourse(Long courseId, CourseRequest request) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(NotFoundException::new);
@@ -41,6 +44,7 @@ public class CourseService {
         }
     }
 
+    @Cacheable(cacheNames = "courses", key = "'courses'.concat(#courseId)")
     public CourseData getCourse(Long courseId) {
         return courseRepository.findProjectedById(courseId)
                 .orElseThrow(NotFoundException::new);

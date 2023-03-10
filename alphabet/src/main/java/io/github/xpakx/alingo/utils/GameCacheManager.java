@@ -10,4 +10,9 @@ public class GameCacheManager {
 
     }
 
+    @CacheEvict(cacheNames = "courses", key = "'courses'.concat(#id)")
+    public void invalidateCourseCache(Long id) {
+
+    }
+
 }
