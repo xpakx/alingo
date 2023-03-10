@@ -4,6 +4,7 @@ import io.github.xpakx.alingo.clients.PublishGuess;
 import io.github.xpakx.alingo.game.dto.*;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -51,6 +52,8 @@ public class GameService {
                 .orElseThrow(NotFoundException::new);
     }
 
+
+    @Cacheable(cacheNames = "exerciseLists", key = "'lExercises'.concat(#courseId).concat('_').concat(#page).concat('_').concat(#amount)")
     public ExercisesResponse getExercisesForCourse(Long courseId, Integer page, Integer amount) {
         Page<Exercise> result = exerciseRepository.findByCourseId(courseId, toPageRequest(page, amount));
         return exerciseService.prepareResponse(result, new Random(), courseRepository.isPremium(courseId));
