@@ -4,6 +4,7 @@ import io.github.xpakx.alingo.game.dto.CourseData;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,8 @@ public class LanguageService {
                 .orElseThrow(NotFoundException::new);
     }
 
+
+    @Cacheable(cacheNames = "courseListsByLang", key = "'courseListsByLang'.concat(#languageId).concat('_').concat(#page).concat('_').concat(#amount)")
     public List<CourseData> getCourses(Long languageId, Integer page, Integer amount) {
         return courseRepository.findByLanguageId(
                 languageId,

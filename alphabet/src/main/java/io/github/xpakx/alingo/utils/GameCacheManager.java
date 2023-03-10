@@ -15,4 +15,9 @@ public class GameCacheManager {
 
     }
 
+    @CacheEvict(cacheNames = {"courseListsByLang", "courseLists"}, allEntries = true)
+    public void invalidateCourseListsCache() {
+
+    }
+
 }
