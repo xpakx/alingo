@@ -60,4 +60,15 @@ public class LanguageService {
                 )
         );
     }
+
+    public List<Language> findLanguages(String name, Integer page, Integer amount) {
+        return languageRepository.findByNameLikeIgnoreCase(
+                name,
+                PageRequest.of(
+                        page,
+                        amount,
+                        Sort.by(Sort.Order.asc("id"))
+                )
+        );
+    }
 }
