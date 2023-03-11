@@ -13,4 +13,11 @@
     </div>
     <button class="repeat-btn">Repeat</button>
 </div>
-  
+
+<button class="repeat-btn" (click)="correctTest()">Correct!</button>
+<button class="repeat-btn" (click)="wrongTest()">Incorrect!</button>
+
+<div class="answer-icon" *ngIf="showResult" @iconAnim (@iconAnim.done)="animationDone()">
+  <div class="icon">{{ timeFlag? '⌛' : correctFlag ? '✅' : '❌' }}</div>
+  <div class="text"> {{ timeFlag ? 'Time up!' : correctFlag ? 'Correct!' : 'Wrong!' }}</div>
+</div>

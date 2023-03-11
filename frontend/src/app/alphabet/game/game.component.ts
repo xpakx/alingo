@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { interval, Subscription } from 'rxjs';
@@ -10,10 +11,16 @@ import { Colors } from '../utils/colors';
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  styleUrls: ['./game.component.css'],
+  animations:  [trigger('iconAnim', [
+    transition(':enter', [
+      style({ width: "200%"}),
+      animate('500ms', style({ width: "100%" }))
+    ])
+  ])]
 })
 export class GameComponent implements OnInit {
-  exercises: Exercise[] = []; //{id: 0, options: ["לָ", "מָ"]}]
+  exercises: Exercise[] = [{id: 0, options: ["לָ", "מָ"]}]
   page: number = 0;
   courseId?: number;
   isError: boolean = false;
@@ -21,6 +28,8 @@ export class GameComponent implements OnInit {
   current: number = 0;
   timer?: Subscription;
   timeFlag: boolean = false;
+  correctFlag: boolean = false;
+  showResult: boolean = false;
   colors: Colors = {left: {correct: false, wrong: false}, right: {correct: false, wrong: false}};
 
   constructor(private alphabetService: AlphabetService) { }
@@ -59,8 +68,9 @@ export class GameComponent implements OnInit {
   }
 
   onAnswer(response: AnswerResponse): void {
-    this.timeFlag = false;
     this.timer?.unsubscribe();
+    this.correctFlag = response.correct;
+    this.showResult = true;
     if(response.correct) {
       this.showCorrectColor(response);
     } else {
@@ -86,6 +96,7 @@ export class GameComponent implements OnInit {
   }
 
   private nextExercise() {
+    this.timer?.unsubscribe();
     this.cleanColors();
     this.current++;
     if (this.current >= this.exercises.length) {
@@ -93,6 +104,11 @@ export class GameComponent implements OnInit {
       this.getExercises(this.page + 1);
     }
     this.timer  = interval(5000).subscribe((_) => this.timeUp())
+  }
+
+  animationDone(): void {
+    this.timeFlag = false;
+    this.showResult = false;
   }
 
   cleanColors() {
@@ -110,6 +126,7 @@ export class GameComponent implements OnInit {
   timeUp(): void {
     this.timer?.unsubscribe;
     this.timeFlag = true;
+    console.log("Time up!");
   }
 
   @HostListener('document:keydown.arrowleft', ['$event'])
@@ -124,5 +141,13 @@ export class GameComponent implements OnInit {
   onRightArrowDown(event: KeyboardEvent) {
     event.preventDefault();
     this.onGuess(1);
+  }
+
+  correctTest(): void {
+    this.onAnswer({correctAnswer: "מָ", correct: true});
+  }
+
+  wrongTest(): void {
+    this.onAnswer({correctAnswer: "מָ", correct: false});
   }
 }
