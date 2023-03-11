@@ -60,4 +60,15 @@ public class CourseService {
                 )
         );
     }
+
+    public List<CourseData> findCourses(String name, Integer page, Integer amount) {
+        return courseRepository.findByNameLikeIgnoreCase(
+                name,
+                PageRequest.of(
+                        page,
+                        amount,
+                        Sort.by(Sort.Order.asc("id"))
+                )
+        );
+    }
 }
