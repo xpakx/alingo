@@ -14,8 +14,8 @@ import { Colors } from '../utils/colors';
   styleUrls: ['./game.component.css'],
   animations:  [trigger('iconAnim', [
     transition(':enter', [
-      style({ width: "200%"}),
-      animate('500ms', style({ width: "100%" }))
+      style({ opacity: 1, position: 'absolute', top: '150px', left: '50%' }),
+      animate('500ms ease-in', style({ opacity: 0, transform: 'translateY(-100px)' }))
     ])
   ])]
 })
