@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
+import { interval, Subscription } from 'rxjs';
 import { AlphabetService } from '../alphabet.service';
 import { AnswerResponse } from '../dto/answer-response';
 import { Exercise } from '../dto/exercise';
 import { ExercisesResponse } from '../dto/exercises-response';
+import { Colors } from '../utils/colors';
 
 @Component({
   selector: 'app-game',
@@ -17,6 +19,9 @@ export class GameComponent implements OnInit {
   isError: boolean = false;
   errorMsg: String = "";
   current: number = 0;
+  timer?: Subscription;
+  timeFlag: boolean = false;
+  colors: Colors = {left: {correct: false, wrong: false}, right: {correct: false, wrong: false}};
 
   constructor(private alphabetService: AlphabetService) { }
 
@@ -54,25 +59,57 @@ export class GameComponent implements OnInit {
   }
 
   onAnswer(response: AnswerResponse): void {
+    this.timeFlag = false;
+    this.timer?.unsubscribe();
     if(response.correct) {
-
+      this.showCorrectColor(response);
     } else {
-
+      this.showWrongColor(response);
     }
-    this.nextExercise();
+    this.timer  = interval(500).subscribe((_) => this.nextExercise())
+  }
+
+  private showWrongColor(response: AnswerResponse) {
+    if (response.correctAnswer == this.exercises[this.current].options[0]) {
+      this.colors.right.wrong = true;
+    } else {
+      this.colors.left.wrong = true;
+    }
+  }
+
+  private showCorrectColor(response: AnswerResponse) {
+    if (response.correctAnswer == this.exercises[this.current].options[0]) {
+      this.colors.left.correct = true;
+    } else {
+      this.colors.right.correct = true;
+    }
   }
 
   private nextExercise() {
+    this.cleanColors();
     this.current++;
     if (this.current >= this.exercises.length) {
       this.current = 0;
       this.getExercises(this.page + 1);
     }
+    this.timer  = interval(5000).subscribe((_) => this.timeUp())
+  }
+
+  cleanColors() {
+    this.colors.left.correct = false;
+    this.colors.left.wrong = false;
+    this.colors.right.correct = false;
+    this.colors.right.wrong = false;
   }
 
   onGuess(number: number) {
     console.log(number)
     this.guess(this.exercises[this.current].options[number]);
+  }
+
+  timeUp(): void {
+    this.timer?.unsubscribe;
+    this.timeFlag = true;
   }
 
   @HostListener('document:keydown.arrowleft', ['$event'])
