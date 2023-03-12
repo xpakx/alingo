@@ -1,7 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
 import { CourseDetails } from '../dto/course-details';
+import { SearchForm } from '../form/search-form';
 
 @Component({
   selector: 'app-all-courses',
@@ -14,8 +16,14 @@ export class AllCoursesComponent implements OnInit {
   isError: boolean = false;
   errorMsg: String = "";
   page: number = 1;
+  form: FormGroup<SearchForm>;
+  searchMode: boolean = false;
 
-  constructor(private modService: AlphabetModerationService) { }
+  constructor(private modService: AlphabetModerationService, private fb: FormBuilder) {
+    this.form = this.fb.nonNullable.group({
+      name: [new String("")]
+    });
+   }
 
   ngOnInit(): void {
       this.loadCourses(this.page);
@@ -23,6 +31,13 @@ export class AllCoursesComponent implements OnInit {
 
   loadCourses(page: number) {
     this.modService.getCourses(page).subscribe({
+      next: (response: CourseDetails[]) => this.onResponse(response),
+      error: (error: HttpErrorResponse) => this.onError(error)
+    });
+  }
+
+  loadCoursesForName(page: number) {
+    this.modService.findCourses(page, this.form.controls.name.value).subscribe({
       next: (response: CourseDetails[]) => this.onResponse(response),
       error: (error: HttpErrorResponse) => this.onError(error)
     });
@@ -38,14 +53,34 @@ export class AllCoursesComponent implements OnInit {
   }
 
   nextPage(): void {
-    this.loadCourses(++this.page);
+    if(this.searchMode) {
+      this.loadCoursesForName(++this.page);
+    } else {
+      this.loadCourses(++this.page);
+    }
   }
 
   prevPage(): void {
-    this.loadCourses(--this.page);
+    if(this.searchMode) {
+      this.loadCoursesForName(--this.page);
+    } else {
+      this.loadCourses(--this.page);
+    }
   }
 
   chooseCourse(id: number): void {
     this.id.emit(id);
+  }
+
+  deactivateSearch() {
+    this.page = 1;
+    this.searchMode = false;
+    this.loadCourses(this.page);
+  }
+
+  activateSearch() {
+    this.page = 1;
+    this.searchMode = true;
+    this.loadCoursesForName(this.page);
   }
 }

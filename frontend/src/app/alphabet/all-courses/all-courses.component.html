@@ -1,3 +1,14 @@
+<form id="name" [formGroup]="form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" formControlName="name">
+    <button class="btn" (click)="activateSearch()">
+        Apply
+    </button>
+    <button class="btn" [disabled]="searchMode" (click)="deactivateSearch()">
+        All
+    </button>
+</form>
+
 <button class="course-btn" *ngFor="let course of courses" (click)="chooseCourse(course.id)">
     <div class="name">Name</div>
     <div class="letter">{{ course.name }}</div>
