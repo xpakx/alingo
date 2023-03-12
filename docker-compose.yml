@@ -16,9 +16,9 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_RABBITMQ_HOST=rabbitmq
-      - SPRING_REDIS_HOST=cache
-      - SPRING_REDIS_PORT=6379
-      - SPRING_REDIS_PASSWORD=password
+      - SPRING_DATA_REDIS_HOST=cache
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_PASSWORD=password
   dbalphabet:
     image: 'postgres:13.1-alpine'
     container_name: dbalphabet
@@ -86,6 +86,7 @@ services:
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
   cache:
+    container_name: 'cache'
     image: redis:6.2-alpine
     restart: always
     ports:
