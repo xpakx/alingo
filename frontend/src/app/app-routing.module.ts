@@ -27,6 +27,7 @@ const routes: Routes = [
   { path: 'course/add', component: AddCourseComponent },
   { path: 'course/:id/edit', component: EditCourseComponent },
   { path: 'course/:id', component: ViewCourseComponent },
+  { path: 'course/:id/game', component: GameComponent },
   { path: 'exercise/add', component: AddExerciseComponent },
   { path: 'exercise/:id/edit', component: EditExerciseComponent },
   { path: 'exercise/:id', component: ViewExerciseComponent }

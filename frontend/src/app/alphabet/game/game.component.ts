@@ -1,6 +1,7 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { AlphabetService } from '../alphabet.service';
 import { AnswerResponse } from '../dto/answer-response';
@@ -32,10 +33,13 @@ export class GameComponent implements OnInit {
   showResult: boolean = false;
   colors: Colors = {left: {correct: false, wrong: false}, right: {correct: false, wrong: false}};
 
-  constructor(private alphabetService: AlphabetService) { }
+  constructor(private alphabetService: AlphabetService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.getExercises(0);
+    this.route.params.subscribe(routeParams => {
+      this.courseId = routeParams['id'];
+      this.getExercises(0);
+    });   
   }
 
   getExercises(page: number): void {
