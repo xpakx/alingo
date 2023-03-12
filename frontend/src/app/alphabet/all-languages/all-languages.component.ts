@@ -1,7 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
 import { LanguageDetails } from '../dto/language-details';
+import { SearchForm } from '../form/search-form';
 
 @Component({
   selector: 'app-all-languages',
@@ -14,8 +16,14 @@ export class AllLanguagesComponent implements OnInit {
   isError: boolean = false;
   errorMsg: String = "";
   page: number = 1;
+  form: FormGroup<SearchForm>;
+  searchMode: boolean = false;
 
-  constructor(private modService: AlphabetModerationService) { }
+  constructor(private modService: AlphabetModerationService, private fb: FormBuilder) {
+    this.form = this.fb.nonNullable.group({
+      name: [new String("")]
+    });
+   }
 
   ngOnInit(): void {
       this.loadLanguages(this.page);
@@ -23,6 +31,13 @@ export class AllLanguagesComponent implements OnInit {
 
   loadLanguages(page: number) {
     this.modService.getLanguages(page).subscribe({
+      next: (response: LanguageDetails[]) => this.onResponse(response),
+      error: (error: HttpErrorResponse) => this.onError(error)
+    });
+  }
+
+  loadLanguagesForName(page: number) {
+    this.modService.findLanguages(page, this.form.controls.name.value).subscribe({
       next: (response: LanguageDetails[]) => this.onResponse(response),
       error: (error: HttpErrorResponse) => this.onError(error)
     });
@@ -38,14 +53,34 @@ export class AllLanguagesComponent implements OnInit {
   }
 
   nextPage(): void {
-    this.loadLanguages(++this.page);
+    if(this.searchMode) {
+      this.loadLanguagesForName(++this.page);
+    } else {
+      this.loadLanguages(++this.page);
+    }
   }
 
   prevPage(): void {
-    this.loadLanguages(--this.page);
+    if(this.searchMode) {
+      this.loadLanguagesForName(--this.page);
+    } else {
+      this.loadLanguages(--this.page);
+    }
   }
 
   chooseLanguage(id: number): void {
     this.id.emit(id);
+  }
+
+  deactivateSearch() {
+    this.page = 1;
+    this.searchMode = false;
+    this.loadLanguages(this.page);
+  }
+
+  activateSearch() {
+    this.page = 1;
+    this.searchMode = true;
+    this.loadLanguagesForName(this.page);
   }
 }

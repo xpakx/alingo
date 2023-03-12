@@ -40,6 +40,11 @@ export class AlphabetModerationService extends JwtService {
     return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language`, { headers: this.getHeaders(), params : params });
   }
 
+  public findLanguages(page: number, name: String): Observable<LanguageDetails[]> {
+    let params = new HttpParams().set('page', page).set('amount', 20);
+    return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language/byName/${name}`, { headers: this.getHeaders(), params : params });
+  }
+
   public createCourse(request: CourseRequest): Observable<CourseDetails> {
     return this.http.post<CourseDetails>(`${this.apiServerUrl}/course`, request, { headers: this.getHeaders() });
   }
@@ -55,6 +60,11 @@ export class AlphabetModerationService extends JwtService {
   public getCourses(page: number): Observable<CourseDetails[]> {
     let params = new HttpParams().set('page', page).set('amount', 20);
     return this.http.get<CourseDetails[]>(`${this.apiServerUrl}/course`, { headers: this.getHeaders(), params : params });
+  }
+
+  public findCourses(page: number, name: String): Observable<CourseDetails[]> {
+    let params = new HttpParams().set('page', page).set('amount', 20);
+    return this.http.get<CourseDetails[]>(`${this.apiServerUrl}/course/byName/${name}`, { headers: this.getHeaders(), params : params });
   }
 
   public getCoursesForLanguage(languageId: number, page: number): Observable<CourseData[]> {
