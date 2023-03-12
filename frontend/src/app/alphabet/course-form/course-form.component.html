@@ -9,10 +9,19 @@
     <label for="course-difficulty">Difficulty:</label>
     <input type="text" id="course-difficulty" formControlName="difficulty">
 
+    <div>
+        <div>Premium</div>
+        <label class="switch">
+            <input type="checkbox" formControlName="premium">
+            <span class="slider"></span>
+        </label>
+    </div>  
+
     <label for="language-id">Language:</label>
     <input type="text" id="language-id" formControlName="languageId">
     <span class="error-message">This field is required.</span>
     <app-all-languages (languageId)="onLanguageChoice($event)"></app-all-languages>
+
 
     <button class="btn" [disabled]="form.invalid" (click)="onSubmit()">
         {{ this.course ? 'Save' : 'Add' }}

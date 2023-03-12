@@ -5,4 +5,5 @@ export interface CourseForm {
     description: FormControl<String>;
     difficulty: FormControl<String>;
     languageId: FormControl<Number>;
+    premium: FormControl<boolean>;
 }

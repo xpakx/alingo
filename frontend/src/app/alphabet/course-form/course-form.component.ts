@@ -22,7 +22,8 @@ export class CourseFormComponent implements OnInit {
       name: [new String(""), [Validators.required, Validators.minLength(1)]],
       description: [new String("")],
       difficulty: [new String("EASY")],
-      languageId: [new Number(), Validators.required]
+      languageId: [new Number(), Validators.required],
+      premium: [false, Validators.required]
     });
   }
 
@@ -32,7 +33,8 @@ export class CourseFormComponent implements OnInit {
         name: this.course.name, 
         description: this.course.description, 
         difficulty: this.course.difficulty,
-        languageId: this.course.language.id
+        languageId: this.course.language.id,
+        premium: false
       });
     }
   }
@@ -51,7 +53,8 @@ export class CourseFormComponent implements OnInit {
         name: this.form.controls.name.value,
         description: this.form.controls.description.value,
         difficulty: this.form.controls.difficulty.value,
-        languageId: this.form.controls.languageId.value
+        languageId: this.form.controls.languageId.value,
+        premium: this.form.controls.premium.value
       }).subscribe({
         next: (response: CourseDetails) => this.onCreation(response),
         error: (error: HttpErrorResponse) => this.onError(error)
@@ -65,7 +68,8 @@ export class CourseFormComponent implements OnInit {
         name: this.form.controls.name.value,
         description: this.form.controls.description.value,
         difficulty: this.form.controls.difficulty.value,
-        languageId: 0
+        languageId: this.form.controls.languageId.value,
+        premium: this.form.controls.premium.value
       }).subscribe({
         next: (response: CourseDetails) => this.onCreation(response),
         error: (error: HttpErrorResponse) => this.onError(error)
