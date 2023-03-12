@@ -21,8 +21,8 @@ import { Colors } from '../utils/colors';
   ])]
 })
 export class GameComponent implements OnInit {
-  exercises: Exercise[] = [{id: 0, options: ["לָ", "מָ"]}]
-  page: number = 0;
+  exercises: Exercise[] = [];
+  page: number = 1;
   courseId?: number;
   isError: boolean = false;
   errorMsg: String = "";
@@ -38,7 +38,7 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(routeParams => {
       this.courseId = routeParams['id'];
-      this.getExercises(0);
+      this.getExercises(1);
     });   
   }
 
@@ -145,13 +145,5 @@ export class GameComponent implements OnInit {
   onRightArrowDown(event: KeyboardEvent) {
     event.preventDefault();
     this.onGuess(1);
-  }
-
-  correctTest(): void {
-    this.onAnswer({correctAnswer: "מָ", correct: true});
-  }
-
-  wrongTest(): void {
-    this.onAnswer({correctAnswer: "מָ", correct: false});
   }
 }
