@@ -1,4 +1,4 @@
-<div class="game-container">
+<div class="game-container" *ngIf="current < exercises.length">
     <div class="options-container">
       <div class="option left-option" (click)="onGuess(0)" 
       [class.wrong-option]="colors.left.wrong" 
