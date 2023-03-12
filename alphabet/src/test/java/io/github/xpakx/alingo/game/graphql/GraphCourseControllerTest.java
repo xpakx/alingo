@@ -69,8 +69,8 @@ class GraphCourseControllerTest {
     private GraphQuery getNewCourseGraphQuery(GraphCourse answer) {
         GraphQuery query = new GraphQuery();
         query.setQuery("""
-                    mutation addCourse($name: String, $description: String, $difficulty: Difficulty, $id: Int){
-                        addCourse(name: $name, description: $description, difficulty: $difficulty, languageId: $id)
+                    mutation addCourse($name: String, $description: String, $difficulty: Difficulty, $id: Int, $premium: Boolean){
+                        addCourse(name: $name, description: $description, difficulty: $difficulty, languageId: $id, premium: $premium)
                         {
                             id
                             name
@@ -83,7 +83,7 @@ class GraphCourseControllerTest {
     }
 
     private GraphCourse getNewCourseVariables(String name, String description, String difficulty, Long languageId) {
-        return new GraphCourse(name, description, difficulty, languageId);
+        return new GraphCourse(name, description, difficulty, languageId, false);
     }
 
     @Test
@@ -205,8 +205,8 @@ class GraphCourseControllerTest {
     private GraphQuery getUpdateCourseGraphQuery(GraphUpdateCourse answer) {
         GraphQuery query = new GraphQuery();
         query.setQuery("""
-                    mutation editCourse($name: String, $description: String, $difficulty: Difficulty, $id: Int, $cid: ID){
-                        editCourse(courseId: $cid, name: $name, description: $description, difficulty: $difficulty, languageId: $id)
+                    mutation editCourse($name: String, $description: String, $difficulty: Difficulty, $id: Int, $cid: ID, $premium: Boolean){
+                        editCourse(courseId: $cid, name: $name, description: $description, difficulty: $difficulty, languageId: $id, premium: $premium)
                         {
                             id
                             name
@@ -219,7 +219,7 @@ class GraphCourseControllerTest {
     }
 
     private GraphUpdateCourse getUpdateCourseVariables(Long courseId, String name, String description, String difficulty, Long languageId) {
-        return new GraphUpdateCourse(courseId, name, description, difficulty, languageId);
+        return new GraphUpdateCourse(courseId, name, description, difficulty, languageId, false);
     }
 
     @Test
