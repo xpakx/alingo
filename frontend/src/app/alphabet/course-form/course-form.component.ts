@@ -34,7 +34,7 @@ export class CourseFormComponent implements OnInit {
         description: this.course.description, 
         difficulty: this.course.difficulty,
         languageId: this.course.language.id,
-        premium: false
+        premium: this.course.premium
       });
     }
   }
