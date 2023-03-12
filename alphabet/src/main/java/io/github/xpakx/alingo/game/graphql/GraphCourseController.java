@@ -26,8 +26,9 @@ public class GraphCourseController {
     public Course addCourse(@NotBlank(message = "Course name cannot be empty!") @Argument String name,
                                 @Argument String description,
                                 @Argument Difficulty difficulty,
-                                @Argument Long languageId) {
-        return service.createCourse(toRequest(name, description, difficulty, languageId));
+                                @Argument Long languageId,
+                                @Argument boolean premium) {
+        return service.createCourse(toRequest(name, description, difficulty, languageId, premium));
     }
 
     @MutationMapping
@@ -36,8 +37,9 @@ public class GraphCourseController {
                                  @NotBlank(message = "Course name cannot be empty!") @Argument String name,
                                  @Argument String description,
                                  @Argument Difficulty difficulty,
-                                 @Argument Long languageId) {
-        return service.editCourse(courseId, toRequest(name, description, difficulty, languageId));
+                                 @Argument Long languageId,
+                                @Argument boolean premium) {
+        return service.editCourse(courseId, toRequest(name, description, difficulty, languageId, premium));
     }
 
     @QueryMapping
@@ -46,7 +48,7 @@ public class GraphCourseController {
         return service.getCourse(id);
     }
 
-    private CourseRequest toRequest(String name, String description, Difficulty difficulty, Long languageId) {
-        return new CourseRequest(name, description, difficulty, languageId, false);
+    private CourseRequest toRequest(String name, String description, Difficulty difficulty, Long languageId, boolean premium) {
+        return new CourseRequest(name, description, difficulty, languageId, premium);
     }
 }

@@ -77,8 +77,8 @@ type Mutation {
     answer(exercise: Int, guess: String): AnswerResponse!
     addLanguage(name: String): Language!
     editLanguage(languageId: ID, name: String): Language!
-    addCourse(name: String, description: String, difficulty: Difficulty, languageId: Int): Course!
-    editCourse(courseId: ID, name: String, description: String, difficulty: Difficulty, languageId: Int): Course!
+    addCourse(name: String, description: String, difficulty: Difficulty, languageId: Int, premium: Boolean): Course!
+    editCourse(courseId: ID, name: String, description: String, difficulty: Difficulty, languageId: Int, premium: Boolean): Course!
     addExercise(letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
     editExercise(exerciseId: ID, letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
     reorderExercise(exerciseId: ID, order: Int): Exercise!
