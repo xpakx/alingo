@@ -27,6 +27,7 @@ import { CoursesComponent } from './alphabet/courses/courses.component';
 import { AllCoursesComponent } from './alphabet/all-courses/all-courses.component';
 import { AllLanguagesComponent } from './alphabet/all-languages/all-languages.component';
 import { InfoComponent } from './main/info/info.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { InfoComponent } from './main/info/info.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FontAwesomeModule
   ],
   providers: [
     {
