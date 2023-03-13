@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -21,4 +23,5 @@ public class Guess {
     private Long courseId;
     private String courseName;
     private String language;
+    private LocalDateTime time;
 }

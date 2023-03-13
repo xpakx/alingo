@@ -18,6 +18,7 @@ public class StatService {
         guess.setLanguage(event.getLanguage());
         guess.setLetter(event.getLetter());
         guess.setUsername(event.getUsername());
+        guess.setTime(event.getTime());
         repository.save(guess);
     }
 }
