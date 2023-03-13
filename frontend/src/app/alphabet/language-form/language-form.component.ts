@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
 import { LanguageDetails } from '../dto/language-details';
 import { LanguageForm } from '../form/language-form';
@@ -16,7 +17,7 @@ export class LanguageFormComponent implements OnInit{
   errorMsg: String = "";
   @Input("language") language?: LanguageDetails;
 
-  constructor(private fb: FormBuilder, private modService: AlphabetModerationService) {
+  constructor(private fb: FormBuilder, private modService: AlphabetModerationService, private router: Router) {
     this.form = this.fb.group({
       name: [new String(""), [Validators.required, Validators.minLength(1)]]
     });
@@ -59,7 +60,7 @@ export class LanguageFormComponent implements OnInit{
   }
 
   onCreation(response: LanguageDetails): void {
-    // TODO
+    this.router.navigate(['/language/'+response.id]);
   }
 
   onError(error: HttpErrorResponse): void {

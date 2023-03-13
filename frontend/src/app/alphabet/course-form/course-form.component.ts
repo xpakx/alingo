@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
 import { CourseData } from '../dto/course-data';
 import { CourseDetails } from '../dto/course-details';
@@ -17,7 +18,7 @@ export class CourseFormComponent implements OnInit {
   errorMsg: String = "";
   @Input("course") course?: CourseData;
 
-  constructor(private fb: FormBuilder, private modService: AlphabetModerationService) {
+  constructor(private fb: FormBuilder, private modService: AlphabetModerationService, private router: Router) {
     this.form = this.fb.nonNullable.group({
       name: [new String(""), [Validators.required, Validators.minLength(1)]],
       description: [new String("")],
@@ -78,7 +79,7 @@ export class CourseFormComponent implements OnInit {
   }
 
   onCreation(response: CourseDetails): void {
-    // TODO
+    this.router.navigate(['/course/'+response.id]);
   }
 
   onError(error: HttpErrorResponse): void {

@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
 import { ExerciseData } from '../dto/exercise-data';
 import { ExerciseDetails } from '../dto/exercise-details';
@@ -17,7 +18,7 @@ export class ExerciseFormComponent implements OnInit {
   errorMsg: String = "";
   @Input("exercise") exercise?: ExerciseData;
 
-  constructor(private fb: FormBuilder, private modService: AlphabetModerationService) {
+  constructor(private fb: FormBuilder, private modService: AlphabetModerationService, private router: Router) {
     this.form = this.fb.nonNullable.group({
       letter: [new String(""), [Validators.required, Validators.minLength(1)]],
       wrongAnswer: [new String(""), [Validators.required, Validators.minLength(1)]],
@@ -74,7 +75,7 @@ export class ExerciseFormComponent implements OnInit {
   }
 
   onCreation(response: ExerciseDetails): void {
-    // TODO
+    this.router.navigate(['/exercise/'+response.id]);
   }
 
   onError(error: HttpErrorResponse): void {

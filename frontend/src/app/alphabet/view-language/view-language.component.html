@@ -3,6 +3,9 @@
         <div class="name">Name</div>
         <div class="letter">{{ language.name }}</div>
     </div>
+    <button class="btn" [routerLink]="'/language/'+language.id+'/courses'">
+        Courses
+    </button>
     <button class="btn" [routerLink]="'/language/'+language.id+'/edit'">
         Edit
     </button>
