@@ -11,10 +11,17 @@
         <p class="option-text">{{ exercises[current].options[1] }}</p>
       </div>
     </div>
-    <button class="repeat-btn">Repeat</button>
+    <button class="repeat-btn">
+      <fa-icon [icon]="soundIcon"></fa-icon>
+      Repeat
+    </button>
 </div>
 
 <div class="answer-icon" *ngIf="showResult" @iconAnim (@iconAnim.done)="animationDone()">
-  <div class="icon">{{ timeFlag? '⌛' : correctFlag ? '✅' : '❌' }}</div>
+  <div class="icon">
+    <fa-icon [icon]="timeIcon" *ngIf="timeFlag"></fa-icon>
+    <fa-icon [icon]="correctIcon" *ngIf="!timeFlag && correctFlag"></fa-icon>
+    <fa-icon [icon]="wrongIcon" *ngIf="!timeFlag && !correctFlag"></fa-icon>
+  </div>
   <div class="text"> {{ timeFlag ? 'Time up!' : correctFlag ? 'Correct!' : 'Wrong!' }}</div>
 </div>

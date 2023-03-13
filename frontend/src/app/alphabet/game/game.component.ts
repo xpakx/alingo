@@ -2,6 +2,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { faCheckCircle, faCheckDouble, faCross, faHourglassEnd, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 import { interval, Subscription } from 'rxjs';
 import { AlphabetService } from '../alphabet.service';
 import { AnswerResponse } from '../dto/answer-response';
@@ -21,7 +22,7 @@ import { Colors } from '../utils/colors';
   ])]
 })
 export class GameComponent implements OnInit {
-  exercises: Exercise[] = [];
+  exercises: Exercise[] = [{options: ['a', 'n'], id: 1}];
   page: number = 1;
   courseId?: number;
   isError: boolean = false;
@@ -32,6 +33,11 @@ export class GameComponent implements OnInit {
   correctFlag: boolean = false;
   showResult: boolean = false;
   colors: Colors = {left: {correct: false, wrong: false}, right: {correct: false, wrong: false}};
+  soundIcon = faVolumeUp;
+  timeIcon = faHourglassEnd;
+  correctIcon = faCheckCircle;
+  wrongIcon = faCross;
+
 
   constructor(private alphabetService: AlphabetService, private route: ActivatedRoute) { }
 
