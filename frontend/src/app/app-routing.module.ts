@@ -14,9 +14,10 @@ import { ViewExerciseComponent } from './alphabet/view-exercise/view-exercise.co
 import { ViewLanguageComponent } from './alphabet/view-language/view-language.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegistrationComponent } from './auth/registration/registration.component';
+import { InfoComponent } from './main/info/info.component';
 
 const routes: Routes = [
-  { path: '', component: GameComponent },
+  { path: '', component: InfoComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'language/add', component: AddLanguageComponent },

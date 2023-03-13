@@ -26,6 +26,7 @@ import { LanguagesComponent } from './alphabet/languages/languages.component';
 import { CoursesComponent } from './alphabet/courses/courses.component';
 import { AllCoursesComponent } from './alphabet/all-courses/all-courses.component';
 import { AllLanguagesComponent } from './alphabet/all-languages/all-languages.component';
+import { InfoComponent } from './main/info/info.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { AllLanguagesComponent } from './alphabet/all-languages/all-languages.co
     LanguagesComponent,
     CoursesComponent,
     AllCoursesComponent,
-    AllLanguagesComponent
+    AllLanguagesComponent,
+    InfoComponent
   ],
   imports: [
     BrowserModule,
