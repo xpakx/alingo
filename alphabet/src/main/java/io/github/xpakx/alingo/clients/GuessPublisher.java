@@ -6,6 +6,8 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class GuessPublisher {
     private final AmqpTemplate template;
@@ -25,6 +27,7 @@ public class GuessPublisher {
         event.setCourseId(answer.courseId());
         event.setCourseName(answer.courseName());
         event.setLanguage(answer.language());
+        event.setTime(LocalDateTime.now());
         template.convertAndSend(guessesTopic, "guess", event);
     }
 }

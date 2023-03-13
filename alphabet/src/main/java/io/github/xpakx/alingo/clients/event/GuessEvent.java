@@ -3,6 +3,8 @@ package io.github.xpakx.alingo.clients.event;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class GuessEvent {
@@ -13,4 +15,5 @@ public class GuessEvent {
     private Long courseId;
     private String courseName;
     private String language;
+    private LocalDateTime time;
 }
