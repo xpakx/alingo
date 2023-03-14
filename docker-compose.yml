@@ -101,6 +101,11 @@ services:
         - 15672:15672
     volumes:
         - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+    healthcheck:
+        test: rabbitmq-diagnostics -q ping
+        interval: 30s
+        timeout: 30s
+        retries: 3
   cache:
     container_name: 'cache'
     image: redis:6.2-alpine
@@ -110,6 +115,11 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass password
     volumes: 
       - cache:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
   stats:
     build: ./stats/
     container_name: stats
