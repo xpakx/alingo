@@ -22,7 +22,7 @@ import { Colors } from '../utils/colors';
   ])]
 })
 export class GameComponent implements OnInit {
-  exercises: Exercise[] = [{options: ['a', 'n'], id: 1}];
+  exercises: Exercise[] = [];
   page: number = 1;
   courseId?: number;
   isError: boolean = false;
