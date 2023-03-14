@@ -55,7 +55,7 @@ public class LanguageController {
         return service.getCourses(languageId, page-1, amount);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @Secured("MODERATOR")
     @ResponseBody
     public List<Language> getLanguages(@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,

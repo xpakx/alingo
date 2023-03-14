@@ -5,6 +5,7 @@ import io.github.xpakx.alingo.game.error.DataException;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import io.github.xpakx.alingo.utils.EvictExerciseCache;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,5 +94,30 @@ public class ExerciseService {
     public ExerciseData getExercise(Long exerciseId) {
         return exerciseRepository.findProjectedById(exerciseId, ExerciseData.class)
                 .orElseThrow(NotFoundException::new);
+    }
+
+    @Cacheable(cacheNames = "answers", key = "'answers'.concat(#exerciseId)")
+    public ExerciseForGuess getAnswer(Long exerciseId) {
+        Exercise exercise = exerciseRepository.findCacheableById(exerciseId)
+                .orElseThrow(NotFoundException::new);
+        return new ExerciseForGuess(
+                exercise.getCorrectAnswer(),
+                exercise.getLetter(),
+                getCourseId(exercise),
+                getCourseName(exercise),
+                getLanguageName(exercise)
+        );
+    }
+
+    private String getLanguageName(Exercise exercise) {
+        return exercise.getCourse() != null && exercise.getCourse().getLanguage() != null ? exercise.getCourse().getLanguage().getName() : null;
+    }
+
+    private String getCourseName(Exercise exercise) {
+        return exercise.getCourse() != null ? exercise.getCourse().getName() : null;
+    }
+
+    private Long getCourseId(Exercise exercise) {
+        return exercise.getCourse() != null ? exercise.getCourse().getId() : null;
     }
 }

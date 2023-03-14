@@ -17,7 +17,7 @@ public class PublisherAspect {
     @Around(value="@annotation(PublishGuess) && args(exerciseId, ..)", argNames = "exerciseId")
     public AnswerResponse publishGuess(ProceedingJoinPoint joinPoint, Long exerciseId) throws Throwable {
         AnswerResponse result = (AnswerResponse) joinPoint.proceed();
-        publisher.sendGuess(result, exerciseId, SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        //publisher.sendGuess(result, exerciseId, SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         return result;
     }
 }

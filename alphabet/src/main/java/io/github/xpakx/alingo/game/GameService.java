@@ -2,7 +2,6 @@ package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.clients.PublishGuess;
 import io.github.xpakx.alingo.game.dto.*;
-import io.github.xpakx.alingo.game.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -21,37 +20,19 @@ public class GameService {
 
     @PublishGuess
     public AnswerResponse checkAnswer(Long exerciseId, AnswerRequest request) {
-        return createResponse(request, getExercise(exerciseId));
+        return createResponse(request, exerciseService.getAnswer(exerciseId));
     }
 
-    private AnswerResponse createResponse(AnswerRequest request, Exercise exercise) {
+    private AnswerResponse createResponse(AnswerRequest request, ExerciseForGuess exercise) {
         return new AnswerResponse(
-                request.answer().equals(exercise.getCorrectAnswer()),
-                exercise.getCorrectAnswer(),
-                exercise.getLetter(),
-                getCourseId(exercise),
-                getCourseName(exercise),
-                getLanguageName(exercise)
+                request.answer().equals(exercise.correctAnswer()),
+                exercise.correctAnswer(),
+                exercise.letter(),
+                exercise.courseId(),
+                exercise.courseName(),
+                exercise.language()
         );
     }
-
-    private String getLanguageName(Exercise exercise) {
-        return exercise.getCourse() != null && exercise.getCourse().getLanguage() != null ? exercise.getCourse().getLanguage().getName() : null;
-    }
-
-    private String getCourseName(Exercise exercise) {
-        return exercise.getCourse() != null ? exercise.getCourse().getName() : null;
-    }
-
-    private Long getCourseId(Exercise exercise) {
-        return exercise.getCourse() != null ? exercise.getCourse().getId() : null;
-    }
-
-    private Exercise getExercise(Long exerciseId) {
-        return exerciseRepository.findCacheableById(exerciseId)
-                .orElseThrow(NotFoundException::new);
-    }
-
 
     @Cacheable(cacheNames = "exercises", key = "'exercises'.concat(#courseId).concat('_').concat(#page).concat('_').concat(#amount)", unless = "#result.size == 0")
     public ExercisesResponse getExercisesForCourse(Long courseId, Integer page, Integer amount) {
