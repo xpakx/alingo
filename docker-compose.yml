@@ -19,6 +19,12 @@ services:
       - SPRING_DATA_REDIS_HOST=cache
       - SPRING_DATA_REDIS_PORT=6379
       - SPRING_DATA_REDIS_PASSWORD=password
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
   dbalphabet:
     image: 'postgres:13.1-alpine'
     container_name: dbalphabet
