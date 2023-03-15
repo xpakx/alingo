@@ -81,7 +81,7 @@ class ExerciseControllerTest {
     }
 
     private ExerciseRequest getExerciseRequest(String letter, String wrong, String correct, Long courseId) {
-        return new ExerciseRequest(letter, wrong, correct, courseId);
+        return new ExerciseRequest(letter, wrong, correct, courseId, null);
     }
 
     @Test

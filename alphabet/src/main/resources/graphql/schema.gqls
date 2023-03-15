@@ -79,7 +79,7 @@ type Mutation {
     editLanguage(languageId: ID, name: String): Language!
     addCourse(name: String, description: String, difficulty: Difficulty, languageId: Int, premium: Boolean): Course!
     editCourse(courseId: ID, name: String, description: String, difficulty: Difficulty, languageId: Int, premium: Boolean): Course!
-    addExercise(letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
-    editExercise(exerciseId: ID, letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int): Exercise!
+    addExercise(letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int, sound: String): Exercise!
+    editExercise(exerciseId: ID, letter: String, wrongAnswer: String, correctAnswer: String, courseId: Int, sound: String): Exercise!
     reorderExercise(exerciseId: ID, order: Int): Exercise!
 }

@@ -55,8 +55,8 @@ class GraphExerciseControllerTest {
     private GraphQuery getNewExerciseGraphQuery(GraphExercise answer) {
         GraphQuery query = new GraphQuery();
         query.setQuery("""
-                    mutation addExercise($letter: String, $wrongAnswer: String, $correctAnswer: String, $courseId: Int){
-                        addExercise(letter: $letter, wrongAnswer: $wrongAnswer, correctAnswer: $correctAnswer, courseId: $courseId)
+                    mutation addExercise($letter: String, $wrongAnswer: String, $correctAnswer: String, $courseId: Int, $sound: String){
+                        addExercise(letter: $letter, wrongAnswer: $wrongAnswer, correctAnswer: $correctAnswer, courseId: $courseId, sound: $sound)
                         {
                             id
                             letter
@@ -70,14 +70,14 @@ class GraphExerciseControllerTest {
     }
 
     private GraphExercise getNewExerciseVariables(String letter, String wrong, String correct, Long courseId) {
-        return new GraphExercise(letter, wrong, correct, courseId);
+        return new GraphExercise(letter, wrong, correct, courseId, null);
     }
 
     private GraphQuery getUpdateExerciseGraphQuery(GraphUpdateExercise answer) {
         GraphQuery query = new GraphQuery();
         query.setQuery("""
-                    mutation editExercise($id: ID, $letter: String, $wrongAnswer: String, $correctAnswer: String, $courseId: Int){
-                        editExercise(exerciseId: $id, letter: $letter, wrongAnswer: $wrongAnswer, correctAnswer: $correctAnswer, courseId: $courseId)
+                    mutation editExercise($id: ID, $letter: String, $wrongAnswer: String, $correctAnswer: String, $courseId: Int, $sound: String){
+                        editExercise(exerciseId: $id, letter: $letter, wrongAnswer: $wrongAnswer, correctAnswer: $correctAnswer, courseId: $courseId, sound: $sound)
                         {
                             id
                             letter
@@ -91,7 +91,7 @@ class GraphExerciseControllerTest {
     }
 
     private GraphUpdateExercise getUpdateExerciseVariables(Long exerciseId, String name, String wrong, String correct, Long courseId) {
-        return new GraphUpdateExercise(exerciseId, name, wrong, correct, courseId);
+        return new GraphUpdateExercise(exerciseId, name, wrong, correct, courseId, null);
     }
 
     @Test

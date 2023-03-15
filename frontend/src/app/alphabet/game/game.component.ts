@@ -66,7 +66,6 @@ export class GameComponent implements OnInit {
   updateExercises(response: ExercisesResponse): void {
     this.isError = false;
     this.exercises = response.exercises;
-    this.page = response.page;
   }
 
   guess(answer: String): void {

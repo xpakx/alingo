@@ -26,7 +26,7 @@ public class ExerciseService {
                 page.getContent().stream()
                         .map((a) -> toDto(a, random))
                         .toList(),
-                page.getNumber(),
+                page.getNumber()+1,
                 (long) page.getContent().size(),
                 page.getTotalElements(),
                 premium
@@ -67,6 +67,7 @@ public class ExerciseService {
         exercise.setLetter(request.letter());
         exercise.setWrongAnswer(request.wrongAnswer());
         exercise.setCorrectAnswer(request.correctAnswer());
+        exercise.setSoundFilename(request.soundFilename());
         if(request.courseId() != null) {
             exercise.setCourse(courseRepository.getReferenceById(request.courseId()));
         } else {
