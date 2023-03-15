@@ -112,7 +112,8 @@ export class GameComponent implements OnInit {
     this.current++;
     if (this.current >= this.exercises.length) {
       this.current = 0;
-      this.getExercises(this.page + 1);
+      this.page = this.page + 1;
+      this.getExercises(this.page);
     }
     this.timer  = interval(5000).subscribe((_) => this.timeUp())
   }
