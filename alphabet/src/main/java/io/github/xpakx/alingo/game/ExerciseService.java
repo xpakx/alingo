@@ -35,6 +35,7 @@ public class ExerciseService {
     private ExerciseDto toDto(Exercise exercise, Random random) {
         ExerciseDto dto = new ExerciseDto();
         dto.setId(exercise.getId());
+        dto.setSoundFilename(exercise.getSoundFilename());
         if(random.nextBoolean()) {
             dto.setOptions(List.of(exercise.getCorrectAnswer(), exercise.getWrongAnswer()));
         } else {

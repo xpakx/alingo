@@ -10,4 +10,5 @@ import java.util.List;
 public class ExerciseDto {
     Long id;
     List<String> options;
+    String soundFilename;
 }

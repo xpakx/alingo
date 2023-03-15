@@ -22,6 +22,8 @@ public class Exercise {
     @Column(nullable = false)
     private String correctAnswer;
 
+    private String soundFilename;
+
     @Column(name = "course_order")
     private Integer order;
 

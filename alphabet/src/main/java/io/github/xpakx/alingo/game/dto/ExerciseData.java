@@ -6,4 +6,5 @@ public interface ExerciseData {
     String getWrongAnswer();
     String getCorrectAnswer();
     CourseMin getCourse();
+    String getSoundFilename();
 }
