@@ -11,7 +11,7 @@
         <p class="option-text">{{ exercises[current].options[1] }}</p>
       </div>
     </div>
-    <button class="repeat-btn">
+    <button class="repeat-btn" (click)="playSound()">
       <fa-icon [icon]="soundIcon"></fa-icon>
       Repeat
     </button>

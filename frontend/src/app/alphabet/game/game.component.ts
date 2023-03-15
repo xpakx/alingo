@@ -8,6 +8,7 @@ import { AlphabetService } from '../alphabet.service';
 import { AnswerResponse } from '../dto/answer-response';
 import { Exercise } from '../dto/exercise';
 import { ExercisesResponse } from '../dto/exercises-response';
+import { SoundService } from '../sound.service';
 import { Colors } from '../utils/colors';
 
 @Component({
@@ -39,7 +40,7 @@ export class GameComponent implements OnInit {
   wrongIcon = faCross;
 
 
-  constructor(private alphabetService: AlphabetService, private route: ActivatedRoute) { }
+  constructor(private alphabetService: AlphabetService, private route: ActivatedRoute, private soundService: SoundService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(routeParams => {
@@ -137,6 +138,10 @@ export class GameComponent implements OnInit {
     this.timer?.unsubscribe;
     this.timeFlag = true;
     console.log("Time up!");
+  }
+
+  playSound(): void {
+    this.soundService.playSound(this.exercises[this.current].soundFilename);
   }
 
   @HostListener('document:keydown.arrowleft', ['$event'])
