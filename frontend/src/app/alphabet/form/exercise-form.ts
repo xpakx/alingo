@@ -5,4 +5,5 @@ export interface ExerciseForm {
     wrongAnswer: FormControl<String>;
     correctAnswer: FormControl<String>;
     courseId: FormControl<Number>;
+    sound: FormControl<String>;
 }

@@ -23,7 +23,8 @@ export class ExerciseFormComponent implements OnInit {
       letter: [new String(""), [Validators.required, Validators.minLength(1)]],
       wrongAnswer: [new String(""), [Validators.required, Validators.minLength(1)]],
       correctAnswer: [new String(""), [Validators.required, Validators.minLength(1)]],
-      courseId: [new Number(), Validators.required]
+      courseId: [new Number(), Validators.required],
+      sound: [new String("")]
     });
   }
 
@@ -33,7 +34,8 @@ export class ExerciseFormComponent implements OnInit {
         letter: this.exercise.letter, 
         wrongAnswer: this.exercise.wrongAnswer, 
         correctAnswer: this.exercise.correctAnswer,
-        courseId: this.exercise.course.id
+        courseId: this.exercise.course.id,
+        sound: this.exercise.soundFilename ? this.exercise.soundFilename : ""
       });
     }
   }
@@ -52,7 +54,8 @@ export class ExerciseFormComponent implements OnInit {
         letter: this.form.controls.letter.value,
         wrongAnswer: this.form.controls.wrongAnswer.value,
         correctAnswer: this.form.controls.correctAnswer.value,
-        courseId: this.form.controls.courseId.value
+        courseId: this.form.controls.courseId.value,
+        sound: this.form.controls.sound.value
       }).subscribe({
         next: (response: ExerciseDetails) => this.onCreation(response),
         error: (error: HttpErrorResponse) => this.onError(error)
@@ -66,7 +69,8 @@ export class ExerciseFormComponent implements OnInit {
         letter: this.form.controls.letter.value,
         wrongAnswer: this.form.controls.wrongAnswer.value,
         correctAnswer: this.form.controls.correctAnswer.value,
-        courseId: this.form.controls.courseId.value
+        courseId: this.form.controls.courseId.value,
+        sound: this.form.controls.sound.value
       }).subscribe({
         next: (response: ExerciseDetails) => this.onCreation(response),
         error: (error: HttpErrorResponse) => this.onError(error)
