@@ -233,6 +233,11 @@ services:
       interval: 10s
       retries: 20
       test: curl --user superUser:superUser --fail --silent --insecure http://localhost:8081/subjects --output /dev/null || exit 1
+  sound:
+    build: ./sound/
+    container_name: sound
+    expose:
+      - 8083
 
 volumes:
   cache:
