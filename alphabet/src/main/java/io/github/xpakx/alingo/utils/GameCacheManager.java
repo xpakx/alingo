@@ -24,4 +24,9 @@ public class GameCacheManager {
     public void invalidateLanguageListsCache() {
 
     }
+
+    @CacheEvict(cacheNames = "exercises", allEntries = true)
+    public void invalidateExerciseListsCache() {
+
+    }
 }

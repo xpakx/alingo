@@ -4,6 +4,7 @@ import io.github.xpakx.alingo.game.dto.*;
 import io.github.xpakx.alingo.game.error.DataException;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import io.github.xpakx.alingo.utils.EvictExerciseCache;
+import io.github.xpakx.alingo.utils.EvictExercisesCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -45,6 +46,7 @@ public class ExerciseService {
     }
 
     @Transactional
+    @EvictExercisesCache
     public Exercise createExercise(ExerciseRequest request) {
         Exercise exercise = new Exercise();
         copyFieldsToExercise(request, exercise);
@@ -53,6 +55,7 @@ public class ExerciseService {
     }
 
     @EvictExerciseCache
+    @EvictExercisesCache
     public Exercise editExercise(Long exerciseId, ExerciseRequest request) {
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(NotFoundException::new);

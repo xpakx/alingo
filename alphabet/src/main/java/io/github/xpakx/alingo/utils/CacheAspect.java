@@ -18,10 +18,14 @@ public class CacheAspect {
     @AfterReturning(value="@annotation(EvictCourseCache)", returning = "response")
     public void evictCourse(Course response) {
         cache.invalidateCourseCache(response.getId());
-        cache.invalidateCourseListsCache(); // TODO ?
+        cache.invalidateCourseListsCache();
     }
     @AfterReturning(value="@annotation(EvictLanguageCache)")
     public void evictLanguage() {
-        cache.invalidateLanguageListsCache(); // TODO ?
+        cache.invalidateLanguageListsCache();
+    }
+    @AfterReturning(value="@annotation(EvictExercisesCache)")
+    public void evictExercises() {
+        cache.invalidateExerciseListsCache();
     }
 }

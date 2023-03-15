@@ -37,7 +37,7 @@ export class AlphabetModerationService extends JwtService {
 
   public getLanguages(page: number): Observable<LanguageDetails[]> {
     let params = new HttpParams().set('page', page).set('amount', 20);
-    return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language`, { headers: this.getHeaders(), params : params });
+    return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language/all`, { headers: this.getHeaders(), params : params });
   }
 
   public findLanguages(page: number, name: String): Observable<LanguageDetails[]> {
@@ -69,7 +69,7 @@ export class AlphabetModerationService extends JwtService {
 
   public getCoursesForLanguage(languageId: number, page: number): Observable<CourseData[]> {
     let params = new HttpParams().set('page', page).set('amount', 20);
-    return this.http.get<CourseData[]>(`${this.apiServerUrl}/language/${languageId}/course`, { headers: this.getHeaders(), params: params });
+    return this.http.get<CourseData[]>(`${this.apiServerUrl}/language/${languageId}/course/all`, { headers: this.getHeaders(), params: params });
   }
 
   public createExercise(request: ExerciseRequest): Observable<ExerciseDetails> {
