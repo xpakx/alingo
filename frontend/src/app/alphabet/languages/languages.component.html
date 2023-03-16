@@ -1,18 +1,22 @@
-<div class="language" *ngFor="let language of languages">
-    <div class="field">
-        <div class="name">Name</div>
-        <div class="letter">{{ language.name }}</div>
-    </div>
-    <button class="btn" [routerLink]="'/language/'+language.id">
-        View
-    </button>
-    <button class="btn" [routerLink]="'/language/'+language.id+'/courses'">
-        Courses
-    </button>
-    <button class="btn" [routerLink]="'/language/'+language.id+'/edit'">
-        Edit
-    </button>
+<div class="language-tiles">
+    <div class="language-tile" *ngFor="let language of languages">
+        <h3 class="language-title">{{ language.name }}</h3>
+        <div class="buttons">
+            <button class="btn" [routerLink]="'/language/'+language.id">
+                View
+            </button>
+            <button class="btn" [routerLink]="'/language/'+language.id+'/courses'">
+                Courses
+            </button>
+            <button class="btn" [routerLink]="'/language/'+language.id+'/edit'">
+                Edit
+            </button>
+        </div>
+    </div>                            
+</div>
+<div class="navigation">
+    <button class="nav-btn" (click)="prevPage()">Previous</button>
+    <button class="nav-btn" (click)="nextPage()">Next</button>
 </div>
 
-<button class="btn" (click)="prevPage()">Previous</button>
-<button class="btn" (click)="nextPage()">Next</button>
+
