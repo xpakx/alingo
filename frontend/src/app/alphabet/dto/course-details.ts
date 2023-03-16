@@ -3,4 +3,5 @@ export interface CourseDetails {
     name: String,
     description: String,
     difficulty: String,
+    premium: boolean
 }

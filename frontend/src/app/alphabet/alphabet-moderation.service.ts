@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { JwtService } from '../common/jwt-service';
 import { CourseData } from './dto/course-data';
 import { CourseDetails } from './dto/course-details';
+import { CourseList } from './dto/course-list';
 import { CourseRequest } from './dto/course-request';
 import { ExerciseData } from './dto/exercise-data';
 import { ExerciseDetails } from './dto/exercise-details';
@@ -57,19 +58,19 @@ export class AlphabetModerationService extends JwtService {
     return this.http.get<CourseData>(`${this.apiServerUrl}/course/${courseId}`, { headers: this.getHeaders() });
   }
 
-  public getCourses(page: number): Observable<CourseDetails[]> {
+  public getCourses(page: number): Observable<CourseList> {
     let params = new HttpParams().set('page', page).set('amount', 20);
-    return this.http.get<CourseDetails[]>(`${this.apiServerUrl}/course/all`, { headers: this.getHeaders(), params : params });
+    return this.http.get<CourseList>(`${this.apiServerUrl}/course/all`, { headers: this.getHeaders(), params : params });
   }
 
-  public findCourses(page: number, name: String): Observable<CourseDetails[]> {
+  public findCourses(page: number, name: String): Observable<CourseList> {
     let params = new HttpParams().set('page', page).set('amount', 20);
-    return this.http.get<CourseDetails[]>(`${this.apiServerUrl}/course/byName/${name}`, { headers: this.getHeaders(), params : params });
+    return this.http.get<CourseList>(`${this.apiServerUrl}/course/byName/${name}`, { headers: this.getHeaders(), params : params });
   }
 
-  public getCoursesForLanguage(languageId: number, page: number): Observable<CourseData[]> {
+  public getCoursesForLanguage(languageId: number, page: number): Observable<CourseList> {
     let params = new HttpParams().set('page', page).set('amount', 20);
-    return this.http.get<CourseData[]>(`${this.apiServerUrl}/language/${languageId}/course`, { headers: this.getHeaders(), params: params });
+    return this.http.get<CourseList>(`${this.apiServerUrl}/language/${languageId}/course`, { headers: this.getHeaders(), params: params });
   }
 
   public createExercise(request: ExerciseRequest): Observable<ExerciseDetails> {

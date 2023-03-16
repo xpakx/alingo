@@ -2,6 +2,7 @@ package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseDataDto;
 import io.github.xpakx.alingo.game.dto.CourseForListDto;
+import io.github.xpakx.alingo.game.dto.CourseList;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import io.github.xpakx.alingo.utils.EvictCourseCache;
@@ -57,10 +58,8 @@ public class CourseService {
     }
 
     @Cacheable(cacheNames = "courseLists", key = "'courseLists'.concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
-    public List<CourseForListDto> getCourses(Integer page, Integer amount) {
-        return courseRepository.findListBy(createPageRequestSortedById(page, amount)).stream()
-                .map(CourseForListDto::of)
-                .toList();
+    public CourseList getCourses(Integer page, Integer amount) {
+        return CourseList.of(courseRepository.findListBy(createPageRequestSortedById(page, amount)));
     }
 
     private static PageRequest createPageRequestSortedById(Integer page, Integer amount) {
@@ -71,12 +70,10 @@ public class CourseService {
         );
     }
 
-    public List<CourseDataDto> findCourses(String name, Integer page, Integer amount) {
-        return courseRepository.findByNameLikeIgnoreCase(
+    public CourseList findCourses(String name, Integer page, Integer amount) {
+        return CourseList.of(courseRepository.findByNameLikeIgnoreCase(
                 name,
                 createPageRequestSortedById(page, amount)
-        ).stream()
-                .map(CourseDataDto::of)
-                .toList();
+        ));
     }
 }

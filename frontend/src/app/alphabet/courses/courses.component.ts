@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
 import { CourseData } from '../dto/course-data';
+import { CourseDetails } from '../dto/course-details';
+import { CourseList } from '../dto/course-list';
 
 @Component({
   selector: 'app-courses',
@@ -10,7 +12,7 @@ import { CourseData } from '../dto/course-data';
   styleUrls: ['./courses.component.css']
 })
 export class CoursesComponent implements OnInit {
-  courses: CourseData[] = [];
+  courses: CourseDetails[] = [];
   isError: boolean = false;
   errorMsg: String = "";
   page: number = 1;
@@ -30,12 +32,12 @@ export class CoursesComponent implements OnInit {
       return;
     }
     this.modService.getCoursesForLanguage(this.languageId, page).subscribe({
-      next: (response: CourseData[]) => this.onResponse(response),
+      next: (response: CourseList) => this.onResponse(response.courses),
       error: (error: HttpErrorResponse) => this.onError(error)
     });
   }
 
-  onResponse(response: CourseData[]): void {
+  onResponse(response: CourseDetails[]): void {
     this.courses = response;
   }
 

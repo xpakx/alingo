@@ -16,10 +16,10 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     Optional<CourseData> findProjectedById(Long courseId);
 
-    List<CourseForList> findByLanguageId(Long languageId, Pageable page);
+    Page<CourseForList> findByLanguageId(Long languageId, Pageable page);
 
-    List<CourseForList> findListBy(Pageable page);
+    Page<CourseForList> findListBy(Pageable page);
 
     @Query("select c from Course c where upper(c.name) like upper(?1)")
-    List<CourseData> findByNameLikeIgnoreCase(String name, Pageable pageable);
+    Page<CourseForList> findByNameLikeIgnoreCase(String name, Pageable pageable);
 }

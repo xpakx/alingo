@@ -588,8 +588,10 @@ class GraphLanguageControllerTest {
                     query getCoursesForLanguage($id: ID, $page: Int, $amount: Int){
                         getCoursesForLanguage(languageId: $id, page: $page, amount: $amount)
                         {
-                            id
-                            name
+                            courses {
+                                id
+                                name
+                            }
                         }
                     }""");
         query.setVariables(variables);
@@ -643,7 +645,7 @@ class GraphLanguageControllerTest {
                 .post(baseUrl + "/graphql")
         .then()
                 .statusCode(OK.value())
-                .body("data.getCoursesForLanguage", hasSize(0));
+                .body("data.getCoursesForLanguage.courses", hasSize(0));
     }
 
     @ParameterizedTest
@@ -698,7 +700,7 @@ class GraphLanguageControllerTest {
                 .post(baseUrl + "/graphql")
         .then()
                 .statusCode(OK.value())
-                .body("data.getCoursesForLanguage", hasSize(2));
+                .body("data.getCoursesForLanguage.courses", hasSize(2));
     }
 
     private void addCourse(String name, Long languageId) {

@@ -4,6 +4,7 @@ import io.github.xpakx.alingo.game.Language;
 import io.github.xpakx.alingo.game.LanguageService;
 import io.github.xpakx.alingo.game.dto.CourseDataDto;
 import io.github.xpakx.alingo.game.dto.CourseForListDto;
+import io.github.xpakx.alingo.game.dto.CourseList;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -53,9 +54,9 @@ public class GraphLanguageController {
 
     @QueryMapping
     @Secured("MODERATOR")
-    public List<CourseForListDto> getCoursesForLanguage(@NotNull(message = "Language id must be provided!") @Argument Long languageId,
-                                                        @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
-                                                        @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {
+    public CourseList getCoursesForLanguage(@NotNull(message = "Language id must be provided!") @Argument Long languageId,
+                                            @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
+                                            @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {
         return service.getCourses(languageId, page-1, amount);
     }
 

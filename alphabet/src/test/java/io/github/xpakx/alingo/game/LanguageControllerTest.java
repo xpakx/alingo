@@ -510,8 +510,9 @@ class LanguageControllerTest {
         .when()
                 .get(baseUrl + "/language/{languageId}/course", 1L)
         .then()
+                .log().body()
                 .statusCode(OK.value())
-                .body("$", hasSize(0));
+                .body("courses", hasSize(0));
     }
 
     @ParameterizedTest
@@ -563,7 +564,7 @@ class LanguageControllerTest {
                 .get(baseUrl + "/language/{languageId}/course", languageId)
         .then()
                 .statusCode(OK.value())
-                .body("$", hasSize(2));
+                .body("courses", hasSize(2));
     }
 
     private void addCourse(String name, Long languageId) {

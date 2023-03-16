@@ -3,6 +3,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AlphabetModerationService } from '../alphabet-moderation.service';
 import { CourseDetails } from '../dto/course-details';
+import { CourseList } from '../dto/course-list';
 import { SearchForm } from '../form/search-form';
 
 @Component({
@@ -31,14 +32,14 @@ export class AllCoursesComponent implements OnInit {
 
   loadCourses(page: number) {
     this.modService.getCourses(page).subscribe({
-      next: (response: CourseDetails[]) => this.onResponse(response),
+      next: (response: CourseList) => this.onResponse(response.courses),
       error: (error: HttpErrorResponse) => this.onError(error)
     });
   }
 
   loadCoursesForName(page: number) {
     this.modService.findCourses(page, this.form.controls.name.value).subscribe({
-      next: (response: CourseDetails[]) => this.onResponse(response),
+      next: (response: CourseList) => this.onResponse(response.courses),
       error: (error: HttpErrorResponse) => this.onError(error)
     });
   }

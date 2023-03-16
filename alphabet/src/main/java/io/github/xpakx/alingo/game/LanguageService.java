@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseForListDto;
+import io.github.xpakx.alingo.game.dto.CourseList;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import io.github.xpakx.alingo.utils.EvictLanguageCache;
@@ -39,14 +40,12 @@ public class LanguageService {
     }
 
 
-    @Cacheable(cacheNames = "courseListsByLang", key = "'courseListsByLang'.concat(#languageId).concat('_').concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
-    public List<CourseForListDto> getCourses(Long languageId, Integer page, Integer amount) {
-        return courseRepository.findByLanguageId(
+    @Cacheable(cacheNames = "courseListsByLang", key = "'courseListsByLang'.concat(#languageId).concat('_').concat(#page).concat('_').concat(#amount)", unless = "#result.courses.size() == 0")
+    public CourseList getCourses(Long languageId, Integer page, Integer amount) {
+        return CourseList.of(courseRepository.findByLanguageId(
                 languageId,
                 createPageRequestSortedById(page, amount)
-        ).stream()
-                .map(CourseForListDto::of)
-                .toList();
+        ));
     }
 
     private static PageRequest createPageRequestSortedById(Integer page, Integer amount) {
