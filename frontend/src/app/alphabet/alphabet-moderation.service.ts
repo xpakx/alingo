@@ -36,6 +36,7 @@ export class AlphabetModerationService extends JwtService {
   }
 
   public getLanguages(page: number): Observable<LanguageDetails[]> {
+    console.log(page)
     let params = new HttpParams().set('page', page).set('amount', 20);
     return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language/all`, { headers: this.getHeaders(), params : params });
   }
