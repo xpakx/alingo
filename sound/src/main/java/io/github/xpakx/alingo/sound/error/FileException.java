@@ -1,4 +1,4 @@
-package io.github.xpakx.alingo.error;
+package io.github.xpakx.alingo.sound.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

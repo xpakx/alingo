@@ -1,7 +1,7 @@
-package io.github.xpakx.alingo;
+package io.github.xpakx.alingo.sound;
 
-import io.github.xpakx.alingo.dto.UploadResponse;
-import io.github.xpakx.alingo.error.FileException;
+import io.github.xpakx.alingo.sound.dto.UploadResponse;
+import io.github.xpakx.alingo.sound.error.FileException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;

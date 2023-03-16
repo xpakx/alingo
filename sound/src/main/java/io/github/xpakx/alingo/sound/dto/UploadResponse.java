@@ -1,4 +1,4 @@
-package io.github.xpakx.alingo.dto;
+package io.github.xpakx.alingo.sound.dto;
 
 import lombok.Getter;
 import lombok.Setter;

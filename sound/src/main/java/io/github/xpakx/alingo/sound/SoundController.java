@@ -1,6 +1,6 @@
-package io.github.xpakx.alingo;
+package io.github.xpakx.alingo.sound;
 
-import io.github.xpakx.alingo.dto.UploadResponse;
+import io.github.xpakx.alingo.sound.dto.UploadResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +26,7 @@ public class SoundController {
 
     @PostMapping("/sound")
     @ResponseBody
-    public UploadResponse uploadFiles(@RequestParam("files") MultipartFile[] files) {
+    public UploadResponse uploadFiles(@RequestParam("files") MultipartFile[] files) { //TODO: should be secured obviously
         return service.uploadSound(files);
     }
 }
