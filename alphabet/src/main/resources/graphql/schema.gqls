@@ -36,6 +36,14 @@ type CourseData {
     language: Language
 }
 
+type CourseForList {
+    id: ID!
+    name: String!
+    description: String
+    difficulty: String
+    premium: Boolean!
+}
+
 type CourseMin {
     id: ID!
     name: String!
@@ -68,7 +76,7 @@ type Query {
     courseExercises(course: Int, page: Int, amount: Int): ExercisesResponse!
     getLanguage(id: ID): Language!
     getLanguages(page: Int, amount: Int): [Language]!
-    getCoursesForLanguage(languageId: ID, page: Int, amount: Int): [CourseData]!
+    getCoursesForLanguage(languageId: ID, page: Int, amount: Int): [CourseForList]!
     getCourse(id: ID): CourseData!
     getExercise(id: ID): ExerciseData!
 }

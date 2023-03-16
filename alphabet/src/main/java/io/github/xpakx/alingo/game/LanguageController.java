@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseDataDto;
+import io.github.xpakx.alingo.game.dto.CourseForListDto;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -49,9 +50,9 @@ public class LanguageController {
     @GetMapping("/{languageId}/course")
     @Secured("MODERATOR")
     @ResponseBody
-    public List<CourseDataDto> getCourses(@RequestParam  @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
-                                          @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
-                                          @PathVariable Long languageId) {
+    public List<CourseForListDto> getCourses(@RequestParam  @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
+                                             @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
+                                             @PathVariable Long languageId) {
         return service.getCourses(languageId, page-1, amount);
     }
 

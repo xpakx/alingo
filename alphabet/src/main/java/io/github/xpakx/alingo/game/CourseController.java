@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.game;
 
 import io.github.xpakx.alingo.game.dto.CourseDataDto;
+import io.github.xpakx.alingo.game.dto.CourseForListDto;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -47,7 +48,7 @@ public class CourseController {
     @GetMapping("/all")
     @Secured("MODERATOR")
     @ResponseBody
-    public List<CourseDataDto> getCourses(@RequestParam Integer page, @RequestParam Integer amount) {
+    public List<CourseForListDto> getCourses(@RequestParam Integer page, @RequestParam Integer amount) {
         return service.getCourses(page-1, amount);
     }
 
