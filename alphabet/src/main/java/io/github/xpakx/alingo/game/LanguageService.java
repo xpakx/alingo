@@ -18,6 +18,7 @@ public class LanguageService {
     private final LanguageRepository languageRepository;
     private final CourseRepository courseRepository;
 
+    @EvictLanguageCache
     public Language createLanguage(LanguageRequest request) {
         Language language = new Language();
         language.setName(request.name());

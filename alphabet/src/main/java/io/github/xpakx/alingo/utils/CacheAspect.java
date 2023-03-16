@@ -4,8 +4,10 @@ import io.github.xpakx.alingo.game.Course;
 import io.github.xpakx.alingo.game.Exercise;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+@Aspect
 @Component
 @RequiredArgsConstructor
 public class CacheAspect {
