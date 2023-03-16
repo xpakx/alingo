@@ -11,4 +11,10 @@ export class AppComponent {
   get logged(): boolean {
     return localStorage.getItem("token") != undefined;
   }
+
+
+  logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+  }
 }
