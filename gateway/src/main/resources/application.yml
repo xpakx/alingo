@@ -28,6 +28,7 @@ spring:
             allowedMethods:
               - "GET"
               - "POST"
+              - "PUT"
               - "OPTIONS"
 logging:
   level:
