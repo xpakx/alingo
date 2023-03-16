@@ -1,6 +1,6 @@
 package io.github.xpakx.alingo.game;
 
-import io.github.xpakx.alingo.game.dto.CourseData;
+import io.github.xpakx.alingo.game.dto.CourseDataDto;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import io.github.xpakx.alingo.utils.EvictCourseCache;
@@ -45,30 +45,34 @@ public class CourseService {
     }
 
     @Cacheable(cacheNames = "courses", key = "'courses'.concat(#courseId)")
-    public CourseData getCourse(Long courseId) {
-        return courseRepository.findProjectedById(courseId)
-                .orElseThrow(NotFoundException::new);
+    public CourseDataDto getCourse(Long courseId) {
+        return CourseDataDto.of(
+                courseRepository.findProjectedById(courseId)
+                .orElseThrow(NotFoundException::new)
+        );
     }
 
     @Cacheable(cacheNames = "courseLists", key = "'courseLists'.concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
-    public List<CourseData> getCourses(Integer page, Integer amount) {
-        return courseRepository.findListBy(
-                PageRequest.of(
-                        page,
-                        amount,
-                        Sort.by(Sort.Order.asc("id"))
-                )
+    public List<CourseDataDto> getCourses(Integer page, Integer amount) {
+        return courseRepository.findListBy(createPageRequestSortedById(page, amount)).stream()
+                .map(CourseDataDto::of)
+                .toList();
+    }
+
+    private static PageRequest createPageRequestSortedById(Integer page, Integer amount) {
+        return PageRequest.of(
+                page,
+                amount,
+                Sort.by(Sort.Order.asc("id"))
         );
     }
 
-    public List<CourseData> findCourses(String name, Integer page, Integer amount) {
+    public List<CourseDataDto> findCourses(String name, Integer page, Integer amount) {
         return courseRepository.findByNameLikeIgnoreCase(
                 name,
-                PageRequest.of(
-                        page,
-                        amount,
-                        Sort.by(Sort.Order.asc("id"))
-                )
-        );
+                createPageRequestSortedById(page, amount)
+        ).stream()
+                .map(CourseDataDto::of)
+                .toList();
     }
 }

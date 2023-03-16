@@ -3,7 +3,7 @@ package io.github.xpakx.alingo.game.graphql;
 import io.github.xpakx.alingo.game.Course;
 import io.github.xpakx.alingo.game.CourseService;
 import io.github.xpakx.alingo.game.Difficulty;
-import io.github.xpakx.alingo.game.dto.CourseData;
+import io.github.xpakx.alingo.game.dto.CourseDataDto;
 import io.github.xpakx.alingo.game.dto.CourseRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -44,7 +44,7 @@ public class GraphCourseController {
 
     @QueryMapping
     @Secured("MODERATOR")
-    public CourseData getCourse(@NotNull(message = "Course id must be provided!") @Argument Long id) {
+    public CourseDataDto getCourse(@NotNull(message = "Course id must be provided!") @Argument Long id) {
         return service.getCourse(id);
     }
 

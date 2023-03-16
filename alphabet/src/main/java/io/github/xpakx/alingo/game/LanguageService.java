@@ -1,6 +1,6 @@
 package io.github.xpakx.alingo.game;
 
-import io.github.xpakx.alingo.game.dto.CourseData;
+import io.github.xpakx.alingo.game.dto.CourseDataDto;
 import io.github.xpakx.alingo.game.dto.LanguageRequest;
 import io.github.xpakx.alingo.game.error.NotFoundException;
 import io.github.xpakx.alingo.utils.EvictLanguageCache;
@@ -39,36 +39,34 @@ public class LanguageService {
 
 
     @Cacheable(cacheNames = "courseListsByLang", key = "'courseListsByLang'.concat(#languageId).concat('_').concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
-    public List<CourseData> getCourses(Long languageId, Integer page, Integer amount) {
+    public List<CourseDataDto> getCourses(Long languageId, Integer page, Integer amount) {
         return courseRepository.findByLanguageId(
                 languageId,
-                PageRequest.of(
-                        page,
-                        amount,
-                        Sort.by(Sort.Order.asc("id"))
-                )
+                createPageRequestSortedById(page, amount)
+        ).stream()
+                .map(CourseDataDto::of)
+                .toList();
+    }
+
+    private static PageRequest createPageRequestSortedById(Integer page, Integer amount) {
+        return PageRequest.of(
+                page,
+                amount,
+                Sort.by(Sort.Order.asc("id"))
         );
     }
 
     @Cacheable(cacheNames = "langLists", key = "'langLists'.concat(#page).concat('_').concat(#amount)", unless = "#result.size() == 0")
     public List<Language> getLanguages(Integer page, Integer amount) {
         return languageRepository.findBy(
-                PageRequest.of(
-                        page,
-                        amount,
-                        Sort.by(Sort.Order.asc("id"))
-                )
+                createPageRequestSortedById(page, amount)
         );
     }
 
     public List<Language> findLanguages(String name, Integer page, Integer amount) {
         return languageRepository.findByNameLikeIgnoreCase(
                 name,
-                PageRequest.of(
-                        page,
-                        amount,
-                        Sort.by(Sort.Order.asc("id"))
-                )
+                createPageRequestSortedById(page, amount)
         );
     }
 }

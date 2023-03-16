@@ -21,6 +21,4 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("select c from Course c where upper(c.name) like upper(?1)")
     List<CourseData> findByNameLikeIgnoreCase(String name, Pageable pageable);
-
-
 }

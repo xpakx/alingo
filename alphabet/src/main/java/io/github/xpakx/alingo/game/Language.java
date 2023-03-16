@@ -4,10 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
-public class Language {
+public class Language implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 139243223427847823L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
