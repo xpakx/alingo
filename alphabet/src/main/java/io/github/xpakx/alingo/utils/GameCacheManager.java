@@ -15,11 +15,6 @@ public class GameCacheManager {
 
     }
 
-    @CacheEvict(cacheNames = {"courseListsByLang", "courseLists"}, allEntries = true)
-    public void invalidateCourseListsCache() {
-
-    }
-
     @CacheEvict(cacheNames = "languageLists", allEntries = true)
     public void invalidateLanguageListsCache() {
 
@@ -27,6 +22,11 @@ public class GameCacheManager {
 
     @CacheEvict(cacheNames = "exercises", allEntries = true)
     public void invalidateExerciseListsCache() {
+
+    }
+
+    @CacheEvict(cacheNames = {"courseListsByLang", "courseLists"}, allEntries = true)
+    public void invalidateCourseListsCache() {
 
     }
 }

@@ -48,7 +48,7 @@ public class CourseController {
     @Secured("MODERATOR")
     @ResponseBody
     public List<CourseDataDto> getCourses(@RequestParam Integer page, @RequestParam Integer amount) {
-        return service.getCourses(page, amount);
+        return service.getCourses(page-1, amount);
     }
 
     @GetMapping("/byName/{name}")
