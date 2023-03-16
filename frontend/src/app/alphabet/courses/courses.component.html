@@ -1,30 +1,23 @@
-<div class="course" *ngFor="let course of courses">
-    <div class="field">
-        <div class="name">Name</div>
-        <div class="letter">{{ course.name }}</div>
-    </div>
-    <div class="field">
-        <div class="name">Description</div>
-        <div class="answer">{{ course.description }}</div>
-    </div>
-    <div class="field">
-        <div class="name">Difficulty</div>
-        <div class="answer">{{ course.difficulty }}</div>
-    </div>
-    <div class="field">
-        <div class="name">Language</div>
-        <div class="language-name" [routerLink]="'/language/'+course.language.id">
-            {{ course.language }}
+<div class="course-tiles">
+    <div class="course-tile" *ngFor="let course of courses" [class.premium]="course.premium">
+        <h3 class="course-title">{{ course.name }}</h3>
+        <p class="course-description">{{ course.description }}</p>
+        <div class="course-info">
+            <p class="course-field">Difficulty: {{ course.difficulty }}</p>
         </div>
-    </div>
-
-    <button class="btn" [routerLink]="'/course/'+course.id">
-        View
-    </button>
-    <button class="btn" [routerLink]="'/course/'+course.id+'/edit'">
-        Edit
-    </button>
+        <div class="buttons">
+            <button class="btn" [routerLink]="'/course/'+course.id">
+                View
+            </button>
+            <button class="btn" [routerLink]="'/course/'+course.id+'/edit'">
+                Edit
+            </button>
+        </div>
+    </div>                            
+</div>
+<div class="navigation">
+    <button class="nav-btn" (click)="prevPage()">Previous</button>
+    <button class="nav-btn" (click)="nextPage()">Next</button>
 </div>
 
-<button class="btn" (click)="prevPage()">Previous</button>
-<button class="btn" (click)="nextPage()">Next</button>
+

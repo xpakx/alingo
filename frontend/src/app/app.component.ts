@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'alingo';
+
+  get logged(): boolean {
+    return localStorage.getItem("token") != undefined;
+  }
 }

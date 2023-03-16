@@ -1,1 +1,26 @@
-<router-outlet></router-outlet>
+<nav class="top-nav">
+    <div class="top-nav-logo">
+      <a routerLink="/">αlingo</a>
+    </div>
+    <ul class="top-nav-links" *ngIf="!logged">
+      <li><a routerLink="/login">Login</a></li>
+      <li><a routerLink="/register">Register</a></li>
+    </ul>
+    <ul class="top-nav-links" *ngIf="logged">
+      <li><a href="#">Profile</a></li>
+      <li><a href="#" class="logout">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="main-container">
+    <router-outlet></router-outlet>
+</div>
+
+<footer class="site-footer">
+    <div class="footer-links">
+      <a href="#">About Us</a>
+      <a href="#">Contact Us</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+</footer>
