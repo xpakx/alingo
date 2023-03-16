@@ -36,7 +36,6 @@ export class AlphabetModerationService extends JwtService {
   }
 
   public getLanguages(page: number): Observable<LanguageDetails[]> {
-    console.log(page)
     let params = new HttpParams().set('page', page).set('amount', 20);
     return this.http.get<LanguageDetails[]>(`${this.apiServerUrl}/language/all`, { headers: this.getHeaders(), params : params });
   }
@@ -60,7 +59,7 @@ export class AlphabetModerationService extends JwtService {
 
   public getCourses(page: number): Observable<CourseDetails[]> {
     let params = new HttpParams().set('page', page).set('amount', 20);
-    return this.http.get<CourseDetails[]>(`${this.apiServerUrl}/course`, { headers: this.getHeaders(), params : params });
+    return this.http.get<CourseDetails[]>(`${this.apiServerUrl}/course/all`, { headers: this.getHeaders(), params : params });
   }
 
   public findCourses(page: number, name: String): Observable<CourseDetails[]> {

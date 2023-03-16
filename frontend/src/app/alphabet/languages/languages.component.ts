@@ -17,7 +17,6 @@ export class LanguagesComponent implements OnInit {
   constructor(private modService: AlphabetModerationService) { }
 
   ngOnInit(): void {
-    console.log("INIT")
     this.loadLanguages(this.page);
   }
 
