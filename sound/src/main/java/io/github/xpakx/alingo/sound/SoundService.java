@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.sound;
 
+import io.github.xpakx.alingo.sound.dto.FileError;
 import io.github.xpakx.alingo.sound.dto.UploadResponse;
 import io.github.xpakx.alingo.sound.error.FileException;
 import jakarta.annotation.PostConstruct;
@@ -45,32 +46,34 @@ public class SoundService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new RuntimeException("Could not read the file!");
+                throw new FileException("Could not read the file!");
             }
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new FileException(e.getMessage());
         }
     }
 
     public UploadResponse uploadSound(MultipartFile[] files) {
-        try {
-            List<String> fileNames = new ArrayList<>();
-            Arrays.stream(files).forEach(file -> trySave(fileNames, file));
-            UploadResponse response = new UploadResponse();
-            response.setFiles(fileNames);
-            return response;
-        } catch (Exception e) {
-            throw new FileException("Fail to upload files!");
-        }
+        List<String> fileNames = new ArrayList<>();
+        List<FileError> fileErrors = new ArrayList<>();
+        Arrays.stream(files).forEach(file -> trySave(fileNames, fileErrors, file));
+        UploadResponse response = new UploadResponse();
+        response.setFiles(fileNames);
+        response.setErrors(fileErrors);
+        return response;
     }
 
-    private void trySave(List<String> fileNames, MultipartFile file) {
-        String name = Optional.ofNullable(file.getOriginalFilename())
-                .orElseThrow(() -> new FileException("Filename cannot be empty!"));
+    private void trySave(List<String> fileNames, List<FileError> fileErrors, MultipartFile file) {
+        if(file.getOriginalFilename() == null) {
+            fileErrors.add(new FileError("","Filename cannot be empty!" ));
+            return;
+        }
+        String name = file.getOriginalFilename();
         try {
             Files.copy(file.getInputStream(), this.root.resolve(name));
         } catch (Exception e) {
-            throw new FileException("Could not store the file");
+            fileErrors.add(new FileError(name,"Could not store the file"));
+            return;
         }
         fileNames.add(file.getOriginalFilename());
     }

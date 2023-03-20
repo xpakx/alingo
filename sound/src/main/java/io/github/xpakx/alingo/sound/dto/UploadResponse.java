@@ -9,4 +9,5 @@ import java.util.List;
 @Setter
 public class UploadResponse {
     private List<String> files;
+    private List<FileError> errors;
 }
