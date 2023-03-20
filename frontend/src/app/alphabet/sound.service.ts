@@ -11,7 +11,7 @@ export class SoundService {
 
   playSound(name: String): void {
     let audio = new Audio();
-    audio.src = this.apiServerUrl + "/" + name;
+    audio.src = this.apiServerUrl + "/sound/" + name;
     audio.load();
     audio.play();
   }
