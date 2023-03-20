@@ -9,4 +9,5 @@ FROM openjdk:17-alpine
 MAINTAINER xpakx.github.io
 EXPOSE 8083
 COPY --from=build app/target/alingo-0.0.1-SNAPSHOT.jar application.jar
+COPY /sounds /sounds
 ENTRYPOINT ["java","-jar","/application.jar"]
