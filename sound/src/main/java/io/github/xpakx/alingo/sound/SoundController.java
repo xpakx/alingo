@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,6 @@ public class SoundController {
 
     @GetMapping("/sound/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        System.out.println(filename);
         Resource file = service.getSound(filename);
         return ResponseEntity.ok().header(
                 HttpHeaders.CONTENT_DISPOSITION,
@@ -26,6 +26,7 @@ public class SoundController {
 
     @PostMapping("/sound")
     @ResponseBody
+    @Secured("MODERATOR")
     public UploadResponse uploadFiles(@RequestParam("files") MultipartFile[] files) { //TODO: should be secured obviously
         return service.uploadSound(files);
     }
