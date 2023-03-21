@@ -1,5 +1,6 @@
 package io.github.xpakx.alingo.sound;
 
+import io.github.xpakx.alingo.sound.dto.FilesResponse;
 import io.github.xpakx.alingo.sound.dto.UploadResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -29,5 +30,12 @@ public class SoundController {
     @Secured("MODERATOR")
     public UploadResponse uploadFiles(@RequestParam("files") MultipartFile[] files) {
         return service.uploadSound(files);
+    }
+
+    @GetMapping("/sound/list")
+    @Secured("MODERATOR")
+    @ResponseBody
+    public FilesResponse getListFiles() {
+        return service.getFileNames();
     }
 }

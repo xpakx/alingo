@@ -1,6 +1,7 @@
 package io.github.xpakx.alingo.sound;
 
 import io.github.xpakx.alingo.sound.dto.FileError;
+import io.github.xpakx.alingo.sound.dto.FilesResponse;
 import io.github.xpakx.alingo.sound.dto.UploadResponse;
 import io.github.xpakx.alingo.sound.error.FileException;
 import jakarta.annotation.PostConstruct;
@@ -19,7 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class SoundService {
@@ -76,5 +77,25 @@ public class SoundService {
             return;
         }
         fileNames.add(file.getOriginalFilename());
+    }
+
+    public FilesResponse getFileNames() {
+        FilesResponse response = new FilesResponse();
+        response.setFiles(getFilenamesFromDisk());
+        return response;
+    }
+
+    private List<String> getFilenamesFromDisk() {
+        //TODO: probably better to use database and pagination for this
+        try(Stream<Path> stream = Files.walk(this.root, 1)) {
+            return stream
+                    .filter(path -> !path.equals(this.root))
+                    .map(this.root::relativize)
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load the files!");
+        }
     }
 }
