@@ -76,6 +76,7 @@ services:
       - alphabet
       - auth
       - stats
+      - sound
     environment:
       SPRING_PROFILES_ACTIVE: path
       SPRING_CLOUD_GATEWAY_ROUTES[0]_URI: http://alphabet:8081
@@ -86,10 +87,10 @@ services:
       SPRING_CLOUD_GATEWAY_ROUTES[1]_PREDICATES[0]: 'Path=/authenticate,/register'
       SPRING_CLOUD_GATEWAY_ROUTES[2]_URI: http://stats:8082
       SPRING_CLOUD_GATEWAY_ROUTES[2]_ID: 'stats'
-      SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: 'Path=stats/**'
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://sound:8083
+      SPRING_CLOUD_GATEWAY_ROUTES[2]_PREDICATES[0]: 'Path=/stats/**'
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_URI: http://sound:8084
       SPRING_CLOUD_GATEWAY_ROUTES[3]_ID: 'sound'
-      SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: 'Path=sound/**'
+      SPRING_CLOUD_GATEWAY_ROUTES[3]_PREDICATES[0]: 'Path=/sound/**'
       SPRING_CLOUD_GATEWAY_GLOBALCORS_CORS-CONFIGURATIONS['[/**]']_ALLOWEDORIGINS: http://localhost
   alingofrontend:
     container_name: alingofrontend
@@ -240,7 +241,7 @@ services:
     build: ./sound/
     container_name: sound
     expose:
-      - 8083
+      - 8084
 
 volumes:
   cache:

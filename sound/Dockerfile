@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 # Run stage
 FROM openjdk:17-alpine
 MAINTAINER xpakx.github.io
-EXPOSE 8083
+EXPOSE 8084
 COPY --from=build app/target/alingo-0.0.1-SNAPSHOT.jar application.jar
 COPY /sounds /sounds
 ENTRYPOINT ["java","-jar","/application.jar"]

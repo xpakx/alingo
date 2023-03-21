@@ -141,7 +141,9 @@ export class GameComponent implements OnInit {
   }
 
   playSound(): void {
-    this.soundService.playSound(this.exercises[this.current].soundFilename);
+    this.soundService.getSound(this.exercises[this.current].soundFilename).subscribe({
+      next: (response: Blob) => this.soundService.playSound(response)
+    })
   }
 
   @HostListener('document:keydown.arrowleft', ['$event'])
