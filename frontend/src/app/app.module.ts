@@ -28,6 +28,7 @@ import { AllCoursesComponent } from './alphabet/all-courses/all-courses.componen
 import { AllLanguagesComponent } from './alphabet/all-languages/all-languages.component';
 import { InfoComponent } from './main/info/info.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { UploadComponent } from './upload/upload/upload.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     CoursesComponent,
     AllCoursesComponent,
     AllLanguagesComponent,
-    InfoComponent
+    InfoComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,

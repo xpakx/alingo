@@ -24,4 +24,12 @@ export class SoundService extends JwtService {
     audio.load();
     audio.play();
   }
+
+  public sendSound(files: FileList): Observable<any> {
+    let formData: FormData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
+    }
+    return this.http.post(`${this.apiServerUrl}/sound`, formData, { headers: this.getHeaders() });
+  }
 }

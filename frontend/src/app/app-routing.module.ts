@@ -15,6 +15,7 @@ import { ViewLanguageComponent } from './alphabet/view-language/view-language.co
 import { LoginComponent } from './auth/login/login.component';
 import { RegistrationComponent } from './auth/registration/registration.component';
 import { InfoComponent } from './main/info/info.component';
+import { UploadComponent } from './upload/upload/upload.component';
 
 const routes: Routes = [
   { path: '', component: InfoComponent },
@@ -31,7 +32,8 @@ const routes: Routes = [
   { path: 'course/:id/game', component: GameComponent },
   { path: 'exercise/add', component: AddExerciseComponent },
   { path: 'exercise/:id/edit', component: EditExerciseComponent },
-  { path: 'exercise/:id', component: ViewExerciseComponent }
+  { path: 'exercise/:id', component: ViewExerciseComponent },
+  { path: 'sound/upload', component: UploadComponent }
 ];
 
 @NgModule({
