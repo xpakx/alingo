@@ -27,7 +27,7 @@ public class SoundController {
     @PostMapping("/sound")
     @ResponseBody
     @Secured("MODERATOR")
-    public UploadResponse uploadFiles(@RequestParam("files") MultipartFile[] files) { 
+    public UploadResponse uploadFiles(@RequestParam("files") MultipartFile[] files) {
         return service.uploadSound(files);
     }
 }
