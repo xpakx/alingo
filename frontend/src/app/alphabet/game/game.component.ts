@@ -39,20 +39,19 @@ export class GameComponent implements OnInit {
   correctIcon = faCheckCircle;
   wrongIcon = faCross;
 
-
   constructor(private alphabetService: AlphabetService, private route: ActivatedRoute, private soundService: SoundService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(routeParams => {
       this.courseId = routeParams['id'];
-      this.getExercises(1);
+      this.getExercises(1, this.updateExercises.bind(this));
     });   
   }
 
-  getExercises(page: number): void {
+  getExercises(page: number, onResponse: (response: ExercisesResponse) => void): void {
     if(this.courseId) {
       this.alphabetService.getExercises(this.courseId, page, 10).subscribe({
-        next: (response: ExercisesResponse) => this.updateExercises(response),
+        next: (response: ExercisesResponse) => onResponse(response),
         error: (error: HttpErrorResponse) => this.onError(error)
       })
     }
@@ -86,7 +85,7 @@ export class GameComponent implements OnInit {
     } else {
       this.showWrongColor(response);
     }
-    this.timer  = interval(500).subscribe((_) => this.nextExercise())
+    this.timer  = interval(500).subscribe((_) => this.prepareNewExercises())
   }
 
   private showWrongColor(response: AnswerResponse) {
@@ -105,15 +104,27 @@ export class GameComponent implements OnInit {
     }
   }
 
-  private nextExercise() {
+  private prepareNewExercises(): void {
     this.timer?.unsubscribe();
+    let next = this.current + 1;
+    if (next >= this.exercises.length) {
+      this.page = this.page + 1;
+      this.getExercises(this.page, this.newExercises.bind(this));
+    } else {
+      this.nextExercise();
+    }
+  }
+
+  private newExercises(response: ExercisesResponse): void {
+    this.updateExercises(response);
+    this.cleanColors();
+    this.current = 0;
+    this.timer  = interval(5000).subscribe((_) => this.timeUp())
+  }
+
+  private nextExercise() {
     this.cleanColors();
     this.current++;
-    if (this.current >= this.exercises.length) {
-      this.current = 0;
-      this.page = this.page + 1;
-      this.getExercises(this.page);
-    }
     this.timer  = interval(5000).subscribe((_) => this.timeUp())
   }
 
@@ -160,7 +171,7 @@ export class GameComponent implements OnInit {
     this.onGuess(1);
   }
 
-  @HostListener('document:keydown.space', ['$event'])
+  @HostListener('document:keydown.d', ['$event'])
   onSpaceDown(event: KeyboardEvent) {
     event.preventDefault();
     this.playSound();
