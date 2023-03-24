@@ -75,7 +75,7 @@ public class SoundService {
     }
 
     private void trySave(List<String> fileNames, List<FileError> fileErrors, MultipartFile file) {
-        if(file.getOriginalFilename() == null) {
+        if(file.getOriginalFilename() == null || file.getOriginalFilename().equals("")) {
             fileErrors.add(new FileError("","Filename cannot be empty!" ));
             return;
         }
