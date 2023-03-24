@@ -172,7 +172,8 @@ services:
     hostname: kafka
     container_name: kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - '29092:29092'
       - '9092:9092'
@@ -201,8 +202,10 @@ services:
     container_name: debezium
     hostname: debezium
     depends_on:
-      - dbstats
-      - kafka
+      dbstats:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     ports:
       - '8083:8083'
     environment:
@@ -225,7 +228,8 @@ services:
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     ports:
       - '8081:8081'
     environment:
