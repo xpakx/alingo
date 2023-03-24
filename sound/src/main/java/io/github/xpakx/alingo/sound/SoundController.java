@@ -35,7 +35,7 @@ public class SoundController {
     @GetMapping("/sound/list")
     @Secured("MODERATOR")
     @ResponseBody
-    public FilesResponse getListOfFiles() {
-        return service.getFileNames();
+    public FilesResponse getListOfFiles(@RequestParam Integer page) {
+        return service.getFileNames(page);
     }
 }

@@ -91,9 +91,9 @@ public class SoundService {
         fileNames.add(file.getOriginalFilename());
     }
 
-    public FilesResponse getFileNames() {
+    public FilesResponse getFileNames(Integer page) {
         FilesResponse response = new FilesResponse();
-        response.setFiles(getFilenamesFromDb(0));
+        response.setFiles(getFilenamesFromDb(page));
         return response;
     }
 
