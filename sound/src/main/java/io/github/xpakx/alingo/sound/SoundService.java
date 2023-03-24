@@ -19,17 +19,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class SoundService {
     private final SoundRepository repository;
-    private final Path root = Paths.get("sounds");
+    private final Path root;
     Logger logger = LoggerFactory.getLogger(SoundService.class);
 
     @PostConstruct
