@@ -242,7 +242,27 @@ services:
     container_name: sound
     expose:
       - 8084
-
+    depends_on:
+      - dbsound
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbsound:5432/sound
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  dbsound:
+    image: 'postgres:13.1-alpine'
+    container_name: dbsound
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=sound
+    expose:
+      - 5432
+    healthcheck:
+      test: ['CMD', 'psql', '-U', 'admin', 'auth', '-c', 'SELECT 1']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 volumes:
   cache:
     driver: local
