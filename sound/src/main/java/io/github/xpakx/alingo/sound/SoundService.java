@@ -5,10 +5,13 @@ import io.github.xpakx.alingo.sound.dto.FilesResponse;
 import io.github.xpakx.alingo.sound.dto.UploadResponse;
 import io.github.xpakx.alingo.sound.error.FileException;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +26,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Service
+@RequiredArgsConstructor
 public class SoundService {
+    private final SoundRepository repository;
     private final Path root = Paths.get("sounds");
     Logger logger = LoggerFactory.getLogger(SoundService.class);
 
@@ -61,7 +66,14 @@ public class SoundService {
         UploadResponse response = new UploadResponse();
         response.setFiles(fileNames);
         response.setErrors(fileErrors);
+        repository.saveAll(fileNames.stream().map(this::toSoundEntity).toList());
         return response;
+    }
+
+    private Sound toSoundEntity(String name) {
+        Sound sound = new Sound();
+        sound.setFilename(name);
+        return sound;
     }
 
     private void trySave(List<String> fileNames, List<FileError> fileErrors, MultipartFile file) {
@@ -81,21 +93,21 @@ public class SoundService {
 
     public FilesResponse getFileNames() {
         FilesResponse response = new FilesResponse();
-        response.setFiles(getFilenamesFromDisk());
+        response.setFiles(getFilenamesFromDb(0));
         return response;
     }
 
-    private List<String> getFilenamesFromDisk() {
-        //TODO: probably better to use database and pagination for this
-        try(Stream<Path> stream = Files.walk(this.root, 1)) {
-            return stream
-                    .filter(path -> !path.equals(this.root))
-                    .map(this.root::relativize)
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .toList();
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load the files!");
-        }
+    private List<String> getFilenamesFromDb(Integer page) {
+        return repository.findAll(createPageRequestSortedById(page))
+                .map(Sound::getFilename)
+                .toList();
+    }
+
+    private static PageRequest createPageRequestSortedById(Integer page) {
+        return PageRequest.of(
+                page,
+                20,
+                Sort.by(Sort.Order.asc("filename"))
+        );
     }
 }
