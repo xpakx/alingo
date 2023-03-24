@@ -36,6 +36,6 @@ public class SoundController {
     @Secured("MODERATOR")
     @ResponseBody
     public FilesResponse getListOfFiles(@RequestParam Integer page) {
-        return service.getFileNames(page);
+        return service.getFileNames(page-1);
     }
 }
