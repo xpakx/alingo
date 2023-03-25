@@ -16,6 +16,11 @@
     <span class="error-message">This field is required.</span>
     <app-all-courses (courseId)="onCourseChoice($event)"></app-all-courses>
 
+    <label for="course-id">Soundfile:</label>
+    <input type="text" id="sound" formControlName="sound">
+    <span class="error-message">This field is required.</span>
+    <app-all-sounds (choice)="onSoundChoice($event)"></app-all-sounds>
+
     <button class="btn" [disabled]="form.invalid" (click)="onSubmit()">
         {{ this.exercise ? 'Save' : 'Add' }}
     </button>

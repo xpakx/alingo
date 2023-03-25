@@ -1,0 +1,6 @@
+<button class="course-btn" *ngFor="let filename of filenames.files" (click)="chooseFile(filename)">
+    <div class="name">{{ filename }}</div>
+</button>
+
+<button class="btn" (click)="prevPage()">Previous</button>
+<button class="btn" (click)="nextPage()">Next</button>

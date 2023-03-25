@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { JwtService } from '../common/jwt-service';
+import { FilesResponse } from './dto/files-response';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,10 @@ export class SoundService extends JwtService {
       formData.append('files', files[i]);
     }
     return this.http.post(`${this.apiServerUrl}/sound`, formData, { headers: this.getHeaders() });
+  }
+
+  public getSounds(page: number): Observable<FilesResponse> {
+    let params = new HttpParams().set('page', page);
+    return this.http.get<FilesResponse>(`${this.apiServerUrl}/sound/list`, { headers: this.getHeaders(), params : params });
   }
 }

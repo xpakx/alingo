@@ -24,7 +24,7 @@ export class ExerciseFormComponent implements OnInit {
       wrongAnswer: [new String(""), [Validators.required, Validators.minLength(1)]],
       correctAnswer: [new String(""), [Validators.required, Validators.minLength(1)]],
       courseId: [new Number(), Validators.required],
-      sound: [new String("")]
+      sound: [new String(""), Validators.required]
     });
   }
 
@@ -90,6 +90,12 @@ export class ExerciseFormComponent implements OnInit {
   onCourseChoice(id: number): void {
     this.form.patchValue({
       courseId: id
+    });
+  }
+
+  onSoundChoice(name: String): void {
+    this.form.patchValue({
+      sound: name
     });
   }
 }
