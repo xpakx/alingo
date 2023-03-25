@@ -39,6 +39,7 @@ export class GameComponent implements OnInit {
   correctIcon = faCheckCircle;
   wrongIcon = faCross;
   sound?: HTMLAudioElement;
+  started: boolean = false;
 
   constructor(private alphabetService: AlphabetService, private route: ActivatedRoute, private soundService: SoundService) { }
 
@@ -58,6 +59,11 @@ export class GameComponent implements OnInit {
     }
   }
 
+  startGame(): void {
+    this.started = true;
+    this.getSound();
+  }
+
   onError(error: HttpErrorResponse): void {
     this.isError = true;
     this.errorMsg = error.error.message;
@@ -66,7 +72,6 @@ export class GameComponent implements OnInit {
   updateExercises(response: ExercisesResponse): void {
     this.isError = false;
     this.exercises = response.exercises;
-    this.getSound();
   }
 
   guess(answer: String): void {
@@ -148,7 +153,7 @@ export class GameComponent implements OnInit {
   }
 
   timeUp(): void {
-    this.timer?.unsubscribe;
+    this.timer?.unsubscribe();
     this.timeFlag = true;
     console.log("Time up!");
   }

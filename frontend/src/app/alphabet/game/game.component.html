@@ -1,5 +1,5 @@
 <div class="game-container" *ngIf="current < exercises.length">
-    <div class="options-container">
+    <div class="options-container" *ngIf="started; else startButton">
       <div class="option left-option" (click)="onGuess(0)" 
       [class.wrong-option]="colors.left.wrong" 
       [class.correct-option]="colors.left.correct">
@@ -25,3 +25,10 @@
   </div>
   <div class="text"> {{ timeFlag ? 'Time up!' : correctFlag ? 'Correct!' : 'Wrong!' }}</div>
 </div>
+
+
+<ng-template #startButton>
+  <div class="options-container">
+    <div class="start-button" (click)="startGame()"><p class="option-text">Start</p></div>
+  </div>
+</ng-template>
