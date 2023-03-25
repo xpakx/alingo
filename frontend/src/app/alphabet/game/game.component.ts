@@ -183,7 +183,7 @@ export class GameComponent implements OnInit {
     this.onGuess(1);
   }
 
-  @HostListener('document:keydown.d', ['$event'])
+  @HostListener('document:keydown.space', ['$event'])
   onSpaceDown(event: KeyboardEvent) {
     event.preventDefault();
     this.playSound();
