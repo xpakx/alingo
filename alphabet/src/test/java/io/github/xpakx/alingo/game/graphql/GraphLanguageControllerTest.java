@@ -482,28 +482,11 @@ class GraphLanguageControllerTest {
     }
 
     @Test
-    void shouldRespondWith403ToGetLanguagesIfUserIsNotModerator() {
-        GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, 20));
-        given()
-                .auth()
-                .oauth2(tokenFor())
-                .contentType(ContentType.JSON)
-                .body(query)
-        .when()
-                .post(baseUrl + "/graphql")
-        .then()
-                .statusCode(OK.value())
-                .body("data", nullValue())
-                .body("errors", not(nullValue()))
-                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
-    }
-
-    @Test
     void shouldRespondWithEmptyListToGetLanguagesIfThereAreNoLanguages() {
         GraphQuery query = getLanguagesGraphQuery(getPageVariables(1, 20));
         given()
                 .auth()
-                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor())
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -617,28 +600,11 @@ class GraphLanguageControllerTest {
     }
 
     @Test
-    void shouldRespondWith403ToGetCoursesIfUserIsNotModerator() {
-        GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, 1, 20));
-        given()
-                .auth()
-                .oauth2(tokenFor())
-                .contentType(ContentType.JSON)
-                .body(query)
-        .when()
-                .post(baseUrl + "/graphql")
-        .then()
-                .statusCode(OK.value())
-                .body("data", nullValue())
-                .body("errors", not(nullValue()))
-                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
-    }
-
-    @Test
     void shouldRespondWithEmptyListToGetCoursesIfLanguageNotFound() {
         GraphQuery query = getCoursesGraphQuery(getPageAndIdVariables(1L, 1, 20));
         given()
                 .auth()
-                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor())
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()

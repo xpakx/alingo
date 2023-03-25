@@ -49,7 +49,6 @@ public class LanguageController {
     }
 
     @GetMapping("/{languageId}/course")
-    @Secured("MODERATOR")
     @ResponseBody
     public CourseList getCourses(@RequestParam  @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
                                  @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount,
@@ -58,7 +57,6 @@ public class LanguageController {
     }
 
     @GetMapping("/all")
-    @Secured("MODERATOR")
     @ResponseBody
     public List<Language> getLanguages(@RequestParam @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") Integer page,
                                        @RequestParam @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") Integer amount) {

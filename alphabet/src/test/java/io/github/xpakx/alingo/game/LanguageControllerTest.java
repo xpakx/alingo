@@ -378,25 +378,10 @@ class LanguageControllerTest {
     }
 
     @Test
-    void shouldRespondWith403ToGetLanguagesIfUserIsNotModerator() {
-        given()
-                .auth()
-                .oauth2(tokenFor("user1"))
-                .param("page", 1)
-                .param("amount", 10)
-        .when()
-                .get(baseUrl + "/language/all")
-        .then()
-                .statusCode(FORBIDDEN.value())
-                .body("error", equalTo(FORBIDDEN.value()))
-                .body("errors", nullValue());
-    }
-
-    @Test
     void shouldRespondWithEmptyListToGetLanguagesIfThereAreNoLanguages() {
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor("user1"))
                 .param("page", 1)
                 .param("amount", 10)
         .when()
@@ -486,25 +471,10 @@ class LanguageControllerTest {
     }
 
     @Test
-    void shouldRespondWith403ToGetCoursesIfUserIsNotModerator() {
-        given()
-                .auth()
-                .oauth2(tokenFor("user1"))
-                .param("page", 1)
-                .param("amount", 10)
-        .when()
-                .get(baseUrl + "/language/{languageId}/course", 1L)
-        .then()
-                .statusCode(FORBIDDEN.value())
-                .body("error", equalTo(FORBIDDEN.value()))
-                .body("errors", nullValue());
-    }
-
-    @Test
     void shouldRespondWithEmptyListToGetCoursesIfLanguageDoesNotExist() {
         given()
                 .auth()
-                .oauth2(tokenFor("user1", List.of(new SimpleGrantedAuthority("MODERATOR"))))
+                .oauth2(tokenFor("user1"))
                 .param("page", 1)
                 .param("amount", 10)
         .when()

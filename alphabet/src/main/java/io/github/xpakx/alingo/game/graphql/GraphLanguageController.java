@@ -46,14 +46,12 @@ public class GraphLanguageController {
     }
 
     @QueryMapping
-    @Secured("MODERATOR")
     public List<Language> getLanguages(@Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
                                        @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {
         return service.getLanguages(page-1, amount);
     }
 
     @QueryMapping
-    @Secured("MODERATOR")
     public CourseList getCoursesForLanguage(@NotNull(message = "Language id must be provided!") @Argument Long languageId,
                                             @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
                                             @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {
