@@ -19,11 +19,11 @@ export class SoundService extends JwtService {
     return this.http.get(`${this.apiServerUrl}/sound/${name}`,  { headers: this.getHeaders(), responseType: 'blob' });
   }
 
-  playSound(blob: Blob): void {
+  prepareSound(blob: Blob): HTMLAudioElement {
     let audio = new Audio();
     audio.src = URL.createObjectURL(blob);
     audio.load();
-    audio.play();
+    return audio;
   }
 
   public sendSound(files: FileList): Observable<any> {

@@ -38,6 +38,7 @@ export class GameComponent implements OnInit {
   timeIcon = faHourglassEnd;
   correctIcon = faCheckCircle;
   wrongIcon = faCross;
+  sound?: HTMLAudioElement;
 
   constructor(private alphabetService: AlphabetService, private route: ActivatedRoute, private soundService: SoundService) { }
 
@@ -65,6 +66,7 @@ export class GameComponent implements OnInit {
   updateExercises(response: ExercisesResponse): void {
     this.isError = false;
     this.exercises = response.exercises;
+    this.getSound();
   }
 
   guess(answer: String): void {
@@ -119,13 +121,13 @@ export class GameComponent implements OnInit {
     this.updateExercises(response);
     this.cleanColors();
     this.current = 0;
-    this.timer  = interval(5000).subscribe((_) => this.timeUp())
+    this.getSound();
   }
 
   private nextExercise() {
     this.cleanColors();
     this.current++;
-    this.timer  = interval(5000).subscribe((_) => this.timeUp())
+    this.getSound();
   }
 
   animationDone(): void {
@@ -152,9 +154,19 @@ export class GameComponent implements OnInit {
   }
 
   playSound(): void {
+    this.sound?.play();
+  }
+
+  getSound(): void {
     this.soundService.getSound(this.exercises[this.current].soundFilename).subscribe({
-      next: (response: Blob) => this.soundService.playSound(response)
+      next: (response: Blob) => this.prepareSound(response)
     })
+  }
+
+  prepareSound(response: Blob): void {
+    this.sound = this.soundService.prepareSound(response);
+    this.playSound();
+    this.timer  = interval(5000).subscribe((_) => this.timeUp());
   }
 
   @HostListener('document:keydown.arrowleft', ['$event'])
