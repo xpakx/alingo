@@ -28,6 +28,7 @@ export class RegistrationComponent {
   onAuth(response: AuthResponse): void {
     localStorage.setItem("token", response.token);
     localStorage.setItem("username", response.username);
+    localStorage.setItem("moderator", 'false');
     this.router.navigate(["/"]);
   }
 

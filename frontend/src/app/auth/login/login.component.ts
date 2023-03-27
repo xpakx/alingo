@@ -26,7 +26,7 @@ export class LoginComponent {
   onAuth(response: AuthResponse): void {
     localStorage.setItem("token", response.token);
     localStorage.setItem("username", response.username);
-    localStorage.setItem("moderator", response.moderation_role);
+    localStorage.setItem("moderator", response.moderator_role ? 'true' : 'false');
     this.router.navigate(["/"]);
   }
 
