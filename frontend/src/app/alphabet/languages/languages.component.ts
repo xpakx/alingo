@@ -43,4 +43,8 @@ export class LanguagesComponent implements OnInit {
   prevPage(): void {
     this.loadLanguages(--this.page);
   }
+
+  get moderator(): boolean {
+    return localStorage.getItem("moderator") == 'true';
+  }
 }

@@ -2,13 +2,13 @@
     <div class="language-tile" *ngFor="let language of languages">
         <h3 class="language-title">{{ language.name }}</h3>
         <div class="buttons">
-            <button class="btn" [routerLink]="'/language/'+language.id">
+            <button class="btn" [routerLink]="'/language/'+language.id" *ngIf="moderator">
                 View
             </button>
             <button class="btn" [routerLink]="'/language/'+language.id+'/courses'">
                 Courses
             </button>
-            <button class="btn" [routerLink]="'/language/'+language.id+'/edit'">
+            <button class="btn" [routerLink]="'/language/'+language.id+'/edit'" *ngIf="moderator">
                 Edit
             </button>
         </div>

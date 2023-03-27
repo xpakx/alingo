@@ -53,4 +53,8 @@ export class CoursesComponent implements OnInit {
   prevPage(): void {
     this.loadCourses(--this.page);
   }
+
+  get moderator(): boolean {
+    return localStorage.getItem("moderator") == 'true';
+  }
 }

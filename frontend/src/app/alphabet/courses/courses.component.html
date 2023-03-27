@@ -6,11 +6,14 @@
             <p class="course-field">Difficulty: {{ course.difficulty }}</p>
         </div>
         <div class="buttons">
-            <button class="btn" [routerLink]="'/course/'+course.id">
+            <button class="btn" [routerLink]="'/course/'+course.id" *ngIf="moderator">
                 View
             </button>
-            <button class="btn" [routerLink]="'/course/'+course.id+'/edit'">
+            <button class="btn" [routerLink]="'/course/'+course.id+'/edit'" *ngIf="moderator">
                 Edit
+            </button>
+            <button class="btn" [routerLink]="'/course/'+course.id+'/game'">
+                Start
             </button>
         </div>
     </div>                            
