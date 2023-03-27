@@ -39,6 +39,7 @@ public class AuthService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .username(user.getUsername())
+                .moderator_role(false)
                 .build();
     }
 
@@ -74,6 +75,10 @@ public class AuthService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .username(authenticationRequest.getUsername())
+                .moderator_role(
+                        userDetails.getAuthorities().stream()
+                                .anyMatch((a) -> a.getAuthority().equals("MODERATOR"))
+                )
                 .build();
     }
 }
