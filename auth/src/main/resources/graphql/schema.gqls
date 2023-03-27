@@ -1,6 +1,7 @@
 type AuthenticationResponse {
     token: String!
     username: String!
+    moderator_role: Boolean
 }
 
 type Mutation {
