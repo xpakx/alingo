@@ -55,7 +55,7 @@ export class ExerciseFormComponent implements OnInit {
         wrongAnswer: this.form.controls.wrongAnswer.value,
         correctAnswer: this.form.controls.correctAnswer.value,
         courseId: this.form.controls.courseId.value,
-        sound: this.form.controls.sound.value
+        soundFilename: this.form.controls.sound.value
       }).subscribe({
         next: (response: ExerciseDetails) => this.onCreation(response),
         error: (error: HttpErrorResponse) => this.onError(error)
@@ -70,7 +70,7 @@ export class ExerciseFormComponent implements OnInit {
         wrongAnswer: this.form.controls.wrongAnswer.value,
         correctAnswer: this.form.controls.correctAnswer.value,
         courseId: this.form.controls.courseId.value,
-        sound: this.form.controls.sound.value
+        soundFilename: this.form.controls.sound.value
       }).subscribe({
         next: (response: ExerciseDetails) => this.onCreation(response),
         error: (error: HttpErrorResponse) => this.onError(error)

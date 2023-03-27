@@ -3,5 +3,5 @@ export interface ExerciseRequest {
     wrongAnswer: String,
     correctAnswer: String,
     courseId: Number,
-    sound: String
+    soundFilename: String
 }
