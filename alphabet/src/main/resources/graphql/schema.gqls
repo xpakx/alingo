@@ -79,6 +79,12 @@ enum Difficulty {
     VERY_HARD
 }
 
+type Service {
+    name: String!
+    version: String!
+    schema: String!
+}
+
 type Query {
     courseExercises(course: Int, page: Int, amount: Int): ExercisesResponse!
     getLanguage(id: ID): Language!
@@ -86,6 +92,7 @@ type Query {
     getCoursesForLanguage(languageId: ID, page: Int, amount: Int): CourseList!
     getCourse(id: ID): CourseData!
     getExercise(id: ID): ExerciseData!
+    service: Service!
 }
 
 type Mutation {

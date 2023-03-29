@@ -61,9 +61,10 @@ class GraphCourseControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     private GraphQuery getNewCourseGraphQuery(GraphCourse answer) {
@@ -97,7 +98,10 @@ class GraphCourseControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -197,9 +201,10 @@ class GraphCourseControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     private GraphQuery getUpdateCourseGraphQuery(GraphUpdateCourse answer) {
@@ -233,7 +238,10 @@ class GraphCourseControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -425,9 +433,10 @@ class GraphCourseControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -441,7 +450,10 @@ class GraphCourseControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -489,6 +501,7 @@ class GraphCourseControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
+                .log().body()
                 .statusCode(OK.value())
                 .body("data.getCourse.name", equalTo("course"));
     }

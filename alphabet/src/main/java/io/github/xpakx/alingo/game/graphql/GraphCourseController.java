@@ -12,17 +12,18 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 
 @Controller
 @RequiredArgsConstructor
 @Validated
+@Secured("MODERATOR")
 public class GraphCourseController {
     private final CourseService service;
 
     @MutationMapping
-    @Secured("MODERATOR")
     public Course addCourse(@NotBlank(message = "Course name cannot be empty!") @Argument String name,
                                 @Argument String description,
                                 @Argument Difficulty difficulty,
@@ -32,7 +33,6 @@ public class GraphCourseController {
     }
 
     @MutationMapping
-    @Secured("MODERATOR")
     public Course editCourse(@NotNull(message = "Course id must be provided!") @Argument Long courseId,
                                  @NotBlank(message = "Course name cannot be empty!") @Argument String name,
                                  @Argument String description,
@@ -43,7 +43,6 @@ public class GraphCourseController {
     }
 
     @QueryMapping
-    @Secured("MODERATOR")
     public CourseDataDto getCourse(@NotNull(message = "Course id must be provided!") @Argument Long id) {
         return service.getCourse(id);
     }

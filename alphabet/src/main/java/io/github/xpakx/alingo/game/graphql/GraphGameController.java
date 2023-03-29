@@ -13,6 +13,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,6 +24,7 @@ public class GraphGameController {
     private final GameService service;
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     @PostAuthorize("hasAuthority('SUBSCRIBER') or returnObject.premium==false")
     public ExercisesResponse courseExercises(@NotNull(message = "Course id must be provided!") @Argument long course,
                                              @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
@@ -31,6 +33,7 @@ public class GraphGameController {
     }
 
     @MutationMapping
+    @PreAuthorize("isAuthenticated()")
     public AnswerResponse answer(@NotNull(message = "Exercise id must be provided!") @Argument long exercise,
                                  @NotBlank(message = "Guess cannot be empty")  @Argument String guess) {
         return service.checkAnswer(exercise, toRequestAnswer(guess));

@@ -18,11 +18,11 @@ import org.springframework.validation.annotation.Validated;
 @Controller
 @RequiredArgsConstructor
 @Validated
+@Secured("MODERATOR")
 public class GraphExerciseController {
     private final ExerciseService service;
 
     @MutationMapping
-    @Secured("MODERATOR")
     public Exercise addExercise(@Argument String letter,
                                 @NotBlank(message = "Wrong answer must be provided!") @Argument String wrongAnswer,
                                 @NotBlank(message = "Correct answer must be provided!") @Argument String correctAnswer,
@@ -32,7 +32,6 @@ public class GraphExerciseController {
     }
 
     @MutationMapping
-    @Secured("MODERATOR")
     public Exercise editExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long exerciseId,
                                  @Argument String letter,
                                  @NotBlank(message = "Wrong answer must be provided!") @Argument String wrongAnswer,
@@ -47,14 +46,12 @@ public class GraphExerciseController {
     }
 
     @MutationMapping
-    @Secured("MODERATOR")
     public Exercise reorderExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long exerciseId,
                                  @NotNull(message = "Order must be provided") @PositiveOrZero(message = "Order cannot be negative") @Argument Integer order) {
         return service.changeOrder(exerciseId, new OrderRequest(order));
     }
 
     @QueryMapping
-    @Secured("MODERATOR")
     public ExerciseData getExercise(@NotNull(message = "Exercise id must be provided!") @Argument Long id) {
         return service.getExercise(id);
     }

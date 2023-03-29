@@ -62,9 +62,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     private GraphQuery getNewLanguageGraphQuery(GraphLanguage answer) {
@@ -114,7 +115,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -214,9 +218,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -230,7 +235,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -367,9 +375,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -383,7 +392,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -444,9 +456,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     private GraphQuery getLanguagesGraphQuery(PageVariables variables) {
@@ -478,7 +491,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -560,9 +576,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value())
-                .body("error", equalTo(UNAUTHORIZED.value()))
-                .body("errors", nullValue());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     private GraphQuery getCoursesGraphQuery(PageWithIdVariables variables) {
@@ -596,7 +613,10 @@ class GraphLanguageControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test

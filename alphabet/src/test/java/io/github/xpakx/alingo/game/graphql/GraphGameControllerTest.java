@@ -148,7 +148,10 @@ class GraphGameControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -162,7 +165,10 @@ class GraphGameControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -287,7 +293,10 @@ class GraphGameControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test
@@ -301,7 +310,10 @@ class GraphGameControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()))
+                .body("errors.message", hasItem(containsStringIgnoringCase("access denied")));
     }
 
     @Test

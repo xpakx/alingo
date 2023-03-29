@@ -15,6 +15,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 
@@ -46,12 +47,14 @@ public class GraphLanguageController {
     }
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     public List<Language> getLanguages(@Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
                                        @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {
         return service.getLanguages(page-1, amount);
     }
 
     @QueryMapping
+    @PreAuthorize("isAuthenticated()")
     public CourseList getCoursesForLanguage(@NotNull(message = "Language id must be provided!") @Argument Long languageId,
                                             @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
                                             @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {
