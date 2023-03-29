@@ -29,6 +29,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     if (error.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("username");
+      localStorage.removeItem("moderator");
     }
   }
 }
