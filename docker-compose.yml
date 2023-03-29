@@ -53,6 +53,12 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_RABBITMQ_HOST=rabbitmq
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
   dbauth:
     image: 'postgres:13.1-alpine'
     container_name: dbauth
@@ -267,6 +273,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  bramble:
+    image: 'ghcr.io/movio/bramble:v1.4.6'
+    container_name: bramble
+    environment:
+      - BRAMBLE_SERVICE_LIST=http://auth:8080/graphql # http://alphabet:8081/graphql http://stats:8082/graphql
+    depends_on: 
+      auth:
+        condition: service_healthy
+    ports:
+      - 8999:8082
 volumes:
   cache:
     driver: local
