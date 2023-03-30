@@ -96,7 +96,10 @@ class GraphGuessControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
     @Test
@@ -110,7 +113,10 @@ class GraphGuessControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not((nullValue())))
+                .body("errors.message", hasItem(equalTo("Access Denied")));
     }
 
     @ParameterizedTest

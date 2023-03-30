@@ -21,7 +21,7 @@ public class GraphGuessController {
     private final GuessService service;
 
     @QueryMapping
-    @PreAuthorize("#username == authentication.principal.username")
+    @PreAuthorize("isAuthenticated() && #username == authentication.principal.username")
     public Page<Guess> getGuesses(@NotBlank(message = "Username must be provided") @Argument String username,
                                   @Min(value = 1, message = "Page must be positive") @NotNull(message = "Page cannot be null") @Argument int page,
                                   @NotNull @Min(value = 1, message = "Amount must be between 1 and 20") @Max(value = 20, message = "Amount must be between 1 and 20") @Argument int amount) {

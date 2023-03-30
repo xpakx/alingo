@@ -21,10 +21,17 @@ type Guess {
     language: String
 }
 
+type Service {
+    name: String!
+    version: String!
+    schema: String!
+}
+
 type Mutation {
     dummy: String
 }
 
 type Query {
     getGuesses(username: String, page: Int, amount: Int): Page!
+    service: Service!
 }
