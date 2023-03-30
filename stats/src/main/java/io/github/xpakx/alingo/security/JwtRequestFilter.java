@@ -29,7 +29,7 @@ public class JwtRequestFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        if(request instanceof HttpServletRequest) {
+        if(request instanceof HttpServletRequest && !shouldNotFilter((HttpServletRequest) request)) {
             doFilterInternal((HttpServletRequest) request);
         }
         filterChain.doFilter(request, response);
@@ -100,4 +100,8 @@ public class JwtRequestFilter extends GenericFilterBean {
         return request.getHeader("Authorization");
     }
 
+    private boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/actuator/health");
+    }
 }
