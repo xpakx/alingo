@@ -120,13 +120,12 @@ class GraphSoundControllerTest {
         GraphQuery query = getSoundsQuery(getPageVariables(page));
         given()
                 .auth()
-                .oauth2(tokenFor())
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .log().body()
                 .statusCode(OK.value())
                 .body("data", nullValue())
                 .body("errors", not(nullValue()));
@@ -147,7 +146,7 @@ class GraphSoundControllerTest {
                 .post(baseUrl + "/graphql")
         .then()
                 .statusCode(OK.value())
-                .body("data.getSounds", hasSize(3));
+                .body("data.getSounds.files", hasSize(3));
     }
 
     private void addSound(String name) {
