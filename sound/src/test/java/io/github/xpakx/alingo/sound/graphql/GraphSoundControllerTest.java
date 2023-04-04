@@ -126,13 +126,14 @@ class GraphSoundControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
+                .log().body()
                 .statusCode(OK.value())
                 .body("data", nullValue())
                 .body("errors", not(nullValue()));
     }
 
     @Test
-    void shouldRespondWithListOfSoinds() {
+    void shouldRespondWithListOfSounds() {
         addSound("sound1");
         addSound("sound2");
         addSound("sound2");
@@ -145,7 +146,6 @@ class GraphSoundControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .log().body()
                 .statusCode(OK.value())
                 .body("data.getSounds", hasSize(3));
     }
