@@ -103,7 +103,7 @@ class GraphSoundControllerTest {
         GraphQuery query = getSoundsQuery(getPageVariables(1));
         given()
                 .auth()
-                .oauth2(tokenFor())
+                .oauth2(tokenFor(List.of(new SimpleGrantedAuthority("MODERATOR"))))
                 .contentType(ContentType.JSON)
                 .body(query)
         .when()
@@ -147,7 +147,7 @@ class GraphSoundControllerTest {
         .then()
                 .log().body()
                 .statusCode(OK.value())
-                .body("data.getSounds", hasSize(2));
+                .body("data.getSounds", hasSize(3));
     }
 
     private void addSound(String name) {

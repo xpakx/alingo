@@ -18,6 +18,6 @@ public class GraphSoundController {
     @QueryMapping
     @Secured("MODERATOR")
     public FilesResponse getSounds(@Argument int page) {
-        return service.getFileNames(page);
+        return service.getFileNames(page-1);
     }
 }
