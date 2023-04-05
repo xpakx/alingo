@@ -265,6 +265,12 @@ services:
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=password
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    healthcheck:
+      test: "curl --fail --silent localhost:8082/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
   dbsound:
     image: 'postgres:13.1-alpine'
     container_name: dbsound
@@ -283,13 +289,15 @@ services:
     image: 'ghcr.io/movio/bramble:v1.4.6'
     container_name: bramble
     environment:
-      - BRAMBLE_SERVICE_LIST=http://auth:8080/graphql http://alphabet:8081/graphql http://stats:8082/graphql
+      - BRAMBLE_SERVICE_LIST=http://auth:8080/graphql http://alphabet:8081/graphql http://stats:8082/graphql http://sound:8084/graphql
     depends_on: 
       auth:
         condition: service_healthy
       alphabet:
         condition: service_healthy
       stats:
+        condition: service_healthy
+      sound:
         condition: service_healthy
     ports:
       - 8999:8082

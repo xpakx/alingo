@@ -56,7 +56,9 @@ class GraphSoundControllerTest {
        .when()
                 .post(baseUrl + "/graphql")
        .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
 }
 
     private GraphQuery getSoundsQuery(PageVariables variables) {
@@ -95,7 +97,9 @@ class GraphSoundControllerTest {
         .when()
                 .post(baseUrl + "/graphql")
         .then()
-                .statusCode(UNAUTHORIZED.value());
+                .statusCode(OK.value())
+                .body("data", nullValue())
+                .body("errors", not(nullValue()));
     }
 
     @Test

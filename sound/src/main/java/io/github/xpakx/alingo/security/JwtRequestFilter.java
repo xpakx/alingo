@@ -29,10 +29,15 @@ public class JwtRequestFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        if(request instanceof HttpServletRequest) {
-            doFilterInternal((HttpServletRequest) request);
+        if(request instanceof HttpServletRequest httpRequest && !shouldNotFilter(httpRequest)) {
+            doFilterInternal(httpRequest);
         }
         filterChain.doFilter(request, response);
+    }
+
+    private boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/actuator/health");
     }
 
     private void doFilterInternal(HttpServletRequest request) {
