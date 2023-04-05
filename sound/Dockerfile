@@ -11,3 +11,4 @@ EXPOSE 8084
 COPY --from=build app/target/alingo-0.0.1-SNAPSHOT.jar application.jar
 COPY /sounds /sounds
 ENTRYPOINT ["java","-jar","/application.jar"]
+RUN apk --no-cache add curl
